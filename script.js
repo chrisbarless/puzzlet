@@ -1,41 +1,41 @@
-function init() {
+(function() {
   var canvas = document.getElementById('canvas');
-  var ctx = canvas.getContext('2d');
+  var context = canvas.getContext('2d');
 
-  ctx.save();
-
-  draw(ctx);
-}
-
-function draw(ctx) {
-  drawHexagons(ctx, 20);
-}
-
-function drawHexagons(ctx, num) {
-  for (let i = 0; i < num; i++) {
-    drawHexagon(ctx, i);
+  function draw(context) {
+    drawHexagons(context, 20);
   }
-}
 
-function drawHexagon(ctx, idx) {
-  const width = 25;
-  const x = (idx + 1) * width;
-  const y = width;
+  function drawHexagons(context, numberToDraw) {
+    for (let i = 0; i < numberToDraw; i++) {
+      drawHexagon(context, i);
+    }
+  }
 
-  const a = width / 4;
-  const b = Math.sqrt(3) * a;
+  function drawHexagon(context, index) {
+    const width = 25;
+    const x = (index + 1) * width;
+    const y = width;
 
-  // Draw hexagon
-  ctx.beginPath();
-  ctx.moveTo(x + 0, y + -2 * a);
-  ctx.lineTo(x + b, y + -a);
-  ctx.lineTo(x + b, y + a);
-  ctx.lineTo(x + 0, y + 2 * a);
-  ctx.lineTo(x + -b, y + a);
-  ctx.lineTo(x + -b, y + -a);
-  ctx.lineTo(x + 0, y + -2 * a);
-  ctx.closePath();
-  ctx.stroke();
+    const a = width / 4;
+    const b = Math.sqrt(3) * a;
 
-  ctx.restore();
-}
+    // Draw hexagon
+    context.beginPath();
+    context.moveTo(x + 0, y + -2 * a);
+    context.lineTo(x + b, y + -a);
+    context.lineTo(x + b, y + a);
+    context.lineTo(x + 0, y + 2 * a);
+    context.lineTo(x + -b, y + a);
+    context.lineTo(x + -b, y + -a);
+    context.lineTo(x + 0, y + -2 * a);
+    context.closePath();
+    context.stroke();
+
+    context.restore();
+  }
+
+  context.save();
+
+  draw(context);
+})();
