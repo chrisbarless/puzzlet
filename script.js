@@ -2,17 +2,13 @@
   var canvas = document.getElementById('canvas');
   var context = canvas.getContext('2d');
 
-  function draw(context) {
-    drawHexagons(context, 20);
-  }
-
-  function drawHexagons(context, numberToDraw) {
+  function drawHexagons(numberToDraw) {
     for (let i = 0; i < numberToDraw; i++) {
-      drawHexagon(context, i);
+      drawHexagon(i);
     }
   }
 
-  function drawHexagon(context, index) {
+  function drawHexagon(index) {
     const width = 25;
     const x = (index + 1) * width;
     const y = width;
@@ -31,11 +27,12 @@
     context.lineTo(x + 0, y + -2 * a);
     context.closePath();
     context.stroke();
+    context.fillText(index, x - 3, y + 3);
 
     context.restore();
   }
 
   context.save();
 
-  draw(context);
+  drawHexagons(20);
 })();
