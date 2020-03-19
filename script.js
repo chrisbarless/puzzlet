@@ -6,9 +6,13 @@
   let yIndex = 0;
 
   function drawHexagons(numberToDraw) {
+    context.save();
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
     for (let i = 0; i < numberToDraw; i++) {
       drawHexagon(i);
     }
+    context.restore();
   }
 
   function drawHexagon(hexIndex) {
@@ -32,9 +36,7 @@
     context.lineTo(x + 0, y + -2 * a);
     context.closePath();
     context.stroke();
-    context.fillText(hexIndex, x - 3, y + 3);
-
-    context.restore();
+    context.fillText(hexIndex, x, y);
 
     if (xIndex > 30) {
       xIndex = 0;
@@ -42,8 +44,6 @@
     }
     xIndex++;
   }
-
-  context.save();
 
   drawHexagons(5765);
 })();
