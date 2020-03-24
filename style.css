@@ -7,6 +7,10 @@
   display: flex;
 }
 
+.canvas {
+  cursor: pointer;
+}
+
 .background {
   position: absolute;
   top: 0;
