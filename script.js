@@ -1,9 +1,10 @@
 (function main() {
   const canvas = document.getElementById('canvas');
   const context = canvas.getContext('2d');
+  const hexagons = new Map();
 
   const hexagonLimit = 5765;
-  const rowLimit = Math.ceil((16 / 9) * Math.sqrt(hexagonLimit));
+  const rowLimit = Math.ceil((16 / 9) * Math.sqrt(hexagonLimit)); // Around 135
   const hexagonWidth = Math.floor(canvas.width / rowLimit);
   const a = hexagonWidth / 4;
   const b = Math.sqrt(3) * a;
@@ -12,7 +13,7 @@
   let xIndex = 0;
   let yIndex = 0;
 
-  function drawHexagon(hexIndex) {
+  function buildHexagon(hexIndex) {
     let x = (xIndex + 1) * hexagonWidth;
     const y = (yIndex + 1) * hexagonWidth;
 
@@ -33,6 +34,15 @@
     context.stroke();
     context.fillText(hexIndex, x, y);
 
+    // Add to hexagon Map
+    hexagons.set(hexIndex, {
+      x,
+      y,
+      xIndex,
+      yIndex,
+    });
+
+    // Increment the axis indexes
     if (xIndex > rowLimit) {
       xIndex = 0;
       yIndex += 1;
@@ -45,11 +55,32 @@
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     for (let i = 0; i < numberToDraw; i += 1) {
-      drawHexagon(i);
+      buildHexagon(i);
     }
     context.restore();
   }
 
+  function getClosestHexagon(x, y) {
+    let minDist = Infinity;
+    let nearest;
+    for (const [hexIndex, hexagon] of hexagons) {
+      const dist = Math.hypot(hexagon.x - x, hexagon.y - y);
+      if (dist < minDist) {
+        nearest = hexIndex;
+        minDist = dist;
+      }
+    }
+    return nearest;
+  }
+
+  canvas.addEventListener(
+    'click',
+    (event) => {
+      const closest = getClosestHexagon(event.pageX, event.pageY);
+      alert(closest);
+    },
+    false,
+  );
   canvas.setAttribute('width', innerWidth);
   canvas.setAttribute('height', innerHeight);
 
