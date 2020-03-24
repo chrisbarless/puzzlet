@@ -54,6 +54,7 @@
     context.save();
     context.textAlign = 'center';
     context.textBaseline = 'middle';
+    context.font = '7px sans-serif';
     for (let i = 1; i <= numberToDraw; i += 1) {
       buildHexagon(i);
     }
