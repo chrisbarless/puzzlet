@@ -54,7 +54,7 @@
     context.save();
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    for (let i = 0; i < numberToDraw; i += 1) {
+    for (let i = 1; i <= numberToDraw; i += 1) {
       buildHexagon(i);
     }
     context.restore();
@@ -77,7 +77,9 @@
     'click',
     (event) => {
       const closest = getClosestHexagon(event.pageX, event.pageY);
-      alert(closest);
+      if (closest < hexagonLimit) {
+        alert(closest);
+      }
     },
     false,
   );
