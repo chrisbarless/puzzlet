@@ -78,9 +78,7 @@
     'click',
     (event) => {
       const closest = getClosestHexagon(event.pageX, event.pageY);
-      if (closest < hexagonLimit) {
-        alert(closest);
-      }
+      alert(closest);
     },
     false,
   );
