@@ -1,89 +1,70 @@
-(function main() {
-  const canvas = document.getElementById('canvas');
-  const context = canvas.getContext('2d');
-  const hexagons = new Map();
+import Camera from '../node_modules/camera/camera';
 
-  const hexagonLimit = 5765;
-  const rowLimit = Math.ceil((16 / 9) * Math.sqrt(hexagonLimit)); // Around 135
-  const hexagonWidth = Math.floor(canvas.width / rowLimit);
-  const a = hexagonWidth / 4;
-  const b = Math.sqrt(3) * a;
-  const { innerWidth, innerHeight } = window;
+import HexagonGrid from './hexagon-grid';
 
-  let xIndex = 0;
-  let yIndex = 0;
+import findRequestAnimationFrame from './utils';
 
-  function buildHexagon(hexIndex) {
-    let x = (xIndex + 1) * hexagonWidth;
-    const y = (yIndex + 1) * hexagonWidth;
+const renderFrame = findRequestAnimationFrame();
 
-    if (yIndex % 2 !== 0) {
-      x -= hexagonWidth / 2;
-    }
+class Main {
+  constructor() {
+    this.canvas = document.getElementById('canvas');
+    this.canvas.setAttribute('width', window.innerWidth);
+    this.canvas.setAttribute('height', window.innerHeight);
+    this.context = this.canvas.getContext('2d');
+    this.camera = new Camera(this.context);
+    this.objects = [];
 
-    // Draw hexagon
-    context.beginPath();
-    context.moveTo(x + 0, y + -2 * a);
-    context.lineTo(x + b, y + -a);
-    context.lineTo(x + b, y + a);
-    context.lineTo(x + 0, y + 2 * a);
-    context.lineTo(x + -b, y + a);
-    context.lineTo(x + -b, y + -a);
-    context.lineTo(x + 0, y + -2 * a);
-    context.closePath();
-    context.stroke();
-    context.fillText(hexIndex, x, y);
+    const hexagonGrid = new HexagonGrid(5765);
+    this.hexagons = this.objects.push(hexagonGrid);
 
-    // Add to hexagon Map
-    hexagons.set(hexIndex, {
-      x,
-      y,
-      xIndex,
-      yIndex,
-    });
-
-    // Increment the axis indexes
-    if (xIndex > rowLimit) {
-      xIndex = 0;
-      yIndex += 1;
-    }
-    xIndex += 1;
+    window.addEventListener(
+      'click',
+      (event) => {
+        const { x, y } = this.camera.screenToWorld(event.pageX, event.pageY);
+        const closest = hexagonGrid.getClosestHexagon(x, y);
+        alert(closest); // eslint-disable-line no-alert
+      },
+      false,
+    );
   }
 
-  function drawHexagons(numberToDraw) {
-    context.save();
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.font = '7px sans-serif';
-    for (let i = 1; i <= numberToDraw; i += 1) {
-      buildHexagon(i);
-    }
-    context.restore();
-  }
-
-  function getClosestHexagon(x, y) {
-    let minDist = Infinity;
-    let nearest;
-    for (const [hexIndex, hexagon] of hexagons) {
-      const dist = Math.hypot(hexagon.x - x, hexagon.y - y);
-      if (dist < minDist) {
-        nearest = hexIndex;
-        minDist = dist;
+  // Update each item in the game
+  updateScene() {
+    this.objects.forEach((item) => {
+      if (item.tick) {
+        item.tick();
       }
-    }
-    return nearest;
+    });
   }
 
-  canvas.addEventListener(
-    'click',
-    (event) => {
-      const closest = getClosestHexagon(event.pageX, event.pageY);
-      alert(closest);
-    },
-    false,
-  );
-  canvas.setAttribute('width', innerWidth);
-  canvas.setAttribute('height', innerHeight);
+  // Draw each item in the game
+  drawScene() {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.camera.begin();
+    this.objects.forEach((item) => {
+      if (item.draw) {
+        item.draw(this.context);
+      }
+    });
+    this.camera.end();
+  }
 
-  drawHexagons(hexagonLimit);
-}());
+  // Main game loop
+  tick() {
+    this.updateScene();
+    this.drawScene();
+    renderFrame(() => {
+      this.tick();
+    });
+  }
+
+  start() {
+    // Start the game ticking
+    renderFrame(() => {
+      this.tick();
+    });
+  }
+}
+
+new Main().start();
