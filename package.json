@@ -13,5 +13,8 @@
   "scripts": {
     "dev": "parcel src/index.html",
     "build": "parcel build src/index.html"
+  },
+  "dependencies": {
+    "camera": "robashton/camera"
   }
 }
