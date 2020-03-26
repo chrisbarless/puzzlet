@@ -8,14 +8,14 @@ const renderFrame = findRequestAnimationFrame();
 
 class Main {
   constructor() {
+    const hexagonGrid = new HexagonGrid(5765);
+
     this.canvas = document.getElementById('canvas');
     this.canvas.setAttribute('width', window.innerWidth);
     this.canvas.setAttribute('height', window.innerHeight);
     this.context = this.canvas.getContext('2d');
     this.camera = new Camera(this.context);
     this.objects = [];
-
-    const hexagonGrid = new HexagonGrid(5765);
     this.hexagons = this.objects.push(hexagonGrid);
 
     window.addEventListener(
@@ -23,7 +23,18 @@ class Main {
       (event) => {
         const { x, y } = this.camera.screenToWorld(event.pageX, event.pageY);
         const closest = hexagonGrid.getClosestHexagon(x, y);
-        alert(closest); // eslint-disable-line no-alert
+        this.camera.zoomTo(500);
+        this.camera.moveTo(x, y);
+      },
+      false,
+    );
+
+    document.getElementById('reset').addEventListener(
+      'click',
+      (event) => {
+        event.preventDefault();
+        this.camera.zoomTo(0);
+        this.camera.moveTo(0, 0);
       },
       false,
     );

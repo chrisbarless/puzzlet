@@ -28,7 +28,7 @@ class HexagonGrid {
     context.save();
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    context.font = '7px sans-serif';
+    context.font = '4px sans-serif';
     // eslint-disable-next-line no-restricted-syntax
     for (const [hexIndex, hexagon] of this.hexagons) {
       hexagon.draw(context);
