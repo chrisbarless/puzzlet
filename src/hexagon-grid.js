@@ -2,7 +2,7 @@ import Hexagon from './hexagon';
 
 class HexagonGrid {
   constructor(hexagonLimit = 1) {
-    const rowLimit = Math.ceil((16 / 9) * Math.sqrt(hexagonLimit)); // Around 135
+    const rowLimit = 96;
     let xIndex = 0;
     let yIndex = 0;
     const hexagonWidth = Math.floor(window.innerWidth / rowLimit);
