@@ -3,9 +3,10 @@ import Hexagon from './hexagon';
 class HexagonGrid {
   constructor(hexagonLimit = 1) {
     const rowLimit = 96;
+    const hexagonWidth = Math.floor(window.innerWidth / rowLimit);
+
     let xIndex = 0;
     let yIndex = 0;
-    const hexagonWidth = Math.floor(window.innerWidth / rowLimit);
 
     this.hexagons = new Map();
 
@@ -22,6 +23,9 @@ class HexagonGrid {
       }
       xIndex += 1;
     }
+
+    this.overallWidth = hexagonWidth * xIndex;
+    this.overallHeight = hexagonWidth * yIndex;
   }
 
   draw(context) {
@@ -34,7 +38,14 @@ class HexagonGrid {
       hexagon.draw(context);
     }
     context.restore();
-    // debugger;
+  }
+
+  getCenter() {
+    const center = [
+      Math.floor(this.overallWidth / 2),
+      Math.floor(this.overallHeight / 2),
+    ];
+    return center;
   }
 
   getClosestHexagon(x, y) {

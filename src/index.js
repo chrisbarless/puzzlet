@@ -18,13 +18,24 @@ class Main {
     this.objects = [];
     this.hexagons = this.objects.push(hexagonGrid);
 
+    const resetViewport = () => {
+      const [centerX, centerY] = hexagonGrid.getCenter();
+      this.camera.moveTo(this.camera.worldToScreen(centerX, centerY));
+      this.camera.zoomTo(1400.0);
+    };
+
     window.addEventListener(
       'click',
       (event) => {
-        const { x, y } = this.camera.screenToWorld(event.pageX, event.pageY);
+        event.preventDefault();
+        const { pageX: x, pageY: y } = event;
         const closest = hexagonGrid.getClosestHexagon(x, y);
+
         this.camera.zoomTo(500);
         this.camera.moveTo(x, y);
+
+        console.log(`Clicked at ${x},${y}`);
+        console.log(`Nearest hexagon #${closest}`);
       },
       false,
     );
@@ -33,11 +44,13 @@ class Main {
       'click',
       (event) => {
         event.preventDefault();
-        this.camera.zoomTo(0);
-        this.camera.moveTo(0, 0);
+        event.stopPropagation();
+        resetViewport();
       },
       false,
     );
+
+    resetViewport();
   }
 
   // Update each item in the game
