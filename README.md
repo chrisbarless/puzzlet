@@ -1,4 +1,11 @@
 # Puzzlet
 
-Run: `yarn dev`
-Build: `yarn build`
+Run
+```
+yarn dev
+```
+
+Build
+```
+yarn build
+````
