@@ -15,8 +15,8 @@ class Main {
     this.canvas.setAttribute('height', window.innerHeight);
     this.context = this.canvas.getContext('2d');
     this.camera = new Camera(this.context);
-    this.objects = [];
-    this.hexagons = this.objects.push(hexagonGrid);
+    this.objects = [hexagonGrid];
+    const hexagons = this.objects.push(hexagonGrid);
 
     const resetViewport = () => {
       const [centerX, centerY] = hexagonGrid.getCenter();
