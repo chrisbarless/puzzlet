@@ -17,11 +17,12 @@ class HexagonGrid {
         new Hexagon(hexIndex, xIndex, yIndex, hexagonWidth),
       );
 
-      if (xIndex > rowLimit) {
+      if (xIndex >= rowLimit) {
         xIndex = 0;
         yIndex += 1;
+      } else {
+        xIndex += 1;
       }
-      xIndex += 1;
     }
 
     this.overallWidth = hexagonWidth * xIndex;
