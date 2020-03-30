@@ -4,7 +4,7 @@ class Hexagon {
     const y = (yIndex + 1) * hexagonWidth;
 
     if (yIndex % 2 !== 0) {
-      x -= hexagonWidth / 2;
+      x += hexagonWidth / 2;
     }
 
     this.hexIndex = hexIndex;
