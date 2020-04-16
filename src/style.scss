@@ -1,0 +1,33 @@
+$textColor: white;
+$bgColor: black;
+
+body,
+body * {
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  color: $textColor;
+  background: $textColor;
+  font-family: monospace;
+}
+
+.wrapper {
+}
+
+.menu {
+  font-size: 4rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.5rem;
+  justify-content: space-between;
+}
+
+.links a {
+  color: $textColor;
+  margin-left: 1em;
+}

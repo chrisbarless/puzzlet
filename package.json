@@ -8,13 +8,14 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.1",
     "parcel-bundler": "^1.12.4",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "sass": "^1.26.3"
   },
   "scripts": {
     "dev": "parcel src/index.html",
     "build": "parcel build src/index.html"
   },
   "dependencies": {
-    "camera": "robashton/camera"
+    "three": "^0.115.0"
   }
 }
