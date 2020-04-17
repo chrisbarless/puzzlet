@@ -1,26 +1,32 @@
 import * as THREE from 'three';
 
-const length = 12;
-const width = 8;
-
 const shape = new THREE.Shape();
-shape.moveTo(0, 0);
-shape.lineTo(0, width);
-shape.lineTo(length, width);
-shape.lineTo(length, 0);
-shape.lineTo(0, 0);
+
+const hexagonWidth = 10;
+const a = hexagonWidth / 4;
+const b = Math.sqrt(3) * a;
+const x = 0;
+const y = 0;
 
 const extrudeSettings = {
-  steps: 2,
-  depth: 16,
+  steps: 1,
+  depth: 1,
   bevelEnabled: true,
   bevelThickness: 1,
   bevelSize: 1,
-  bevelOffset: 0,
   bevelSegments: 1,
 };
 
+shape.moveTo(x + 0, y + -2 * a);
+shape.lineTo(x + b, y + -a);
+shape.lineTo(x + b, y + a);
+shape.lineTo(x + 0, y + 2 * a);
+shape.lineTo(x + -b, y + a);
+shape.lineTo(x + -b, y + -a);
+shape.lineTo(x + 0, y + -2 * a);
+
 const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const material = new THREE.MeshNormalMaterial();
 const mesh = new THREE.Mesh(geometry, material);
-scene.add(mesh);
+
+export default mesh;

@@ -1,30 +1,24 @@
 import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
+import hexagon from './hexagon';
 
 let camera;
 let scene;
 let controls;
 let renderer;
-let geometry;
-let material;
-let mesh;
 
 function init() {
   camera = new THREE.PerspectiveCamera(
-    70,
+    45,
     window.innerWidth / window.innerHeight,
-    0.01,
-    10,
+    1,
+    1000,
   );
-  camera.position.z = 1;
+  camera.position.z = 25;
 
   scene = new THREE.Scene();
 
-  geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-  material = new THREE.MeshNormalMaterial();
-
-  mesh = new THREE.Mesh(geometry, material);
-  scene.add(mesh);
+  scene.add(hexagon);
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -36,8 +30,8 @@ function init() {
 function animate() {
   requestAnimationFrame(animate);
 
-  mesh.rotation.x += 0.01;
-  mesh.rotation.y += 0.01;
+  hexagon.rotation.x += 0.01;
+  hexagon.rotation.y += 0.01;
 
   controls.update();
 
