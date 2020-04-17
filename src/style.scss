@@ -1,11 +1,13 @@
 $textColor: white;
 $bgColor: black;
 
-body,
-body * {
-  display: flex;
+* {
   margin: 0;
   padding: 0;
+}
+
+.container * {
+  display: flex;
 }
 
 body {
@@ -14,20 +16,24 @@ body {
   font-family: monospace;
 }
 
-.wrapper {
+.canvas {
+  cursor: pointer;
 }
 
-.menu {
-  font-size: 4rem;
-  position: fixed;
-  bottom: 0;
+.background {
+  position: absolute;
+  top: 0;
   left: 0;
+  bottom: 0;
   right: 0;
-  padding: 0.5rem;
-  justify-content: space-between;
+  background-image: url(https://i.imgur.com/NPTM2tI.jpg);
+  background-position: center center;
+  background-size: cover;
+  z-index: -1;
 }
 
-.links a {
-  color: $textColor;
-  margin-left: 1em;
+#reset {
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
 }

@@ -1,39 +1,26 @@
-class Hexagon {
-  constructor(hexIndex, xIndex, yIndex, hexagonWidth) {
-    let x = (xIndex + 1) * hexagonWidth;
-    const y = (yIndex + 1) * hexagonWidth;
+import * as THREE from 'three';
 
-    if (yIndex % 2 !== 0) {
-      x += hexagonWidth / 2;
-    }
+const length = 12;
+const width = 8;
 
-    this.hexIndex = hexIndex;
-    this.hexagonWidth = hexagonWidth;
-    this.xIndex = xIndex;
-    this.yIndex = yIndex;
-    this.x = x;
-    this.y = y;
-  }
+const shape = new THREE.Shape();
+shape.moveTo(0, 0);
+shape.lineTo(0, width);
+shape.lineTo(length, width);
+shape.lineTo(length, 0);
+shape.lineTo(0, 0);
 
-  draw(context) {
-    const {
-      x, y, hexIndex, hexagonWidth,
-    } = this;
-    const a = hexagonWidth / 4;
-    const b = Math.sqrt(3) * a;
-    context.beginPath();
-    context.moveTo(x + 0, y + -2 * a);
-    context.lineTo(x + b, y + -a);
-    context.lineTo(x + b, y + a);
-    context.lineTo(x + 0, y + 2 * a);
-    context.lineTo(x + -b, y + a);
-    context.lineTo(x + -b, y + -a);
-    context.lineTo(x + 0, y + -2 * a);
-    context.closePath();
-    context.stroke();
-    context.fillText(hexIndex, x, y);
-    // console.log(this);
-  }
-}
+const extrudeSettings = {
+  steps: 2,
+  depth: 16,
+  bevelEnabled: true,
+  bevelThickness: 1,
+  bevelSize: 1,
+  bevelOffset: 0,
+  bevelSegments: 1,
+};
 
-export default Hexagon;
+const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);
