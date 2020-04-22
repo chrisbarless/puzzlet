@@ -1,18 +1,17 @@
 import Hexagon from './hexagon';
 
-class HexagonGrid {
-  constructor(hexagonLimit = 1) {
+const hexLimit = 5765
     const rowLimit = 96;
     const hexagonWidth = Math.floor(window.innerWidth / rowLimit);
 
     let xIndex = 0;
     let yIndex = 0;
 
-    this.hexagons = new Map();
+    hexagons = new Map();
 
     for (let hexIndex = 1; hexIndex <= hexagonLimit; hexIndex += 1) {
       // Add to hexagon Map
-      this.hexagons.set(
+      hexagons.set(
         hexIndex,
         new Hexagon(hexIndex, xIndex, yIndex, hexagonWidth),
       );
@@ -25,26 +24,27 @@ class HexagonGrid {
       }
     }
 
-    this.overallWidth = hexagonWidth * xIndex;
-    this.overallHeight = hexagonWidth * yIndex;
-  }
+const overallWidth = hexagonWidth * xIndex;
+const overallHeight = hexagonWidth * yIndex;
 
-  draw(context) {
-    context.save();
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.font = '4px sans-serif';
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [hexIndex, hexagon] of this.hexagons) {
-      hexagon.draw(context);
-    }
-    context.restore();
-  }
+//   draw(context) {
+//     context.save();
+//     context.textAlign = 'center';
+//     context.textBaseline = 'middle';
+//     context.font = '4px sans-serif';
+//     // eslint-disable-next-line no-restricted-syntax
+//     for (const [hexIndex, hexagon] of hexagons) {
+//       hexagon.draw(context);
+//     }
+//     context.restore();
+//   }
+
+
 
   getCenter() {
     const center = [
-      Math.floor(this.overallWidth / 2),
-      Math.floor(this.overallHeight / 2),
+      Math.floor(overallWidth / 2),
+      Math.floor(overallHeight / 2),
     ];
     return center;
   }
@@ -53,7 +53,7 @@ class HexagonGrid {
     let minDist = Infinity;
     let nearest;
     // eslint-disable-next-line no-restricted-syntax
-    for (const [hexIndex, hexagon] of this.hexagons) {
+    for (const [hexIndex, hexagon] of hexagons) {
       const dist = Math.hypot(hexagon.x - x, hexagon.y - y);
       if (dist < minDist) {
         nearest = hexIndex;
@@ -62,6 +62,4 @@ class HexagonGrid {
     }
     return nearest;
   }
-}
-
 export default HexagonGrid;
