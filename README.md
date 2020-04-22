@@ -2,7 +2,7 @@
 
 Run
 ```
-yarn dev
+yarn start
 ```
 
 Build
