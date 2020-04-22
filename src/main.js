@@ -31,8 +31,8 @@ function init() {
 function animate() {
   requestAnimationFrame(animate);
 
-  hexagon.rotation.x += 0.01;
-  hexagon.rotation.y += 0.01;
+  // hexagon.rotation.x += 0.01;
+  // hexagon.rotation.y += 0.01;
 
   controls.update();
 
