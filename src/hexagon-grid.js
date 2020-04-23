@@ -1,67 +1,44 @@
 import Hexagon from './hexagon';
+import Plane from './plane';
 
-class HexagonGrid {
-  constructor(hexagonLimit = 1) {
-    const rowLimit = 96;
-    const hexagonWidth = Math.floor(window.innerWidth / rowLimit);
+const hexagonLimit = 5765;
+const hexagonWidth = 10;
+const rowLimit = 96;
+const overallWidth = hexagonWidth * rowLimit;
+const overallHeight = hexagonWidth * Math.floor(hexagonLimit / rowLimit);
 
-    let xIndex = 0;
-    let yIndex = 0;
+function HexagonGrid(scene) {
+  const hexagons = new Map();
 
-    this.hexagons = new Map();
+  let xIndex = 0;
+  let yIndex = 0;
 
-    for (let hexIndex = 1; hexIndex <= hexagonLimit; hexIndex += 1) {
-      // Add to hexagon Map
-      this.hexagons.set(
-        hexIndex,
-        new Hexagon(hexIndex, xIndex, yIndex, hexagonWidth),
-      );
+  for (let hexIndex = 1; hexIndex <= hexagonLimit; hexIndex += 1) {
+    let x = xIndex * hexagonWidth - overallWidth / 2;
+    const y = yIndex * hexagonWidth - overallHeight / 2;
 
-      if (xIndex >= rowLimit) {
-        xIndex = 0;
-        yIndex += 1;
-      } else {
-        xIndex += 1;
-      }
+    if (yIndex % 2 !== 0) {
+      x += hexagonWidth / 2;
+    }
+    if (xIndex >= rowLimit) {
+      xIndex = 0;
+      yIndex += 1;
+    } else {
+      xIndex += 1;
     }
 
-    this.overallWidth = hexagonWidth * xIndex;
-    this.overallHeight = hexagonWidth * yIndex;
-  }
+    const hex = Hexagon(hexagonWidth, hexIndex);
+    hex.position.x = x;
+    hex.position.y = y;
 
-  draw(context) {
-    context.save();
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.font = '4px sans-serif';
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [hexIndex, hexagon] of this.hexagons) {
-      hexagon.draw(context);
+    hexagons.set(hexIndex, hex);
+    if (Math.random() > 0.4) {
+      scene.add(hex);
     }
-    context.restore();
   }
 
-  getCenter() {
-    const center = [
-      Math.floor(this.overallWidth / 2),
-      Math.floor(this.overallHeight / 2),
-    ];
-    return center;
-  }
-
-  getClosestHexagon(x, y) {
-    let minDist = Infinity;
-    let nearest;
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [hexIndex, hexagon] of this.hexagons) {
-      const dist = Math.hypot(hexagon.x - x, hexagon.y - y);
-      if (dist < minDist) {
-        nearest = hexIndex;
-        minDist = dist;
-      }
-    }
-    return nearest;
-  }
+  const plane = Plane(overallWidth, overallHeight);
+  scene.add(plane);
 }
 
 export default HexagonGrid;

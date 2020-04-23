@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
-import hexagon from './hexagon';
+import HexagonGrid from './hexagon-grid';
 
 let camera;
 let scene;
@@ -9,16 +9,14 @@ let renderer;
 
 function init() {
   camera = new THREE.PerspectiveCamera(
-    45,
+    75,
     window.innerWidth / window.innerHeight,
-    1,
+    0.1,
     1000,
   );
-  camera.position.z = 25;
+  camera.position.set(0, 0, 500);
 
   scene = new THREE.Scene();
-
-  scene.add(hexagon);
 
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setClearColor(0xffffff, 0);
@@ -26,13 +24,19 @@ function init() {
   document.body.appendChild(renderer.domElement);
 
   controls = new TrackballControls(camera, renderer.domElement);
+
+  const light = new THREE.DirectionalLight(0xffffff, 1);
+  light.position.set(1, 1, 1).normalize();
+  scene.add(light);
+
+  HexagonGrid(scene);
 }
 
 function animate() {
   requestAnimationFrame(animate);
 
-  hexagon.rotation.x += 0.01;
-  hexagon.rotation.y += 0.01;
+  // hexagon.rotation.x += 0.01;
+  // hexagon.rotation.y += 0.01;
 
   controls.update();
 
