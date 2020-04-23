@@ -1,8 +1,6 @@
-// import * as THREE from 'three';
 import Hexagon from './hexagon';
 import Plane from './plane';
 
-// const hexagonLimit = 5;
 const hexagonLimit = 5765;
 const hexagonWidth = 10;
 const rowLimit = 96;
@@ -11,7 +9,6 @@ const overallHeight = hexagonWidth * Math.floor(hexagonLimit / rowLimit);
 
 function HexagonGrid(scene) {
   const hexagons = new Map();
-  // var group = new THREE.Group();
 
   let xIndex = 0;
   let yIndex = 0;
@@ -42,37 +39,6 @@ function HexagonGrid(scene) {
 
   const plane = Plane(overallWidth, overallHeight);
   scene.add(plane);
-}
-
-function getCenter(overallWidth, overallHeight) {
-  const center = [Math.floor(overallWidth / 2), Math.floor(overallHeight / 2)];
-  return center;
-}
-
-function getClosestHexagon(x, y) {
-  let minDist = Infinity;
-  let nearest;
-  // eslint-disable-next-line no-restricted-syntax
-  for (const [hexIndex, hexagon] of hexagons) {
-    const dist = Math.hypot(hexagon.x - x, hexagon.y - y);
-    if (dist < minDist) {
-      nearest = hexIndex;
-      minDist = dist;
-    }
-  }
-  return nearest;
-}
-
-function draw(context) {
-  context.save();
-  context.textAlign = 'center';
-  context.textBaseline = 'middle';
-  context.font = '4px sans-serif';
-  // eslint-disable-next-line no-restricted-syntax
-  for (const [hexIndex, hexagon] of hexagons) {
-    hexagon.draw(context);
-  }
-  context.restore();
 }
 
 export default HexagonGrid;
