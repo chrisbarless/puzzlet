@@ -10,12 +10,14 @@ let hexagonGrid;
 
 function init() {
   camera = new THREE.PerspectiveCamera(
-    45,
+    75,
     window.innerWidth / window.innerHeight,
-    1,
+    0.1,
     1000,
   );
-  camera.position.x = -100;
+  camera.position.x = -50;
+  // camera.position.y = -100;
+  // camera.position.z = -45;
 
   scene = new THREE.Scene();
 
@@ -27,6 +29,10 @@ function init() {
   document.body.appendChild(renderer.domElement);
 
   controls = new TrackballControls(camera, renderer.domElement);
+
+  const light = new THREE.DirectionalLight(0xffffff, 1);
+  light.position.set(1, 1, 1).normalize();
+  scene.add(light);
 }
 
 function animate() {
