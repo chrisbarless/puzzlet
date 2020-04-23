@@ -1,44 +1,48 @@
+// import * as THREE from 'three';
 import Hexagon from './hexagon';
+import Plane from './plane';
+
+// const hexagonLimit = 5;
+const hexagonLimit = 5765;
+const hexagonWidth = 10;
+const rowLimit = 96;
+const overallWidth = hexagonWidth * rowLimit;
+const overallHeight = hexagonWidth * Math.floor(hexagonLimit / rowLimit);
 
 function HexagonGrid(scene) {
-  // const hexagonLimit = 5;
-  const hexagonLimit = 5765;
-  const hexagonWidth = 10;
-  const rowLimit = 96;
   const hexagons = new Map();
+  // var group = new THREE.Group();
 
   let xIndex = 0;
   let yIndex = 0;
 
   for (let hexIndex = 1; hexIndex <= hexagonLimit; hexIndex += 1) {
-    let x = xIndex * hexagonWidth;
-    const y = yIndex * hexagonWidth;
-
-    const hex = Hexagon(hexagonWidth, hexIndex);
+    let x = xIndex * hexagonWidth - overallWidth / 2;
+    const y = yIndex * hexagonWidth - overallHeight / 2;
 
     if (yIndex % 2 !== 0) {
       x += hexagonWidth / 2;
     }
-    hex.position.x = x;
-    hex.position.y = y;
-    hexagons.set(hexIndex, hex);
-    scene.add(hex);
-
     if (xIndex >= rowLimit) {
       xIndex = 0;
       yIndex += 1;
     } else {
       xIndex += 1;
     }
+
+    const hex = Hexagon(hexagonWidth, hexIndex);
+    hex.position.x = x;
+    hex.position.y = y;
+
+    hexagons.set(hexIndex, hex);
+    scene.add(hex);
   }
 
-  const overallWidth = hexagonWidth * xIndex;
-  const overallHeight = hexagonWidth * yIndex;
-
-  return hexagons;
+  const plane = Plane(overallWidth, overallHeight);
+  scene.add(plane);
 }
 
-function getCenter() {
+function getCenter(overallWidth, overallHeight) {
   const center = [Math.floor(overallWidth / 2), Math.floor(overallHeight / 2)];
   return center;
 }

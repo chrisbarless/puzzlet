@@ -6,7 +6,6 @@ let camera;
 let scene;
 let controls;
 let renderer;
-let hexagonGrid;
 
 function init() {
   camera = new THREE.PerspectiveCamera(
@@ -15,13 +14,9 @@ function init() {
     0.1,
     1000,
   );
-  camera.position.x = -50;
-  // camera.position.y = -100;
-  // camera.position.z = -45;
+  camera.position.set(0, 0, 400);
 
   scene = new THREE.Scene();
-
-  hexagonGrid = HexagonGrid(scene);
 
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setClearColor(0xffffff, 0);
@@ -33,6 +28,8 @@ function init() {
   const light = new THREE.DirectionalLight(0xffffff, 1);
   light.position.set(1, 1, 1).normalize();
   scene.add(light);
+
+  HexagonGrid(scene);
 }
 
 function animate() {

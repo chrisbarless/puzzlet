@@ -20,18 +20,6 @@ body {
   cursor: pointer;
 }
 
-.background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background-image: url(https://i.imgur.com/NPTM2tI.jpg);
-  background-position: center center;
-  background-size: cover;
-  z-index: -1;
-}
-
 #reset {
   position: fixed;
   bottom: 1em;
