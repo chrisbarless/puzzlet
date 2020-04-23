@@ -35,7 +35,9 @@ function HexagonGrid(scene) {
     hex.position.y = y;
 
     hexagons.set(hexIndex, hex);
-    scene.add(hex);
+    if (Math.random() > 0.8) {
+      scene.add(hex);
+    }
   }
 
   const plane = Plane(overallWidth, overallHeight);
