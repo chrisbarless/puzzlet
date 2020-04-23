@@ -1,6 +1,3 @@
-$textColor: white;
-$bgColor: black;
-
 * {
   margin: 0;
   padding: 0;
@@ -11,8 +8,6 @@ $bgColor: black;
 }
 
 body {
-  color: $textColor;
-  background: $textColor;
   font-family: monospace;
 }
 
