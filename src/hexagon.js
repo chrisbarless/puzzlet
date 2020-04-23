@@ -1,18 +1,5 @@
 import * as THREE from 'three';
 
-// var geometry = new THREE.BufferGeometry();
-// // create a simple square shape. We duplicate the top left and bottom right
-// // vertices because each vertex needs to appear once per triangle.
-// var vertices = new Float32Array( [
-// 	-1.0, -1.0,  1.0,
-// 	 1.0, -1.0,  1.0,
-// 	 1.0,  1.0,  1.0,
-
-// 	 1.0,  1.0,  1.0,
-// 	-1.0,  1.0,  1.0,
-// 	-1.0, -1.0,  1.0
-// ] );
-
 const Hexagon = (hexagonWidth, hexIndex) => {
   const shape = new THREE.Shape();
 
