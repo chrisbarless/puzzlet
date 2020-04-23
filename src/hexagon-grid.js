@@ -1,9 +1,9 @@
 import Hexagon from './hexagon';
 
 function HexagonGrid(scene) {
-  const hexagonLimit = 5;
+  // const hexagonLimit = 5;
+  const hexagonLimit = 5765;
   const hexagonWidth = 10;
-  // const hexagonWidth = 5765;
   const rowLimit = 96;
   const hexagons = new Map();
 
@@ -11,9 +11,16 @@ function HexagonGrid(scene) {
   let yIndex = 0;
 
   for (let hexIndex = 1; hexIndex <= hexagonLimit; hexIndex += 1) {
+    let x = xIndex * hexagonWidth;
+    const y = yIndex * hexagonWidth;
+
     const hex = Hexagon(hexagonWidth, hexIndex);
-    hex.position.x = xIndex * hexagonWidth;
-    hex.position.y = yIndex * hexagonWidth;
+
+    if (yIndex % 2 !== 0) {
+      x += hexagonWidth / 2;
+    }
+    hex.position.x = x;
+    hex.position.y = y;
     hexagons.set(hexIndex, hex);
     scene.add(hex);
 
