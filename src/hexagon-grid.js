@@ -32,7 +32,7 @@ function HexagonGrid(scene) {
     hex.position.y = y;
 
     hexagons.set(hexIndex, hex);
-    if (Math.random() > 0.4) {
+    if (Math.random() > 0) {
       scene.add(hex);
     }
   }

@@ -19,15 +19,19 @@ function init() {
   scene = new THREE.Scene();
 
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setClearColor(0xffffff, 0);
+  renderer.setClearColor(0x333333, 1);
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
   controls = new TrackballControls(camera, renderer.domElement);
 
-  const light = new THREE.DirectionalLight(0xffffff, 1);
-  light.position.set(1, 1, 1).normalize();
+  const light = new THREE.DirectionalLight(0x969696, 0.6);
+  light.position.set(0, 0.1, 0.5).normalize();
   scene.add(light);
+
+  // const spotLight = new THREE.SpotLight(0xffffff, 1);
+  // spotLight.position.set(100, 1000, 100);
+  // scene.add(spotLight);
 
   HexagonGrid(scene);
 }
