@@ -14,3 +14,71 @@ body {
 .canvas {
   cursor: pointer;
 }
+
+.buttonwrapper {
+    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+    bottom: 2%;
+    right: 2%;
+    z-index: 1; /* Stay on top */
+    top: 0; /* Stay at the top */
+    right: 0;
+    background-color: #FF0000;
+    overflow: auto; /* Disable horizontal scroll */
+}
+
+.buttondiv {
+  text-align:center;
+}
+.zoombutton {
+  -webkit-box-shadow: 0px 2px 5px 0px rgba(255,255,255,0.5);
+  -moz-box-shadow: 0px 2px 5px 0px rgba(255,255,255,0.5);
+  box-shadow: 0px 2px 5px 0px rgba(255,255,255,0.5);
+  background:linear-gradient(to bottom, #000000 5%, #555555 100%);
+	background-color:#89ade0;
+	border-radius:10px;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:2vh;
+  text-align: center;
+  width: 2vh;
+	height: 2vh;
+  padding:1vh;
+  margin: .5vh;
+	text-decoration:none;
+	text-shadow:none;
+}
+.zoombutton:hover {
+	background:linear-gradient(to bottom, #000000 5%, #333333 100%);
+	background-color:#555555;
+}
+.zoombutton:active {
+	top:1px;
+}
+
+.panbutton {
+  -webkit-box-shadow: 0px 2px 5px 0px rgba(255,255,255,0.5);
+  -moz-box-shadow: 0px 2px 5px 0px rgba(255,255,255,0.5);
+  box-shadow: 0px 2px 5px 0px rgba(255,255,255,0.5);
+  background:linear-gradient(to bottom, #000000 5%, #555555 100%);
+	background-color:#89ade0;
+	border-radius:10px;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:2vh;
+  text-align: center;
+  width: 2vh;
+	height: 2vh;
+  padding:1vh;
+  margin: .5vh;
+	text-decoration:none;
+	text-shadow:none;
+}
+.panbutton:hover {
+	background:linear-gradient(to bottom, #000000 5%, #333333 100%);
+	background-color:#555555;
+}
+.panbutton:active {
+	top:1px;
+}

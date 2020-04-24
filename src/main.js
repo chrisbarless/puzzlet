@@ -26,12 +26,12 @@ function init() {
   controls = new TrackballControls(camera, renderer.domElement);
 
   const light = new THREE.DirectionalLight(0x969696, 0.6);
-  light.position.set(0, 0.1, 0.5).normalize();
+  light.position.set(200, 500, 600).normalize();
   scene.add(light);
 
-  // const spotLight = new THREE.SpotLight(0xffffff, 1);
-  // spotLight.position.set(100, 1000, 100);
-  // scene.add(spotLight);
+  const spotLight = new THREE.SpotLight(0xffffff, 1);
+  spotLight.position.set(100, 1000, 100);
+  scene.add(spotLight);
 
   HexagonGrid(scene);
 }
@@ -39,8 +39,8 @@ function init() {
 function animate() {
   requestAnimationFrame(animate);
 
-  // hexagon.rotation.x += 0.01;
-  // hexagon.rotation.y += 0.01;
+  // spotLight.position.x = 10 + 10 * Math.sin(angle);
+  // spotLight.position.y = 10 + 10 * Math.cos(angle);
 
   controls.update();
 
