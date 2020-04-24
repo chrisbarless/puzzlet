@@ -6,6 +6,8 @@ let camera;
 let scene;
 let controls;
 let renderer;
+let spotLight;
+let angle = 0;
 
 function init() {
   camera = new THREE.PerspectiveCamera(
@@ -29,7 +31,7 @@ function init() {
   light.position.set(200, 500, 600).normalize();
   scene.add(light);
 
-  const spotLight = new THREE.SpotLight(0xffffff, 1);
+  spotLight = new THREE.SpotLight(0xffffff, 1);
   spotLight.position.set(100, 1000, 100);
   scene.add(spotLight);
 
@@ -39,8 +41,10 @@ function init() {
 function animate() {
   requestAnimationFrame(animate);
 
-  // spotLight.position.x = 10 + 10 * Math.sin(angle);
-  // spotLight.position.y = 10 + 10 * Math.cos(angle);
+  angle -= 0.1;
+
+  spotLight.position.x = 10 + 10 * Math.sin(angle);
+  spotLight.position.y = 10 + 10 * Math.cos(angle);
 
   controls.update();
 
