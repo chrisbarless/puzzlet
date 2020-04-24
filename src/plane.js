@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 const texture = new THREE.TextureLoader().load(
-  'https://i.imgur.com/NPTM2tI.jpg',
+  'http://i.imgur.com/7KAE5M7.jpg',
 );
 
 const Plane = (width, height) => {
