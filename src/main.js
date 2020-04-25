@@ -21,18 +21,22 @@ function init() {
   scene = new THREE.Scene();
 
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setClearColor(0x333333, 1);
+  renderer.setClearColor(0xffac8c, 1);
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
   controls = new TrackballControls(camera, renderer.domElement);
 
-  const light = new THREE.DirectionalLight(0x969696, 0.6);
+  const light = new THREE.DirectionalLight(0xffac8c, 0.6);
   light.position.set(200, 500, 600).normalize();
   scene.add(light);
 
-  spotLight = new THREE.SpotLight(0xffffff, 1);
-  spotLight.position.set(100, 1000, 100);
+  spotLight = new THREE.SpotLight(0xFFDA41, 0.2);
+  spotLight.position.set(100, 1000, 700);
+  spotLight.castShadow = true;
+  spotLight.decay = 2;
+  spotLight.distance = 50;
+
   scene.add(spotLight);
 
   HexagonGrid(scene);
@@ -43,8 +47,8 @@ function animate() {
 
   angle -= 0.1;
 
-  spotLight.position.x = 10 + 10 * Math.sin(angle);
-  spotLight.position.y = 10 + 10 * Math.cos(angle);
+  spotLight.position.x = 100 + 200 * Math.sin(angle);
+  spotLight.position.y = 100 + 200 * Math.cos(angle);
 
   controls.update();
 
