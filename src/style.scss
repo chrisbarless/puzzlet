@@ -1,3 +1,21 @@
+@font-face {
+    font-family: 'mailart';
+    src: url('https://bitforbit.notquite.se/SPLASH/files/font/mailart/mailartrubberstamp-regular-webfont.woff2') format('woff2'),
+         url('https://bitforbit.notquite.se/SPLASH/files/font/mailart/mailartrubberstamp-regular-webfont.woff') format('woff'),
+         url('https://bitforbit.notquite.se/SPLASH/files/font/mailart/MailartRubberstamp-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    line-height: normal;
+}
+
+@font-face {
+    font-family: 'Minion Pro Regular';
+    font-style: normal;
+    font-weight: normal;
+    src: url('https://bitforbit.notquite.se/SPLASH/files/font/minion/MinionPro-Regular.woff') format('woff');
+}
+
+
 * {
   margin: 0;
   padding: 0;
@@ -15,20 +33,118 @@ body {
   cursor: pointer;
 }
 
-.buttonwrapper {
-    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-    bottom: 2%;
-    right: 2%;
-    z-index: 1; /* Stay on top */
-    top: 0; /* Stay at the top */
-    right: 0;
-    background-color: #FF0000;
-    overflow: auto; /* Disable horizontal scroll */
+.logo {
+  width: 6%;
+  height: 100%;
+  position: fixed;
+  z-index: 1;
+  top: 1vh;
+  left: 1vh;
+  background-image: url(https://bitforbit.notquite.se/files/notquite-vertwht.png);
+  background-size:100% auto;
+  background-repeat: no-repeat;
 }
 
-.buttondiv {
-  text-align:center;
+.logo img{
+  width: 100%;
+  height: auto;
+  margin: 30px 0 0 0;
 }
+
+.form{
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  padding: 5px;
+  font-family:mailart;
+  font-size: 3vh;
+  color: #ffffff;
+  text-shadow: 5px 5px 7px #000000;
+}
+
+input[type=submit] {
+  -webkit-box-shadow: 0px 2px 5px 0px rgba(255,255,255,0.5);
+  -moz-box-shadow: 0px 2px 5px 0px rgba(255,255,255,0.5);
+  box-shadow: 0px 2px 5px 0px rgba(255,255,255,0.5);
+  background:linear-gradient(to bottom, #000000 5%, #555555 100%);
+	background-color:#89ade0;
+	border-radius:8px;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:mailart;
+	font-size:2vh;
+  text-align: center;
+  vertical-align: super;
+  display: block;
+  width: 5vh;
+	height: 5vh;
+  bottom: 20px;
+  padding:1vh;
+	text-decoration:none;
+	text-shadow:none;
+}
+
+input[type=text] {
+  box-shadow: 0px 2px 5px 0px rgba(255,255,255,0.5);
+  background-color: #000000;
+  color: #ffffff;
+  border-radius:4px;
+  border: none;
+  font-family: MinionPro Regular, Arial;
+  font-size:2vh;
+  width: 10vh;
+  margin: 0 0 0 10px;
+  padding: 5px;
+  outline: none;
+}
+
+input[value=gå] {
+  vertical-align: super;
+  font-family:mailart;
+  font-size: 2.5vh;
+  color: #ffffff;
+  text-shadow: 5px 5px 7px #000000;
+  margin: 0 0 0 10px;
+  padding: 5px;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+}
+
+input[value=gå]:hover {
+  vertical-align: super;
+  font-family:mailart;
+  font-size: 2.5vh;
+  color: #ffffff;
+  text-shadow: 5px 5px 7px #000000;
+  margin: 0 0 0 10px;
+  padding: 5px;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+  background:linear-gradient(to bottom, #000000 5%, #333333 100%);
+  background-color:#555555;
+}
+
+.buttonwrapper {
+    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+    z-index: 1; /* Stay on top */
+    bottom: 0; /* Stay at the top */
+    right: 0;
+    padding: 5px;
+    overflow: auto; /* Disable horizontal scroll */
+    -webkit-user-select:none;-moz-user-select:-moz-none; /* blocks text selection */
+    -ms-user-select:none;user-select:none; /* blocks text selection */
+}
+
+.text {
+  font-family:mailart;
+  font-size: 3vh;
+  color: #ffffff;
+  text-shadow: 5px 5px 7px #000000;
+}
+
 .zoombutton {
   -webkit-box-shadow: 0px 2px 5px 0px rgba(255,255,255,0.5);
   -moz-box-shadow: 0px 2px 5px 0px rgba(255,255,255,0.5);
@@ -38,9 +154,10 @@ body {
 	border-radius:10px;
 	cursor:pointer;
 	color:#ffffff;
-	font-family:Arial;
+	font-family:mailart;
 	font-size:2vh;
   text-align: center;
+  display: inline-block;
   width: 2vh;
 	height: 2vh;
   padding:1vh;

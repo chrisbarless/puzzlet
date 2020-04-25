@@ -7,14 +7,30 @@
     <link rel="stylesheet" href="./style.scss" />
   </head>
   <body>
-  <div class="container">
-      <!--<div class="buttonwrapper">
-        <div class="buttondiv"><a href="#" class="panbutton">&uarr;</a></div>
-        <div class="buttondiv"><a href="#" class="panbutton">&larr;</a></div>
-        <div class="buttondiv"><a href="#" class="panbutton">&rarr;</a></div>
-        <div class="buttondiv"><a href="#" class="panbutton">&darr;</a></div>
-        <div id="button"><a href="#" class="zoombutton">&plus;</a></div>
-        <div id="button"><a href="#" class="zoombutton">&minus;</a></div>-->
+<div class="container">
+<!--side logo-->
+      <div class="logo">
+        <!--s<img src="https://bitforbit.notquite.se/files/notquite-vertwht.png">-->
+      </div>
+
+<!--hex lookup form-->
+      <div class="form">
+        <form action="#">
+          <label for="hexid">hitta ditt bit:</label>
+          <input type="text" id="hexid" name="hexid">
+          <input type="submit" value="gå">
+        </form>
+      </div>
+
+<!--bottom buttons-->
+      <div class="buttonwrapper">
+        <p class="text">använd musen, tangentbordet eller dessa knappar för att navigera i pusslet!&nbsp;&nbsp;</p><br />
+        <a href="#" class="panbutton">&nbsp;&uarr;</a>
+        <a href="#" class="panbutton">&larr;</a>
+        <a href="#" class="panbutton">&rarr;</a>
+        <a href="#" class="panbutton">&nbsp;&darr;</a>
+        <a href="#" class="zoombutton">&plus;</a>
+        <a href="#" class="zoombutton">&minus;</a>
       </div>
 </div>
     <script src="./main.js"></script>
