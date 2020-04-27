@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import HexagonGrid from './hexagon-grid';
+import Controls from './controls';
 
 let camera;
 let scene;
@@ -12,8 +13,6 @@ function init() {
     0.1,
     1000,
   );
-  camera.position.set(0, 0, 500);
-
   scene = new THREE.Scene();
 
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -22,6 +21,7 @@ function init() {
   document.body.appendChild(renderer.domElement);
 
   HexagonGrid(scene);
+  Controls(camera);
 }
 
 function animate() {
