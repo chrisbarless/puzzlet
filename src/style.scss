@@ -1,19 +1,22 @@
 @font-face {
-    font-family: 'GTPressura-Bold';
-    font-style: normal;
-    font-weight: normal;
-    src: url('https://bitforbit.notquite.se/files/font/GTPressura-Bold/GTPressura-Bold.woff2') format('woff2'),
-         url('https://bitforbit.notquite.se/files/font/GTPressura-Bold/GTPressura-Bold.woff') format('woff'),
+  font-family: 'GTPressura-Bold';
+  font-style: normal;
+  font-weight: normal;
+  src: url('https://bitforbit.notquite.se/files/font/GTPressura-Bold/GTPressura-Bold.woff2')
+      format('woff2'),
+    url('https://bitforbit.notquite.se/files/font/GTPressura-Bold/GTPressura-Bold.woff')
+      format('woff');
 }
 
 @font-face {
-    font-family: 'SpaceGrotesk-Medium';
-    font-style: normal;
-    font-weight: normal;
-    src: url('https://bitforbit.notquite.se/files/font/space/SpaceGrotesk-Medium.woff2') format('woff2'),
-         url('https://bitforbit.notquite.se/files/font/space/SpaceGrotesk-Medium.woff') format('woff'),
+  font-family: 'SpaceGrotesk-Medium';
+  font-style: normal;
+  font-weight: normal;
+  src: url('https://bitforbit.notquite.se/files/font/space/SpaceGrotesk-Medium.woff2')
+      format('woff2'),
+    url('https://bitforbit.notquite.se/files/font/space/SpaceGrotesk-Medium.woff')
+      format('woff');
 }
-
 
 * {
   margin: 0;
@@ -40,19 +43,19 @@
   position: fixed;
   z-index: 1;
   top: 2vh;
-  left: .5vh;
+  left: 0.5vh;
   background-image: url(https://bitforbit.notquite.se/files/bitforbit-Logo.eps);
-  background-size:100% auto;
+  background-size: 100% auto;
   background-repeat: no-repeat;
 }
 
-.logo img{
+.logo img {
   width: 100%;
   height: auto;
   margin: 30px 0 0 0;
 }
 
-.form{
+.form {
   position: fixed;
   z-index: 1;
   top: 0;
@@ -64,24 +67,24 @@
   line-height: normal;
 }
 
-input[type=text] {
+input[type='text'] {
   background-color: #000000;
   color: #ffffff;
   border: solid;
-  border-radius:4px;
+  border-radius: 4px;
   border-color: #000000;
   border-width: 2px;
   font-family: 'GTPressura-Bold';
-  font-size:2vh;
+  font-size: 2vh;
   width: 10vh;
   margin: 0 0 0 10px;
   padding: 5px;
   outline: none;
 }
 
-input[value=GÅ] {
-  background-color:#ffac8c;
-  font-family:GTPressura-Bold;
+input[value='GÅ'] {
+  background-color: #ffac8c;
+  font-family: GTPressura-Bold;
   font-size: 2vh;
   color: #000000;
   margin: 0 0 0 10px;
@@ -90,12 +93,14 @@ input[value=GÅ] {
   border-color: #000000;
   border-width: 2px;
   border-radius: 10px;
-  -webkit-user-select:none;-moz-user-select:-moz-none; /* blocks text selection */
-  -ms-user-select:none;user-select:none; /* blocks text selection */
+  -webkit-user-select: none;
+  -moz-user-select: -moz-none; /* blocks text selection */
+  -ms-user-select: none;
+  user-select: none; /* blocks text selection */
   outline: none;
 }
 
-input[value=GÅ]:hover {
+input[value='GÅ']:hover {
   color: #ffffff;
   border-color: #ffffff;
 }
@@ -110,8 +115,10 @@ input[value=GÅ]:hover {
   line-height: inherit;
   text-align: right;
   overflow: auto; /* Disable horizontal scroll */
-  -webkit-user-select:none;-moz-user-select:-moz-none; /* blocks text selection */
-  -ms-user-select:none;user-select:none; /* blocks text selection */
+  -webkit-user-select: none;
+  -moz-user-select: -moz-none; /* blocks text selection */
+  -ms-user-select: none;
+  user-select: none; /* blocks text selection */
 }
 
 .text {
@@ -126,27 +133,31 @@ input[value=GÅ]:hover {
   box-decoration-break: clone;
   font-size: 1.8vh;
   color: #000000;
-  -webkit-user-select:none;-moz-user-select:-moz-none; /* blocks text selection */
-  -ms-user-select:none;user-select:none; /* blocks text selection */
+  -webkit-user-select: none;
+  -moz-user-select: -moz-none; /* blocks text selection */
+  -ms-user-select: none;
+  user-select: none; /* blocks text selection */
 }
 
 .buttonwrapper {
-    display: table-cell;
-    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-    z-index: 1; /* Stay on top */
-    bottom: 1vh; /* Stay at the top */
-    right: 1vh;
-    width: 15%;
-    padding: 1vh;
-    text-align: right;
-    overflow: auto; /* Disable horizontal scroll */
-    -webkit-user-select:none;-moz-user-select:-moz-none; /* blocks text selection */
-    -ms-user-select:none;user-select:none; /* blocks text selection */
+  display: table-cell;
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  bottom: 1vh; /* Stay at the top */
+  right: 1vh;
+  width: 15%;
+  padding: 1vh;
+  text-align: right;
+  overflow: auto; /* Disable horizontal scroll */
+  -webkit-user-select: none;
+  -moz-user-select: -moz-none; /* blocks text selection */
+  -ms-user-select: none;
+  user-select: none; /* blocks text selection */
 }
 
 .button {
-  background-color:#ffac8c;
-  font-family:GTPressura-Bold;
+  background-color: #ffac8c;
+  font-family: GTPressura-Bold;
   font-size: 3vh;
   color: #000000;
   width: 2vh;
@@ -158,8 +169,10 @@ input[value=GÅ]:hover {
   border-width: 2px;
   border-radius: 10px;
   text-decoration: none;
-  -webkit-user-select:none;-moz-user-select:-moz-none; /* blocks text selection */
-  -ms-user-select:none;user-select:none; /* blocks text selection */
+  -webkit-user-select: none;
+  -moz-user-select: -moz-none; /* blocks text selection */
+  -ms-user-select: none;
+  user-select: none; /* blocks text selection */
   outline: none;
 }
 .button:hover {
@@ -167,5 +180,5 @@ input[value=GÅ]:hover {
   border-color: #ffffff;
 }
 .button:active {
-	top:1px;
+  top: 1px;
 }
