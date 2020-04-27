@@ -9,8 +9,7 @@
   <body>
 <div class="container">
 <!--side logo-->
-      <div class="logo">
-        <!--s<img src="https://bitforbit.notquite.se/files/notquite-vertwht.png">-->
+      <div class="logo" onclick="location.href='https://bitforbit.notquite.se';" style="cursor:pointer;" target="_blank">
       </div>
 
 <!--hex lookup form-->
@@ -18,19 +17,21 @@
         <form action="#">
           <label for="hexid">hitta ditt bit:</label>
           <input type="text" id="hexid" name="hexid">
-          <input type="submit" value="gå">
+          <input type="submit" value="GÅ">
         </form>
       </div>
 
 <!--bottom buttons-->
+      <div class="buttoninfo">
+        <p class="text">använd musen, tangentbordet eller dessa knappar för att navigera i pusslet!</p><br />
+      </div>
       <div class="buttonwrapper">
-        <p class="text">använd musen, tangentbordet eller dessa knappar för att navigera i pusslet!&nbsp;&nbsp;</p><br />
-        <a href="#" class="panbutton">&nbsp;&uarr;</a>
-        <a href="#" class="panbutton">&larr;</a>
-        <a href="#" class="panbutton">&rarr;</a>
-        <a href="#" class="panbutton">&nbsp;&darr;</a>
-        <a href="#" class="zoombutton">&plus;</a>
-        <a href="#" class="zoombutton">&minus;</a>
+        <p><a href="#" class="button">&uarr;</a></p>
+        <a href="#" class="button">&larr;</a>
+        <a href="#" class="button">&rarr;</a>
+        <a href="#" class="button">&darr;</a>
+        <a href="#" class="button">&plus;</a>
+        <a href="#" class="button">&minus;</a>
       </div>
 </div>
     <script src="./main.js"></script>
