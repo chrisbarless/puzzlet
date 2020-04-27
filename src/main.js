@@ -6,7 +6,6 @@ let camera;
 let scene;
 let controls;
 let renderer;
-let spotLight;
 let angle = 0;
 
 function init() {
@@ -31,14 +30,6 @@ function init() {
   light.position.set(200, 500, 600).normalize();
   scene.add(light);
 
-  spotLight = new THREE.SpotLight(0xFFDA41, 0.2);
-  spotLight.position.set(100, 1000, 700);
-  spotLight.castShadow = true;
-  spotLight.decay = 2;
-  spotLight.distance = 50;
-
-  scene.add(spotLight);
-
   HexagonGrid(scene);
 }
 
@@ -46,9 +37,6 @@ function animate() {
   requestAnimationFrame(animate);
 
   angle -= 0.1;
-
-  spotLight.position.x = 100 + 200 * Math.sin(angle);
-  spotLight.position.y = 100 + 200 * Math.cos(angle);
 
   controls.update();
 
