@@ -1,10 +1,8 @@
 import * as THREE from 'three';
-import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
 import HexagonGrid from './hexagon-grid';
 
 let camera;
 let scene;
-let controls;
 let renderer;
 
 function init() {
@@ -23,16 +21,11 @@ function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
-  controls = new TrackballControls(camera, renderer.domElement);
-
   HexagonGrid(scene);
 }
 
 function animate() {
   requestAnimationFrame(animate);
-
-  controls.update();
-
   renderer.render(scene, camera);
 }
 
