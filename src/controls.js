@@ -1,11 +1,16 @@
 import * as THREE from 'three';
 
-const state = new Vector3([0, 0, 500]);
-
-const moveLeft = () => state.setX(state.x - 10);
+const state = new THREE.Vector3(0, 0, 500);
 
 const Controls = (camera) => {
-  camera.position.set(state);
+  const update = () => camera.position.set(state);
+
+  // document.getElementById('button-arrow-left', () => {
+  //   state.setX(state.x - 10);
+  //   update();
+  // });
+
+  update();
 };
 
 export default Controls;
