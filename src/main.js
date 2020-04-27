@@ -6,7 +6,6 @@ let camera;
 let scene;
 let controls;
 let renderer;
-let angle = 0;
 
 function init() {
   camera = new THREE.PerspectiveCamera(
@@ -26,17 +25,11 @@ function init() {
 
   controls = new TrackballControls(camera, renderer.domElement);
 
-  const light = new THREE.DirectionalLight(0xffac8c, 0.6);
-  light.position.set(200, 500, 600).normalize();
-  scene.add(light);
-
   HexagonGrid(scene);
 }
 
 function animate() {
   requestAnimationFrame(animate);
-
-  angle -= 0.1;
 
   controls.update();
 
