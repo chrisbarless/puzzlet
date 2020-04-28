@@ -28,7 +28,7 @@ const Hexagon = (hexagonWidth, hexIndex) => {
 
   const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
   const material = new THREE.MeshBasicMaterial({
-    color: 0xffffff,
+    color: 0xffac8c,
   });
   const hexagonMesh = new THREE.Mesh(geometry, material);
 
