@@ -7,7 +7,41 @@
     <link rel="stylesheet" href="./style.scss" />
   </head>
   <body>
-    <div class="container"></div>
+    <div class="container">
+      <!--side logo-->
+      <div
+        class="logo"
+        onclick="location.href='https://bitforbit.notquite.se';"
+        style="cursor:pointer;"
+        target="_blank"
+      ></div>
+
+      <!--hex lookup form-->
+      <div class="form">
+        <form action="#">
+          <label for="hexid">hitta ditt bit:</label>
+          <input type="text" id="hexid" name="hexid" />
+          <input type="submit" value="GÅ" />
+        </form>
+      </div>
+
+      <!--bottom buttons-->
+      <div class="buttoninfo">
+        <p class="text">
+          använd musen, tangentbordet eller dessa knappar för att navigera i
+          pusslet! klicka på en bit för att göra en donation.
+        </p>
+        <br />
+      </div>
+      <div class="buttonwrapper">
+        <button id="button-arrow-up" class="button">&uarr;</button>
+        <button id="button-arrow-left" class="button">&larr;</button>
+        <button id="button-arrow-right" class="button">&rarr;</button>
+        <button id="button-arrow-down" class="button">&darr;</button>
+        <button id="button-arrow-plus" class="button">&plus;</button>
+        <button id="button-arrow-minus" class="button">&minus;</button>
+      </div>
+    </div>
     <script src="./main.js"></script>
   </body>
 </html>

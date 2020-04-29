@@ -1,5 +1,31 @@
+@font-face {
+  font-family: 'GTPressura-Bold';
+  font-style: normal;
+  font-weight: normal;
+  src: url('https://bitforbit.notquite.se/files/font/GTPressura-Bold/GTPressura-Bold.woff2')
+      format('woff2'),
+    url('https://bitforbit.notquite.se/files/font/GTPressura-Bold/GTPressura-Bold.woff')
+      format('woff');
+}
+
+@font-face {
+  font-family: 'SpaceGrotesk-Medium';
+  font-style: normal;
+  font-weight: normal;
+  src: url('https://bitforbit.notquite.se/files/font/space/SpaceGrotesk-Medium.woff2')
+      format('woff2'),
+    url('https://bitforbit.notquite.se/files/font/space/SpaceGrotesk-Medium.woff')
+      format('woff');
+}
+
 * {
   margin: 0;
+  padding: 0;
+  overflow-y: hidden;
+}
+
+.body * {
+  display: flex;
   padding: 0;
 }
 
@@ -7,10 +33,140 @@
   display: flex;
 }
 
-body {
-  font-family: monospace;
-}
-
 .canvas {
   cursor: pointer;
+}
+
+.logo {
+  width: 20%;
+  height: 100%;
+  position: fixed;
+  z-index: 1;
+  top: 9rem;
+  left: 0.5rem;
+  background-image: url(https://bitforbit.notquite.se/files/bitforbit-Logo.eps);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+}
+
+.logo img {
+  width: 100%;
+  height: auto;
+  margin: 1.8rem 0 0 0;
+}
+
+.form {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  padding: 5px;
+  font-family: 'GTPressura-Bold';
+  font-size: 1.2rem;
+  color: #000000;
+  line-height: normal;
+}
+
+input[type='text'] {
+  background-color: #000000;
+  color: #ffffff;
+  border: solid;
+  border-radius: 4px;
+  border-color: #000000;
+  border-width: .2rem;
+  font-family: 'GTPressura-Bold';
+  font-size: 1rem;
+  width: 6rem;
+  margin: 0 0 0 .5rem;
+  padding: 0 0 0 .5rem;
+  outline: none;
+}
+
+input[value='GÅ'] {
+  background-color: #ffac8c;
+  font-family: GTPressura-Bold;
+  font-size: 1.4rem;
+  color: #000000;
+  margin: 0 0 0 .5rem;
+  padding: 4px;
+  border: solid;
+  border-color: #000000;
+  border-width: .19rem;
+  border-radius: 10px;
+  -webkit-user-select: none;
+  -moz-user-select: -moz-none; /* blocks text selection */
+  -ms-user-select: none;
+  user-select: none; /* blocks text selection */
+  outline: none;
+}
+
+input[value='GÅ']:hover {
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+.buttoninfo {
+  display: flex;
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  bottom: 1.2rem; /* Stay at bottom */
+  right: 4rem;
+  width: 30%;
+  line-height: inherit;
+  text-align: right;
+  overflow: auto; /* Disable horizontal scroll */
+  -webkit-user-select: none;
+  -moz-user-select: -moz-none; /* blocks text selection */
+  -ms-user-select: none;
+  user-select: none; /* blocks text selection */
+}
+
+.text {
+  align: right;
+  font-family: 'SpaceGrotesk-Medium';
+  box-decoration-break: clone;
+  font-size: 1.2rem;
+  color: #000000;
+  -webkit-user-select: none;
+  -moz-user-select: -moz-none; /* blocks text selection */
+  -ms-user-select: none;
+  user-select: none; /* blocks text selection */
+}
+
+.buttonwrapper {
+  display: flex;
+  flex-flow: column;
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  align-items: center;
+  align-content: center;
+  z-index: 1; /* Stay on top */
+  bottom: 1rem; /* Stay at the top */
+  right: 1rem;
+  text-align: right;
+  overflow: auto; /* Disable horizontal scroll */
+}
+
+.button {
+  display: flex;
+  width: 2rem;
+  height: 2.8rem;
+  margin-top: 1rem;
+  align-items: center;
+  justify-content: center;
+  color: #000000;
+  font-family: GTPressura-Bold;
+  font-size: 1.5rem;
+  border: .19rem solid #000000;
+  border-radius: 10px;
+  text-decoration: none;
+  background-color: #ffac8c;
+  outline: none;
+  cursor: pointer;
+}
+.button:hover {
+  color: #ffffff;
+  border-color: #ffffff;
+}
+.button:active {
+  top: 1px;
 }

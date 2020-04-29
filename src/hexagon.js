@@ -9,12 +9,13 @@ const Hexagon = (hexagonWidth, hexIndex) => {
   const y = 0;
 
   const extrudeSettings = {
+    curveSegments: 1,
     steps: 1,
     depth: 1,
-    bevelEnabled: true,
-    bevelThickness: 1,
-    bevelSize: 1,
-    bevelSegments: 1,
+    bevelEnabled: false,
+    // bevelThickness: 1,
+    // bevelSize: 1,
+    // bevelSegments: 1,
   };
 
   shape.moveTo(x + 0, y + -2 * a);
@@ -26,7 +27,9 @@ const Hexagon = (hexagonWidth, hexIndex) => {
   shape.lineTo(x + 0, y + -2 * a);
 
   const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-  const material = new THREE.MeshNormalMaterial();
+  const material = new THREE.MeshBasicMaterial({
+    color: 0xffac8c,
+  });
   const hexagonMesh = new THREE.Mesh(geometry, material);
 
   return hexagonMesh;
