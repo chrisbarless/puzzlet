@@ -4,7 +4,7 @@ import Hexagon from './hexagon';
 import Plane from './plane';
 import Controls from './controls';
 
-const hexCount = 5765;
+const hexCount = 5766;
 const rowLimit = 95;
 
 const raycaster = new THREE.Raycaster();
@@ -13,13 +13,6 @@ const transform = new THREE.Object3D();
 const instanceMatrix = new THREE.Matrix4();
 const matrix = new THREE.Matrix4();
 const rotationMatrix = new THREE.Matrix4().makeRotationZ(0.1);
-
-function onMouseMove(event) {
-  event.preventDefault();
-
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-}
 
 function HexagonGrid(renderer, scene, camera) {
   const mesh = new Hexagon(hexCount);
@@ -51,8 +44,6 @@ function HexagonGrid(renderer, scene, camera) {
 
   Controls(camera);
 
-  renderer.domElement.addEventListener('mousemove', onMouseMove);
-
   this.tick = () => {
     raycaster.setFromCamera(mouse, camera);
     const intersection = raycaster.intersectObject(mesh);
@@ -65,10 +56,30 @@ function HexagonGrid(renderer, scene, camera) {
 
       mesh.setMatrixAt(instanceId, matrix);
       mesh.instanceMatrix.needsUpdate = true;
-
-      console.log(instanceId);
     }
   };
+
+  function onMouseMove(event) {
+    event.preventDefault();
+
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  }
+
+  function onClick(event) {
+    event.preventDefault();
+    raycaster.setFromCamera(mouse, camera);
+    const intersection = raycaster.intersectObject(mesh);
+
+    if (intersection.length > 0) {
+      const { instanceId } = intersection[0];
+
+      window.location.href = `https://bitforbit.notquite.se/product/pusselbit/?attribute_pa_hex=${instanceId}`;
+    }
+  }
+
+  renderer.domElement.addEventListener('click', onClick);
+  renderer.domElement.addEventListener('mousemove', onMouseMove);
 }
 
 export default HexagonGrid;
