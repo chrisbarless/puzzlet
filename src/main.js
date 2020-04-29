@@ -9,18 +9,19 @@ let stats;
 let grid;
 
 function init() {
+  scene = new THREE.Scene();
+
   camera = new THREE.PerspectiveCamera(
-    75,
+    60,
     window.innerWidth / window.innerHeight,
     0.1,
-    1000,
+    100,
   );
-
-  scene = new THREE.Scene();
 
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setClearColor(0xffac8c, 1);
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
   document.body.appendChild(renderer.domElement);
 
   stats = new Stats();
