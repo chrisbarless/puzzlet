@@ -1,9 +1,11 @@
 import * as THREE from 'three';
+import Stats from 'three/examples/jsm/libs/stats.module';
 import HexagonGrid from './components/hexagon-grid';
 
 let camera;
 let scene;
 let renderer;
+let stats;
 let grid;
 
 function init() {
@@ -13,6 +15,7 @@ function init() {
     0.1,
     1000,
   );
+
   scene = new THREE.Scene();
 
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -20,15 +23,20 @@ function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
-  grid = HexagonGrid(renderer, scene, camera);
-  Controls(camera);
+  stats = new Stats();
+  document.body.appendChild(stats.dom);
+
+  grid = new HexagonGrid(renderer, scene, camera);
 }
 
 function animate() {
   requestAnimationFrame(animate);
 
   grid.tick();
+
   renderer.render(scene, camera);
+
+  stats.update();
 }
 
 init();
