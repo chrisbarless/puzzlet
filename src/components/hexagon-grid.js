@@ -13,6 +13,8 @@ const transform = new THREE.Object3D();
 const instanceMatrix = new THREE.Matrix4();
 const matrix = new THREE.Matrix4();
 const rotationMatrix = new THREE.Matrix4().makeRotationZ(0.1);
+const offsetX = rowLimit / 2;
+const offsetY = Math.floor(hexCount / rowLimit) / 2;
 
 function HexagonGrid(renderer, scene, camera) {
   const mesh = new Hexagon(hexCount);
@@ -22,17 +24,16 @@ function HexagonGrid(renderer, scene, camera) {
 
   transform.setZ = 1;
 
-  for (let hexIndex = 1; hexIndex <= hexCount; hexIndex += 1) {
+  for (let hexIndex = 1; hexIndex < hexCount; hexIndex += 1) {
     const isEvenRow = row % 2 === 0;
 
-    transform.position.setX(-(column + (isEvenRow ? 0.5 : 0)));
-    transform.position.setY(-row);
+    transform.position.setX(offsetX + -(column + (isEvenRow ? 0.5 : 0)));
+    transform.position.setY(offsetY + -row);
 
     transform.updateMatrix();
 
     mesh.setMatrixAt(hexIndex, transform.matrix);
 
-    // hexagons.set(hexIndex, hex);
     if (column >= (isEvenRow ? rowLimit - 1 : rowLimit)) {
       column = 1;
       row += 1;
