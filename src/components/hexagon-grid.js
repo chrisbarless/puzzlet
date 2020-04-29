@@ -40,8 +40,9 @@ function HexagonGrid(renderer, scene, camera) {
     } else {
       column += 1;
     }
-    scene.add(mesh);
   }
+
+  scene.add(mesh);
 
   Controls(camera);
 
