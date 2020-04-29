@@ -1,7 +1,8 @@
-const increment = 50;
+const increment = 10;
 
 const Controls = (camera) => {
-  camera.position.set(0, 0, 500);
+  camera.position.set(0, 0, -75);
+  camera.lookAt(0, 0, 0);
 
   // Move Left
   document.getElementById('button-arrow-left').addEventListener('click', () => {
