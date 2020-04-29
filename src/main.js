@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import HexagonGrid from './hexagon-grid';
-import Controls from './controls';
+import HexagonGrid from './components/hexagon-grid';
+import Controls from './components/controls';
 
 let camera;
 let scene;
