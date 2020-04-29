@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import HexagonGrid from './components/hexagon-grid';
-import Controls from './components/controls';
 
 let camera;
 let scene;
 let renderer;
+let grid;
 
 function init() {
   camera = new THREE.PerspectiveCamera(
@@ -20,12 +20,14 @@ function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
-  HexagonGrid(scene);
+  grid = HexagonGrid(renderer, scene, camera);
   Controls(camera);
 }
 
 function animate() {
   requestAnimationFrame(animate);
+
+  grid.tick();
   renderer.render(scene, camera);
 }
 
