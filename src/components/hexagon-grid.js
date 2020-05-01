@@ -1,28 +1,45 @@
 import * as THREE from 'three';
 
-import Hexagon from './hexagon';
-import Plane from './plane';
+// import Plane from './plane';
 import Controls from './controls';
 
-const hexCount = 5766;
-const rowLimit = 95;
-
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2(1, 1);
-const transform = new THREE.Object3D();
-const instanceMatrix = new THREE.Matrix4();
-const matrix = new THREE.Matrix4();
-const rotationMatrix = new THREE.Matrix4().makeRotationZ(0.1);
-const offsetX = rowLimit / 2;
-const offsetY = Math.floor(hexCount / rowLimit) / 2;
-
 function HexagonGrid(renderer, scene, camera) {
-  const mesh = new Hexagon(hexCount);
+  const hexCount = 5766;
+  const rowLimit = 95;
+  let soldIds = [];
+
+  const geometry = new THREE.CircleBufferGeometry(1, 6);
+  const material = new THREE.MeshBasicMaterial({
+    color: 0xffffff,
+  });
+  // new THREE.InstancedMesh(geometry, material, count)
+  // const mesh = new Hexagon(hexCount);
+  const mesh = new THREE.InstancedMesh(geometry, material, hexCount);
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2(1, 1);
+  const transform = new THREE.Object3D();
+  const instanceMatrix = new THREE.Matrix4();
+  const matrix = new THREE.Matrix4();
+  const rotationMatrix = new THREE.Matrix4().makeRotationZ(0.1);
+  const offsetX = rowLimit / 2;
+  const offsetY = Math.floor(hexCount / rowLimit) / 2;
+
+  const server = 'http://167.172.35.232';
+  const endpoint = `${server}/wp-admin/admin-ajax.php?action=get_sold_hexes`;
+
+  const getSold = () => {
+    const oReq = new XMLHttpRequest();
+    oReq.onreadystatechange = () => {
+      if (this.readyState == 4 && this.status == 200) {
+        soldIds = JSON.parse(this.responseText).soldIds;
+      }
+    };
+    oReq.open('GET', endpoint);
+    // oReq.send();
+  };
 
   let column = 1;
   let row = 1;
-
-  transform.setZ = 1;
 
   for (let hexIndex = 1; hexIndex < hexCount; hexIndex += 1) {
     const isEvenRow = row % 2 === 0;
@@ -43,8 +60,6 @@ function HexagonGrid(renderer, scene, camera) {
   }
 
   scene.add(mesh);
-
-  Controls(camera);
 
   this.tick = () => {
     raycaster.setFromCamera(mouse, camera);
@@ -76,7 +91,7 @@ function HexagonGrid(renderer, scene, camera) {
     if (intersection.length > 0) {
       const { instanceId } = intersection[0];
 
-      window.location.href = `https://bitforbit.notquite.se/product/pusselbit/?attribute_pa_hex=${instanceId}`;
+      window.location.href = `${server}/product/pusselbit/?attribute_pa_hex=${instanceId}`;
     }
   }
 
