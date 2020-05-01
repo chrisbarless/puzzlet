@@ -33,9 +33,6 @@ function init() {
 
   grid = new HexagonGrid(renderer, scene, camera);
 
-  const axesHelper = new THREE.AxesHelper(5);
-  scene.add(axesHelper);
-
   function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
