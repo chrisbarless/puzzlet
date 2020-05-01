@@ -1,8 +1,5 @@
 import * as THREE from 'three';
 
-// import Plane from './plane';
-import Controls from './controls';
-
 function HexagonGrid(renderer, scene, camera) {
   const hexCount = 5766;
   const rowLimit = 95;
@@ -12,8 +9,6 @@ function HexagonGrid(renderer, scene, camera) {
   const material = new THREE.MeshBasicMaterial({
     color: 0xffffff,
   });
-  // new THREE.InstancedMesh(geometry, material, count)
-  // const mesh = new Hexagon(hexCount);
   const mesh = new THREE.InstancedMesh(geometry, material, hexCount);
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2(1, 1);
@@ -35,29 +30,44 @@ function HexagonGrid(renderer, scene, camera) {
       }
     };
     oReq.open('GET', endpoint);
-    // oReq.send();
+    oReq.send();
   };
 
-  let column = 1;
-  let row = 1;
+  const oReq = new XMLHttpRequest();
+  oReq.onreadystatechange = function receive() {
+    console.log(this.readyState);
+    console.log(this.status);
+    debugger;
+    if (this.readyState === 4 && this.status === 200) {
+      const { soldIds } = JSON.parse(this.responseText);
 
-  for (let hexIndex = 1; hexIndex < hexCount; hexIndex += 1) {
-    const isEvenRow = row % 2 === 0;
+      let column = 1;
+      let row = 1;
 
-    transform.position.setX(offsetX + -(column + (isEvenRow ? 0.5 : 0)));
-    transform.position.setY(offsetY + -row);
+      for (let hexIndex = 1; hexIndex < hexCount; hexIndex += 1) {
+        const isEvenRow = row % 2 === 0;
 
-    transform.updateMatrix();
+        transform.position.setX(offsetX + -(column + (isEvenRow ? 0.5 : 0)));
+        transform.position.setY(offsetY + -row);
 
-    mesh.setMatrixAt(hexIndex, transform.matrix);
+        transform.updateMatrix();
 
-    if (column >= (isEvenRow ? rowLimit - 1 : rowLimit)) {
-      column = 1;
-      row += 1;
-    } else {
-      column += 1;
+        mesh.setMatrixAt(hexIndex, transform.matrix);
+
+        if (column >= (isEvenRow ? rowLimit - 1 : rowLimit)) {
+          column = 1;
+          row += 1;
+        } else {
+          column += 1;
+        }
+      }
+
+      scene.add(mesh);
     }
-  }
+  };
+
+  oReq.open('GET', endpoint);
+  oReq.send();
 
   scene.add(mesh);
 
