@@ -24,3 +24,8 @@ function tft_handle_get_sold_hexes() {
     wp_send_json(array("soldIds" => $hexes));
 }
 
+add_filter('allowed_http_origins', 'add_allowed_origins');
+function add_allowed_origins($origins) {
+    $origins[] = 'http://localhost:1234';
+    return $origins;
+}
