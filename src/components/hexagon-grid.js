@@ -5,7 +5,7 @@ import Plane from './plane';
 function HexagonGrid(renderer, scene, camera) {
   const hexCount = 5766;
   const rowLimit = 95;
-  const soldIds = [2223];
+  let soldIds = [];
 
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2(1, 1);
@@ -22,17 +22,15 @@ function HexagonGrid(renderer, scene, camera) {
   const server = 'http://167.172.35.232';
   const endpoint = `${server}/wp-admin/admin-ajax.php?action=get_sold_hexes`;
 
-  const oReq = new XMLHttpRequest();
-  oReq.onreadystatechange = function receive() {
-    // console.log(this.readyState);
-    // console.log(this.status);
-    // debugger;
+  const request = new XMLHttpRequest();
+  request.onreadystatechange = function receive() {
     if (this.readyState === 4 && this.status === 200) {
-      const { soldIds } = JSON.parse(this.responseText);
+      soldIds = JSON.parse(this.responseText).soldIds;
     }
   };
 
-  oReq.open('GET', endpoint);
+  request.open('GET', endpoint);
+  request.send();
 
   let hexIndex = 1;
   let column;
