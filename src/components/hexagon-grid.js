@@ -5,17 +5,19 @@ import Plane from './plane';
 function HexagonGrid(renderer, scene, camera) {
   const hexCount = 5766;
   const rowLimit = 95;
-  const soldIds = ['2223'];
+  const soldIds = [2223];
 
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2(1, 1);
   const transform = new THREE.Object3D();
   const instanceMatrix = new THREE.Matrix4();
   const matrix = new THREE.Matrix4();
-  const rotationMatrix = new THREE.Matrix4().makeRotationZ(0.1);
+  const rotationMatrix = new THREE.Matrix4().scale(new THREE.Vector3(0, 0, 0));
   const hexagons = Hexagons(hexCount);
-  const offsetX = rowLimit / 2;
-  const offsetY = Math.floor(hexCount / rowLimit) / 2;
+  const columns = hexCount >= rowLimit ? rowLimit : hexCount;
+  const rows = Math.ceil(hexCount / rowLimit);
+  const offsetX = -columns / 2;
+  const offsetY = rows / 2;
 
   const server = 'http://167.172.35.232';
   const endpoint = `${server}/wp-admin/admin-ajax.php?action=get_sold_hexes`;
@@ -32,20 +34,19 @@ function HexagonGrid(renderer, scene, camera) {
 
   oReq.open('GET', endpoint);
 
-  const columns = hexCount >= rowLimit ? rowLimit : hexCount;
-  const rows = Math.ceil(hexCount / rowLimit);
-
   let hexIndex = 1;
   let column;
   let row;
 
-  for (column = 1; column < columns; column += 1) {
-    for (row = 1; row < rows; row += 1) {
+  for (row = 1; row < rows; row += 1) {
+    for (column = 1; column < columns; column += 1) {
       const isEvenRow = row % 2 === 0;
 
-      transform.position.setX(
-        offsetX + -(column + (isEvenRow ? Math.sqrt(2 / 4) : 0)),
-      );
+      if (column === columns - 1 && isEvenRow) {
+        continue;
+      }
+
+      transform.position.setX(offsetX + (column + (isEvenRow ? 0.5 : 0)));
       transform.position.setY(offsetY + -row);
 
       transform.updateMatrix();
@@ -62,6 +63,17 @@ function HexagonGrid(renderer, scene, camera) {
   scene.add(plane);
 
   this.tick = () => {
+    // Hide sold pieces
+    if (soldIds.length) {
+      soldIds.forEach((soldId) => {
+        hexagons.getMatrixAt(soldId, instanceMatrix);
+        matrix.multiplyMatrices(instanceMatrix, rotationMatrix);
+        hexagons.setMatrixAt(soldId, matrix);
+      });
+      hexagons.instanceMatrix.needsUpdate = true;
+    }
+
+    // Mouseover (TODO)
     raycaster.setFromCamera(mouse, camera);
     const intersection = raycaster.intersectObject(hexagons);
 
@@ -69,9 +81,6 @@ function HexagonGrid(renderer, scene, camera) {
       const { instanceId } = intersection[0];
 
       hexagons.getMatrixAt(instanceId, instanceMatrix);
-      matrix.multiplyMatrices(instanceMatrix, rotationMatrix);
-
-      hexagons.setMatrixAt(instanceId, matrix);
       hexagons.instanceMatrix.needsUpdate = true;
     }
   };

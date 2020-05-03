@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-const hexRadius = Math.pow(2, 1 / 4) / 2;
+const hexRadius = 0.5;
 
 const geometry = new THREE.CircleBufferGeometry(hexRadius, 6);
 geometry.rotateZ(Math.PI / 2);
