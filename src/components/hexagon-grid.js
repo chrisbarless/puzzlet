@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import Hexagons from './hexagons';
+import Plane from './plane';
 
 function HexagonGrid(renderer, scene, camera) {
   const hexCount = 5766;
@@ -31,28 +32,34 @@ function HexagonGrid(renderer, scene, camera) {
 
   oReq.open('GET', endpoint);
 
-  let column = 1;
-  let row = 1;
+  const columns = hexCount >= rowLimit ? rowLimit : hexCount;
+  const rows = Math.ceil(hexCount / rowLimit);
 
-  for (let hexIndex = 1; hexIndex < hexCount; hexIndex += 1) {
-    const isEvenRow = row % 2 === 0;
+  let hexIndex = 1;
+  let column;
+  let row;
 
-    transform.position.setX(offsetX + -(column + (isEvenRow ? 0.5 : 0)));
-    transform.position.setY(offsetY + -row);
+  for (column = 1; column < columns; column += 1) {
+    for (row = 1; row < rows; row += 1) {
+      const isEvenRow = row % 2 === 0;
 
-    transform.updateMatrix();
+      transform.position.setX(
+        offsetX + -(column + (isEvenRow ? Math.sqrt(2 / 4) : 0)),
+      );
+      transform.position.setY(offsetY + -row);
 
-    hexagons.setMatrixAt(hexIndex, transform.matrix);
+      transform.updateMatrix();
 
-    if (column >= (isEvenRow ? rowLimit - 1 : rowLimit)) {
-      column = 1;
-      row += 1;
-    } else {
-      column += 1;
+      hexagons.setMatrixAt(hexIndex, transform.matrix);
+
+      hexIndex++;
     }
   }
 
   scene.add(hexagons);
+
+  const plane = Plane(column, row);
+  scene.add(plane);
 
   this.tick = () => {
     raycaster.setFromCamera(mouse, camera);
