@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 
-const hexRadius = 0.62;
+const hexRadius = 0.65;
 
 const geometry = new THREE.CircleBufferGeometry(hexRadius, 6);
 geometry.rotateZ(Math.PI / 2);
 
 const material = new THREE.MeshBasicMaterial({
-  // color: 0xffac8c,
+  color: 0xffac8c,
   // // map: texture,
 });
 
