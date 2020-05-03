@@ -1,8 +1,13 @@
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
+
 const increment = 10;
 
-const Controls = (camera) => {
-  camera.position.set(0, 0, -75);
+function Controls(renderer, camera) {
+  camera.position.set(0, 0, 75);
   camera.lookAt(0, 0, 0);
+
+  const controls = new TrackballControls(camera, renderer.domElement);
+  controls.noRotate = true;
 
   // Move Left
   document.getElementById('button-arrow-left').addEventListener('click', () => {
@@ -32,6 +37,10 @@ const Controls = (camera) => {
     .addEventListener('click', () => {
       camera.position.setZ(camera.position.z + increment);
     });
-};
+
+  this.tick = () => {
+    controls.update();
+  };
+}
 
 export default Controls;

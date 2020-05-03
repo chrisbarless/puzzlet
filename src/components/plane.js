@@ -8,6 +8,7 @@ const Plane = (width, height) => {
   const geometry = new THREE.PlaneGeometry(width, height);
   const material = new THREE.MeshBasicMaterial({ map: texture });
   const plane = new THREE.Mesh(geometry, material);
+  plane.position.z = -1;
 
   return plane;
 };

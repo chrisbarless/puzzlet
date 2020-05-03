@@ -1,63 +1,85 @@
 import * as THREE from 'three';
-
-import Hexagon from './hexagon';
+import Hexagons from './hexagons';
 import Plane from './plane';
-import Controls from './controls';
-
-const hexCount = 5766;
-const rowLimit = 95;
-
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2(1, 1);
-const transform = new THREE.Object3D();
-const instanceMatrix = new THREE.Matrix4();
-const matrix = new THREE.Matrix4();
-const rotationMatrix = new THREE.Matrix4().makeRotationZ(0.1);
-const offsetX = rowLimit / 2;
-const offsetY = Math.floor(hexCount / rowLimit) / 2;
 
 function HexagonGrid(renderer, scene, camera) {
-  const mesh = new Hexagon(hexCount);
+  const hexCount = 5766;
+  const rowLimit = 95;
+  let soldIds = [];
 
-  let column = 1;
-  let row = 1;
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2(1, 1);
+  const transform = new THREE.Object3D();
+  const instanceMatrix = new THREE.Matrix4();
+  const matrix = new THREE.Matrix4();
+  const rotationMatrix = new THREE.Matrix4().scale(new THREE.Vector3(0, 0, 0));
+  const hexagons = Hexagons(hexCount);
+  const columns = hexCount >= rowLimit ? rowLimit : hexCount;
+  const rows = Math.ceil(hexCount / rowLimit);
+  const offsetX = -columns / 2;
+  const offsetY = rows / 2;
 
-  transform.setZ = 1;
+  const server = 'http://167.172.35.232';
+  const endpoint = `${server}/wp-admin/admin-ajax.php?action=get_sold_hexes`;
 
-  for (let hexIndex = 1; hexIndex < hexCount; hexIndex += 1) {
-    const isEvenRow = row % 2 === 0;
+  const request = new XMLHttpRequest();
+  request.onreadystatechange = function receive() {
+    if (this.readyState === 4 && this.status === 200) {
+      soldIds = JSON.parse(this.responseText).soldIds;
+    }
+  };
 
-    transform.position.setX(offsetX + -(column + (isEvenRow ? 0.5 : 0)));
-    transform.position.setY(offsetY + -row);
+  request.open('GET', endpoint);
+  request.send();
 
-    transform.updateMatrix();
+  let hexIndex = 1;
+  let column;
+  let row;
 
-    mesh.setMatrixAt(hexIndex, transform.matrix);
+  for (row = 1; row < rows; row += 1) {
+    for (column = 1; column < columns; column += 1) {
+      const isEvenRow = row % 2 === 0;
 
-    if (column >= (isEvenRow ? rowLimit - 1 : rowLimit)) {
-      column = 1;
-      row += 1;
-    } else {
-      column += 1;
+      if (column === columns - 1 && isEvenRow) {
+        continue;
+      }
+
+      transform.position.setX(offsetX + (column + (isEvenRow ? 0.5 : 0)));
+      transform.position.setY(offsetY + -row);
+
+      transform.updateMatrix();
+
+      hexagons.setMatrixAt(hexIndex, transform.matrix);
+
+      hexIndex++;
     }
   }
 
-  scene.add(mesh);
+  scene.add(hexagons);
 
-  Controls(camera);
+  const plane = Plane(column, row);
+  scene.add(plane);
 
   this.tick = () => {
+    // Hide sold pieces
+    if (soldIds.length) {
+      soldIds.forEach((soldId) => {
+        hexagons.getMatrixAt(soldId, instanceMatrix);
+        matrix.multiplyMatrices(instanceMatrix, rotationMatrix);
+        hexagons.setMatrixAt(soldId, matrix);
+      });
+      hexagons.instanceMatrix.needsUpdate = true;
+    }
+
+    // Mouseover (TODO)
     raycaster.setFromCamera(mouse, camera);
-    const intersection = raycaster.intersectObject(mesh);
+    const intersection = raycaster.intersectObject(hexagons);
 
     if (intersection.length > 0) {
       const { instanceId } = intersection[0];
 
-      mesh.getMatrixAt(instanceId, instanceMatrix);
-      matrix.multiplyMatrices(instanceMatrix, rotationMatrix);
-
-      mesh.setMatrixAt(instanceId, matrix);
-      mesh.instanceMatrix.needsUpdate = true;
+      hexagons.getMatrixAt(instanceId, instanceMatrix);
+      hexagons.instanceMatrix.needsUpdate = true;
     }
   };
 
@@ -71,12 +93,12 @@ function HexagonGrid(renderer, scene, camera) {
   function onClick(event) {
     event.preventDefault();
     raycaster.setFromCamera(mouse, camera);
-    const intersection = raycaster.intersectObject(mesh);
+    const intersection = raycaster.intersectObject(hexagons);
 
     if (intersection.length > 0) {
       const { instanceId } = intersection[0];
 
-      window.location.href = `https://bitforbit.notquite.se/product/pusselbit/?attribute_pa_hex=${instanceId}`;
+      window.location.href = `${server}/product/pusselbit/?attribute_pa_hex=${instanceId}`;
     }
   }
 

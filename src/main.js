@@ -1,12 +1,14 @@
 import * as THREE from 'three';
 import Stats from 'three/examples/jsm/libs/stats.module';
 import HexagonGrid from './components/hexagon-grid';
+import Controls from './components/controls';
 
 let camera;
 let scene;
 let renderer;
 let stats;
 let grid;
+let controls;
 
 function init() {
   scene = new THREE.Scene();
@@ -27,6 +29,8 @@ function init() {
   stats = new Stats();
   document.body.appendChild(stats.dom);
 
+  controls = new Controls(renderer, camera);
+
   grid = new HexagonGrid(renderer, scene, camera);
 
   function onWindowResize() {
@@ -43,6 +47,8 @@ function animate() {
   requestAnimationFrame(animate);
 
   grid.tick();
+
+  controls.tick();
 
   renderer.render(scene, camera);
 
