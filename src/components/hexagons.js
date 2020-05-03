@@ -4,7 +4,8 @@ const texture = new THREE.TextureLoader().load(
   'http://i.imgur.com/7KAE5M7.jpg',
 );
 
-const geometry = new THREE.CircleBufferGeometry(1, 6);
+const geometry = new THREE.CircleBufferGeometry(0.5, 6);
+geometry.rotateZ(Math.PI / 2);
 
 const material = new THREE.MeshBasicMaterial({ map: texture });
 
