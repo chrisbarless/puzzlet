@@ -1,13 +1,17 @@
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
 
-const increment = 10;
-
 function Controls(renderer, camera) {
-  camera.position.set(0, 0, 75);
-  camera.lookAt(0, 0, 0);
-
+  const increment = 10;
+  const minZoom = 10;
+  const maxZoom = 75;
   const controls = new TrackballControls(camera, renderer.domElement);
+
   controls.noRotate = true;
+  controls.minDistance = minZoom;
+  controls.maxDistance = maxZoom;
+
+  camera.position.set(0, 0, maxZoom);
+  camera.lookAt(0, 0, 0);
 
   // Move Left
   document.getElementById('button-arrow-left').addEventListener('click', () => {
@@ -29,13 +33,15 @@ function Controls(renderer, camera) {
   });
   // Zoom in
   document.getElementById('button-arrow-plus').addEventListener('click', () => {
-    camera.position.setZ(camera.position.z - increment);
+    const zoomedVal = camera.position.z - increment;
+    zoomedVal > minZoom && camera.position.setZ(zoomedVal);
   });
   // Zoom out
   document
     .getElementById('button-arrow-minus')
     .addEventListener('click', () => {
-      camera.position.setZ(camera.position.z + increment);
+      const zoomedVal = camera.position.z + increment;
+      zoomedVal < maxZoom && camera.position.setZ(zoomedVal);
     });
 
   this.tick = () => {

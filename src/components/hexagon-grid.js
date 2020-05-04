@@ -5,6 +5,7 @@ import Plane from './plane';
 function HexagonGrid(renderer, scene, camera) {
   const hexCount = 5766;
   const rowLimit = 95;
+  const hexRadius = Math.tan((30 * Math.PI) / 180);
   let soldIds = [];
 
   const raycaster = new THREE.Raycaster();
@@ -19,7 +20,7 @@ function HexagonGrid(renderer, scene, camera) {
   const offsetX = -columns / 2;
   const offsetY = rows / 2;
 
-  const server = 'http://167.172.35.232';
+  const server = 'https://bitforbit.notquite.se';
   const endpoint = `${server}/wp-admin/admin-ajax.php?action=get_sold_hexes`;
 
   const request = new XMLHttpRequest();
@@ -77,9 +78,12 @@ function HexagonGrid(renderer, scene, camera) {
 
     if (intersection.length > 0) {
       const { instanceId } = intersection[0];
+      renderer.domElement.style.cursor = 'pointer';
 
       hexagons.getMatrixAt(instanceId, instanceMatrix);
       hexagons.instanceMatrix.needsUpdate = true;
+    } else {
+      renderer.domElement.style.cursor = 'default';
     }
   };
 
