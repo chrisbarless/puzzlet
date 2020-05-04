@@ -78,9 +78,12 @@ function HexagonGrid(renderer, scene, camera) {
 
     if (intersection.length > 0) {
       const { instanceId } = intersection[0];
+      renderer.domElement.style.cursor = 'pointer';
 
       hexagons.getMatrixAt(instanceId, instanceMatrix);
       hexagons.instanceMatrix.needsUpdate = true;
+    } else {
+      renderer.domElement.style.cursor = 'default';
     }
   };
 
