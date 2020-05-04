@@ -5,6 +5,7 @@ import Plane from './plane';
 function HexagonGrid(renderer, scene, camera) {
   const hexCount = 5766;
   const rowLimit = 95;
+  const hexRadius = Math.tan((30 * Math.PI) / 180);
   let soldIds = [];
 
   const raycaster = new THREE.Raycaster();
