@@ -19,7 +19,7 @@ function HexagonGrid(renderer, scene, camera) {
   const offsetX = -columns / 2;
   const offsetY = rows / 2;
 
-  const server = 'http://167.172.35.232';
+  const server = 'https://bitforbit.notquite.se';
   const endpoint = `${server}/wp-admin/admin-ajax.php?action=get_sold_hexes`;
 
   const request = new XMLHttpRequest();
