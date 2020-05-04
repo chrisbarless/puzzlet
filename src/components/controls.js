@@ -29,13 +29,13 @@ function Controls(renderer, camera) {
   });
   // Zoom in
   document.getElementById('button-arrow-plus').addEventListener('click', () => {
-    camera.position.setZ(camera.position.z - increment);
+    camera.position.setZ(camera.position.z + increment);
   });
   // Zoom out
   document
     .getElementById('button-arrow-minus')
     .addEventListener('click', () => {
-      camera.position.setZ(camera.position.z + increment);
+      camera.position.setZ(camera.position.z - increment);
     });
 
   this.tick = () => {
