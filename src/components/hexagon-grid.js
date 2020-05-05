@@ -48,9 +48,6 @@ function HexagonGrid(context, camera) {
     }
   }
 
-  // const plane = Plane(column, row);
-  // scene.add(plane);
-
   this.tick = () => {
     const { scaling } = camera;
     const offset = {
