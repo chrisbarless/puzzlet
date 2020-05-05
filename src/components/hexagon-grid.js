@@ -3,7 +3,7 @@ import { mat4, vec4 } from 'gl-matrix';
 function HexagonGrid(context, camera) {
   const hexCount = 5765;
   const rowLimit = 95;
-  const hexRadius = Math.tan((30 * Math.PI) / 180);
+  const mouse = [];
   let soldIds = [];
 
   const hexagons = new Map();
@@ -50,7 +50,9 @@ function HexagonGrid(context, camera) {
 
   this.tick = () => {
     const { scaling } = camera;
-    const hexagonWidth = 2 * hexRadius * scaling;
+    const hexagonWidth = 1 * scaling;
+    const a = Math.ceil(hexagonWidth / 4);
+    const b = Math.ceil(Math.sqrt(3) * a);
     const offset = {
       x: camera.translation[0] * scaling,
       y: camera.translation[1] * scaling,
@@ -68,10 +70,10 @@ function HexagonGrid(context, camera) {
       if (soldIds.includes(index)) {
         return;
       }
-      const a = hexagonWidth / 4;
-      const b = Math.sqrt(3) * a;
-      let x = column * hexagonWidth + camera.translation[0] * scaling;
-      const y = row * hexagonWidth + camera.translation[1] * scaling;
+      let x = Math.ceil(
+        column * hexagonWidth + camera.translation[0] * scaling,
+      );
+      const y = Math.ceil(row * hexagonWidth + camera.translation[1] * scaling);
       if (row % 2 !== 0) {
         x -= hexagonWidth / 2;
       }
@@ -86,39 +88,39 @@ function HexagonGrid(context, camera) {
       context.closePath();
       context.fillStyle = '#ffac8c';
       context.fill();
-      // context.fillText(index, x, y);
     });
   };
-  // // Mouseover (TODO)
-  // raycaster.setFromCamera(mouse, camera);
-  // const intersection = raycaster.intersectObject(hexagons);
-  // if (intersection.length > 0) {
-  //   const { instanceId } = intersection[0];
-  //   renderer.domElement.style.cursor = 'pointer';
-  //   hexagons.getMatrixAt(instanceId, instanceMatrix);
-  //   hexagons.instanceMatrix.needsUpdate = true;
-  // } else {
-  //   renderer.domElement.style.cursor = 'default';
-  // }
+
+  function getClosestHexagon(x, y) {
+    let minDist = Infinity;
+    let nearest;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [hexIndex, hexagon] of hexagons) {
+      const dist = Math.hypot(
+        hexagon.column * camera.scaling - x,
+        hexagon.row * camera.scaling - y,
+      );
+      if (dist < minDist) {
+        nearest = hexIndex;
+        minDist = dist;
+      }
+    }
+    return nearest;
+  }
+  function onMouseMove(event) {
+    event.preventDefault();
+
+    // mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    // mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  }
+
+  function onClick(event) {
+    event.preventDefault();
+    const closest = getClosestHexagon(event.clientX, event.clientY);
+    window.location.href = `${server}/product/pusselbit/?attribute_pa_hex=${closest}`;
+  }
+  context.canvas.addEventListener('click', onClick);
+  context.canvas.addEventListener('mousemove', onMouseMove);
 }
-
-//   function onMouseMove(event) {
-//     event.preventDefault();
-
-//     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-//     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-//   }
-
-//   function onClick(event) {
-//     event.preventDefault();
-//     raycaster.setFromCamera(mouse, camera);
-//     const intersection = raycaster.intersectObject(hexagons);
-
-//     if (intersection.length > 0) {
-//       const { instanceId } = intersection[0];
-
-//       window.location.href = `${server}/product/pusselbit/?attribute_pa_hex=${instanceId}`;
-//     }
-//   }
 
 export default HexagonGrid;
