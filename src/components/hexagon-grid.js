@@ -50,14 +50,18 @@ function HexagonGrid(context, camera) {
   // scene.add(plane);
 
   this.tick = () => {
-    const hexagonWidth = camera.scaling;
+    const { scaling } = camera;
+    const hexagonWidth = scaling;
     hexagons.forEach(({ column, row }, index) => {
       const a = hexagonWidth / 4;
       const b = Math.sqrt(3) * a;
-      let x = (column + 1) * hexagonWidth + camera.translation[0];
-      const y = (row + 1) * hexagonWidth + camera.translation[1];
+      let x = (column + 1) * hexagonWidth + camera.translation[0] * scaling;
+      const y = (row + 1) * hexagonWidth + camera.translation[1] * scaling;
       if (row % 2 !== 0) {
         x -= hexagonWidth / 2;
+      }
+      if (index === 0) {
+        console.log(x, y);
       }
       context.beginPath();
       context.moveTo(x + 0, y + -2 * a);
