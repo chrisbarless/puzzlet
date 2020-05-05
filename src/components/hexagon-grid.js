@@ -27,7 +27,7 @@ function HexagonGrid(context, camera) {
     request.open('GET', endpoint);
     request.send();
   } else {
-    soldIds = ['2223'];
+    soldIds = [2223];
   }
 
   let hexIndex = 1;
@@ -50,6 +50,7 @@ function HexagonGrid(context, camera) {
 
   this.tick = () => {
     const { scaling } = camera;
+    const hexagonWidth = 2 * hexRadius * scaling;
     const offset = {
       x: camera.translation[0] * scaling,
       y: camera.translation[1] * scaling,
@@ -63,8 +64,10 @@ function HexagonGrid(context, camera) {
       rows * scaling,
     );
 
-    const hexagonWidth = scaling;
     hexagons.forEach(({ column, row }, index) => {
+      if (soldIds.includes(index)) {
+        return;
+      }
       const a = hexagonWidth / 4;
       const b = Math.sqrt(3) * a;
       let x = column * hexagonWidth + camera.translation[0] * scaling;
@@ -86,16 +89,6 @@ function HexagonGrid(context, camera) {
       // context.fillText(index, x, y);
     });
   };
-  // hexagon.draw(context);
-  // // Hide sold pieces
-  // if (soldIds.length) {
-  //   soldIds.forEach((soldId) => {
-  //     hexagons.getMatrixAt(soldId, instanceMatrix);
-  //     matrix.multiplyMatrices(instanceMatrix, rotationMatrix);
-  //     hexagons.setMatrixAt(soldId, matrix);
-  //   });
-  //   hexagons.instanceMatrix.needsUpdate = true;
-  // }
   // // Mouseover (TODO)
   // raycaster.setFromCamera(mouse, camera);
   // const intersection = raycaster.intersectObject(hexagons);
