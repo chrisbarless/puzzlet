@@ -84,7 +84,8 @@ function HexagonGrid(context, camera) {
       context.lineTo(x + -b, y + -a);
       context.lineTo(x + 0, y + -2 * a);
       context.closePath();
-      context.stroke();
+      context.fillStyle = '#ffac8c';
+      context.fill();
       // context.fillText(index, x, y);
     });
   };
