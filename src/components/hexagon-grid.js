@@ -1,5 +1,4 @@
 import { mat4, vec4 } from 'gl-matrix';
-import Plane from './plane';
 
 function HexagonGrid(context, camera) {
   const hexCount = 5765;
@@ -13,6 +12,9 @@ function HexagonGrid(context, camera) {
 
   const server = 'https://bitforbit.notquite.se';
   const endpoint = `${server}/wp-admin/admin-ajax.php?action=get_sold_hexes`;
+
+  const img = new Image();
+  img.src = 'https://i.imgur.com/7KAE5M7.jpg';
 
   if (process.env.NODE_ENV === 'production') {
     const request = new XMLHttpRequest();
@@ -51,17 +53,27 @@ function HexagonGrid(context, camera) {
 
   this.tick = () => {
     const { scaling } = camera;
+    const offset = {
+      x: camera.translation[0] * scaling,
+      y: camera.translation[1] * scaling,
+    };
+
+    context.drawImage(
+      img,
+      offset.x,
+      offset.y,
+      columns * scaling,
+      rows * scaling,
+    );
+
     const hexagonWidth = scaling;
     hexagons.forEach(({ column, row }, index) => {
       const a = hexagonWidth / 4;
       const b = Math.sqrt(3) * a;
-      let x = (column + 1) * hexagonWidth + camera.translation[0] * scaling;
-      const y = (row + 1) * hexagonWidth + camera.translation[1] * scaling;
+      let x = column * hexagonWidth + camera.translation[0] * scaling;
+      const y = row * hexagonWidth + camera.translation[1] * scaling;
       if (row % 2 !== 0) {
         x -= hexagonWidth / 2;
-      }
-      if (index === 0) {
-        console.log(x, y);
       }
       context.beginPath();
       context.moveTo(x + 0, y + -2 * a);
@@ -76,18 +88,6 @@ function HexagonGrid(context, camera) {
       // context.fillText(index, x, y);
     });
   };
-  // const p = () => {
-  //   for (const key in camera) {
-  //     console.log(key);
-  //     console.log(camera[key]);
-  //   }
-  //   setTimeout(() => {
-  //     p();
-  //   }, 10000);
-  // };
-  // p();
-  // debugger;
-
   // hexagon.draw(context);
   // // Hide sold pieces
   // if (soldIds.length) {
