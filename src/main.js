@@ -1,6 +1,6 @@
 import createDom2dCamera from 'dom-2d-camera';
 import HexagonGrid from './components/hexagon-grid';
-// import Controls from './components/controls';
+import Controls from './components/controls';
 
 let canvas;
 let context;
@@ -27,6 +27,8 @@ function init() {
   // camera.lookAt([canvas.width / 2, canvas.height / 2]);
 
   grid = new HexagonGrid(context, camera);
+
+  Controls(camera);
 
   window.addEventListener('resize', onWindowResize, false);
   onWindowResize();
