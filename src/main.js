@@ -1,38 +1,34 @@
-import Hexagon from './hexagon';
+import createDom2dCamera from 'dom-2d-camera';
 import HexagonGrid from './components/hexagon-grid';
-import Controls from './components/controls';
+// import Controls from './components/controls';
+
+const increment = 10;
+const minZoom = 10;
+const maxZoom = 75;
 
 let canvas;
-let hexagon;
-let ctx;
+let context;
 let grid;
-let controls;
+let camera;
+
+function onWindowResize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
 
 function init() {
-  // scene = new THREE.Scene();
-
-  // camera = new THREE.PerspectiveCamera(
-  // 60,
-  // window.innerWidth / window.innerHeight,
-  // 0.1,
-  // 100,
-  // );
-
   canvas = document.createElement('canvas');
   canvas.id = 'canvas';
-  ctx = canvas.getContext('2d');
+  context = canvas.getContext('2d');
   document.body.appendChild(canvas);
 
-  hexagon = new Hexagon(1, 1, 1, 100);
+  camera = createDom2dCamera(canvas, {
+    isRotate: false,
+    onWheel(e) {},
+  });
+  camera.noRotate = true;
 
-  controls = new Controls(canvas);
-
-  // grid = new HexagonGrid(renderer, scene, camera);
-
-  function onWindowResize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
+  grid = new HexagonGrid(context);
 
   window.addEventListener('resize', onWindowResize, false);
   onWindowResize();
@@ -41,11 +37,8 @@ function init() {
 function tick() {
   requestAnimationFrame(tick);
 
-  hexagon.draw(ctx);
-  controls.tick();
-  // grid.tick();
-
-  // renderer.render(scene, camera);
+  camera.tick();
+  grid.tick();
 }
 
 init();
