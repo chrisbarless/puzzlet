@@ -1,20 +1,16 @@
 import createDom2dCamera from 'dom-2d-camera';
 
-function Controls() {
+function Controls(canvas) {
   const increment = 10;
   const minZoom = 10;
   const maxZoom = 75;
 
-  const camera = createDom2dCamera(element, {
+  const camera = createDom2dCamera(canvas, {
     isRotate: false,
+    onWheel(e) {},
   });
 
-  controls.noRotate = true;
-  controls.minDistance = minZoom;
-  controls.maxDistance = maxZoom;
-
-  camera.position.set(0, 0, maxZoom);
-  camera.lookAt(0, 0, 0);
+  camera.noRotate = true;
 
   // Move Left
   document.getElementById('button-arrow-left').addEventListener('click', () => {
@@ -48,7 +44,7 @@ function Controls() {
     });
 
   this.tick = () => {
-    controls.update();
+    camera.tick();
   };
 }
 
