@@ -1,30 +1,20 @@
 import { mat4, vec4 } from 'gl-matrix';
 import Plane from './plane';
 
-function HexagonGrid(context) {
-  const hexagonWidth = 10;
+function HexagonGrid(context, camera) {
   const hexCount = 5765;
   const rowLimit = 95;
   const hexRadius = Math.tan((30 * Math.PI) / 180);
   let soldIds = [];
 
-  // const raycaster = new THREE.Raycaster();
-  // const mouse = new THREE.Vector2(1, 1);
-  // const transform = new THREE.Object3D();
-  // const instanceMatrix = new THREE.Matrix4();
-  // const matrix = new THREE.Matrix4();
-  // const rotationMatrix = new THREE.Matrix4().scale(new THREE.Vector3(0, 0, 0));
   const hexagons = new Map();
   const columns = hexCount >= rowLimit ? rowLimit : hexCount;
   const rows = Math.ceil(hexCount / rowLimit);
-  const offsetX = -columns / 2;
-  const offsetY = rows / 2;
 
   const server = 'https://bitforbit.notquite.se';
   const endpoint = `${server}/wp-admin/admin-ajax.php?action=get_sold_hexes`;
 
   if (process.env.NODE_ENV === 'production') {
-    // Or, `process.env.NODE_ENV !== 'production'` }
     const request = new XMLHttpRequest();
     request.onreadystatechange = function receive() {
       if (this.readyState === 4 && this.status === 200) {
@@ -52,31 +42,23 @@ function HexagonGrid(context) {
 
       hexagons.set(hexIndex, { column, row });
 
-      // transform.position.setX(offsetX + (column + (isEvenRow ? 0.5 : 0)));
-      // transform.position.setY(offsetY + -row);
-
-      // transform.updateMatrix();
-
-      // hexagons.setMatrixAt(hexIndex, transform.matrix);
-
       hexIndex++;
     }
   }
-
-  // scene.add(hexagons);
 
   // const plane = Plane(column, row);
   // scene.add(plane);
 
   this.tick = () => {
+    const hexagonWidth = camera.scaling;
     hexagons.forEach(({ column, row }, index) => {
       const a = hexagonWidth / 4;
       const b = Math.sqrt(3) * a;
-      const x = (column + 1) * hexagonWidth;
-      const y = (row + 1) * hexagonWidth;
-      // if (yIndex % 2 !== 0) {
-      //   x += hexagonWidth / 2;
-      // }
+      let x = (column + 1) * hexagonWidth + camera.translation[0];
+      const y = (row + 1) * hexagonWidth + camera.translation[1];
+      if (row % 2 !== 0) {
+        x -= hexagonWidth / 2;
+      }
       context.beginPath();
       context.moveTo(x + 0, y + -2 * a);
       context.lineTo(x + b, y + -a);
@@ -87,9 +69,20 @@ function HexagonGrid(context) {
       context.lineTo(x + 0, y + -2 * a);
       context.closePath();
       context.stroke();
-      context.fillText(index, x, y);
+      // context.fillText(index, x, y);
     });
   };
+  // const p = () => {
+  //   for (const key in camera) {
+  //     console.log(key);
+  //     console.log(camera[key]);
+  //   }
+  //   setTimeout(() => {
+  //     p();
+  //   }, 10000);
+  // };
+  // p();
+  // debugger;
 
   // hexagon.draw(context);
   // // Hide sold pieces
