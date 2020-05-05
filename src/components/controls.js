@@ -1,10 +1,13 @@
-import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
+import createDom2dCamera from 'dom-2d-camera';
 
-function Controls(renderer, camera) {
+function Controls() {
   const increment = 10;
   const minZoom = 10;
   const maxZoom = 75;
-  const controls = new TrackballControls(camera, renderer.domElement);
+
+  const camera = createDom2dCamera(element, {
+    isRotate: false,
+  });
 
   controls.noRotate = true;
   controls.minDistance = minZoom;
