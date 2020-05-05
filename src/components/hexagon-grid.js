@@ -23,15 +23,20 @@ function HexagonGrid(renderer, scene, camera) {
   const server = 'https://bitforbit.notquite.se';
   const endpoint = `${server}/wp-admin/admin-ajax.php?action=get_sold_hexes`;
 
-  const request = new XMLHttpRequest();
-  request.onreadystatechange = function receive() {
-    if (this.readyState === 4 && this.status === 200) {
-      soldIds = JSON.parse(this.responseText).soldIds;
-    }
-  };
+  if (process.env.NODE_ENV === 'production') {
+    // Or, `process.env.NODE_ENV !== 'production'` }
+    const request = new XMLHttpRequest();
+    request.onreadystatechange = function receive() {
+      if (this.readyState === 4 && this.status === 200) {
+        soldIds = JSON.parse(this.responseText).soldIds;
+      }
+    };
 
-  request.open('GET', endpoint);
-  request.send();
+    request.open('GET', endpoint);
+    request.send();
+  } else {
+    soldIds = ['2223'];
+  }
 
   let hexIndex = 1;
   let column;
