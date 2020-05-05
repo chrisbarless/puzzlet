@@ -1,30 +1,22 @@
-import * as THREE from 'three';
-import Hexagons from './hexagons';
-import Plane from './plane';
+import { mat4, vec4 } from 'gl-matrix';
 
-function HexagonGrid(renderer, scene, camera) {
-  const hexCount = 5766;
+function HexagonGrid(context, camera) {
+  const hexCount = 5765;
   const rowLimit = 95;
-  const hexRadius = Math.tan((30 * Math.PI) / 180);
+  const mouse = [];
   let soldIds = [];
 
-  const raycaster = new THREE.Raycaster();
-  const mouse = new THREE.Vector2(1, 1);
-  const transform = new THREE.Object3D();
-  const instanceMatrix = new THREE.Matrix4();
-  const matrix = new THREE.Matrix4();
-  const rotationMatrix = new THREE.Matrix4().scale(new THREE.Vector3(0, 0, 0));
-  const hexagons = Hexagons(hexCount);
+  const hexagons = new Map();
   const columns = hexCount >= rowLimit ? rowLimit : hexCount;
   const rows = Math.ceil(hexCount / rowLimit);
-  const offsetX = -columns / 2;
-  const offsetY = rows / 2;
 
   const server = 'https://bitforbit.notquite.se';
   const endpoint = `${server}/wp-admin/admin-ajax.php?action=get_sold_hexes`;
 
+  const img = new Image();
+  img.src = 'https://i.imgur.com/7KAE5M7.jpg';
+
   if (process.env.NODE_ENV === 'production') {
-    // Or, `process.env.NODE_ENV !== 'production'` }
     const request = new XMLHttpRequest();
     request.onreadystatechange = function receive() {
       if (this.readyState === 4 && this.status === 200) {
@@ -35,7 +27,7 @@ function HexagonGrid(renderer, scene, camera) {
     request.open('GET', endpoint);
     request.send();
   } else {
-    soldIds = ['2223'];
+    soldIds = [2223];
   }
 
   let hexIndex = 1;
@@ -50,69 +42,85 @@ function HexagonGrid(renderer, scene, camera) {
         continue;
       }
 
-      transform.position.setX(offsetX + (column + (isEvenRow ? 0.5 : 0)));
-      transform.position.setY(offsetY + -row);
-
-      transform.updateMatrix();
-
-      hexagons.setMatrixAt(hexIndex, transform.matrix);
+      hexagons.set(hexIndex, { column, row });
 
       hexIndex++;
     }
   }
 
-  scene.add(hexagons);
-
-  const plane = Plane(column, row);
-  scene.add(plane);
-
   this.tick = () => {
-    // Hide sold pieces
-    if (soldIds.length) {
-      soldIds.forEach((soldId) => {
-        hexagons.getMatrixAt(soldId, instanceMatrix);
-        matrix.multiplyMatrices(instanceMatrix, rotationMatrix);
-        hexagons.setMatrixAt(soldId, matrix);
-      });
-      hexagons.instanceMatrix.needsUpdate = true;
-    }
+    const { scaling } = camera;
+    const hexagonWidth = 1 * scaling;
+    const a = Math.ceil(hexagonWidth / 4);
+    const b = Math.ceil(Math.sqrt(3) * a);
+    const offset = {
+      x: camera.translation[0] * scaling,
+      y: camera.translation[1] * scaling,
+    };
 
-    // Mouseover (TODO)
-    raycaster.setFromCamera(mouse, camera);
-    const intersection = raycaster.intersectObject(hexagons);
+    context.drawImage(
+      img,
+      offset.x,
+      offset.y,
+      columns * scaling,
+      rows * scaling,
+    );
 
-    if (intersection.length > 0) {
-      const { instanceId } = intersection[0];
-      renderer.domElement.style.cursor = 'pointer';
-
-      hexagons.getMatrixAt(instanceId, instanceMatrix);
-      hexagons.instanceMatrix.needsUpdate = true;
-    } else {
-      renderer.domElement.style.cursor = 'default';
-    }
+    hexagons.forEach(({ column, row }, index) => {
+      if (soldIds.includes(index)) {
+        return;
+      }
+      let x = Math.ceil(
+        column * hexagonWidth + camera.translation[0] * scaling,
+      );
+      const y = Math.ceil(row * hexagonWidth + camera.translation[1] * scaling);
+      if (row % 2 !== 0) {
+        x -= hexagonWidth / 2;
+      }
+      context.beginPath();
+      context.moveTo(x + 0, y + -2 * a);
+      context.lineTo(x + b, y + -a);
+      context.lineTo(x + b, y + a);
+      context.lineTo(x + 0, y + 2 * a);
+      context.lineTo(x + -b, y + a);
+      context.lineTo(x + -b, y + -a);
+      context.lineTo(x + 0, y + -2 * a);
+      context.closePath();
+      context.fillStyle = '#ffac8c';
+      context.fill();
+    });
   };
 
+  function getClosestHexagon(x, y) {
+    let minDist = Infinity;
+    let nearest;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [hexIndex, hexagon] of hexagons) {
+      const dist = Math.hypot(
+        hexagon.column * camera.scaling - x,
+        hexagon.row * camera.scaling - y,
+      );
+      if (dist < minDist) {
+        nearest = hexIndex;
+        minDist = dist;
+      }
+    }
+    return nearest;
+  }
   function onMouseMove(event) {
     event.preventDefault();
 
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    // mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    // mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
   }
 
   function onClick(event) {
     event.preventDefault();
-    raycaster.setFromCamera(mouse, camera);
-    const intersection = raycaster.intersectObject(hexagons);
-
-    if (intersection.length > 0) {
-      const { instanceId } = intersection[0];
-
-      window.location.href = `${server}/product/pusselbit/?attribute_pa_hex=${instanceId}`;
-    }
+    const closest = getClosestHexagon(event.clientX, event.clientY);
+    window.location.href = `${server}/product/pusselbit/?attribute_pa_hex=${closest}`;
   }
-
-  renderer.domElement.addEventListener('click', onClick);
-  renderer.domElement.addEventListener('mousemove', onMouseMove);
+  context.canvas.addEventListener('click', onClick);
+  context.canvas.addEventListener('mousemove', onMouseMove);
 }
 
 export default HexagonGrid;

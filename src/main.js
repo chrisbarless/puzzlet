@@ -1,59 +1,68 @@
-import * as THREE from 'three';
-import Stats from 'three/examples/jsm/libs/stats.module';
+import createDom2dCamera from 'dom-2d-camera';
 import HexagonGrid from './components/hexagon-grid';
 import Controls from './components/controls';
 
-let camera;
-let scene;
-let renderer;
-let stats;
+let canvas;
+let context;
 let grid;
-let controls;
+let camera;
 
-function init() {
-  scene = new THREE.Scene();
-
-  camera = new THREE.PerspectiveCamera(
-    60,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    100,
-  );
-
-  renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setClearColor(0xffac8c, 1);
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(window.devicePixelRatio);
-  document.body.appendChild(renderer.domElement);
-
-  stats = new Stats();
-  document.body.appendChild(stats.dom);
-
-  controls = new Controls(renderer, camera);
-
-  grid = new HexagonGrid(renderer, scene, camera);
-
-  function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(window.innerWidth, window.innerHeight);
+function cameraLog() {
+  console.clear();
+  for (const key in camera) {
+    if (
+      [
+        'translation',
+        'target',
+        'scaling',
+        'distance',
+        'view',
+        'viewCenter',
+      ].includes(key)
+    ) {
+      console.log(key);
+      console.log(camera[key]);
+    }
   }
-
-  window.addEventListener('resize', onWindowResize, false);
 }
 
-function animate() {
-  requestAnimationFrame(animate);
+function onWindowResize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
 
+function init() {
+  canvas = document.createElement('canvas');
+  canvas.id = 'canvas';
+  context = canvas.getContext('2d');
+  document.body.appendChild(canvas);
+
+  camera = createDom2dCamera(canvas, {
+    // scaleBounds: [10, 100],
+    distance: 0.1,
+    isRotate: false,
+    onWheel: cameraLog,
+    onMouseUp: cameraLog,
+  });
+  camera.noRotate = true;
+  // camera.lookAt([canvas.width / 2, canvas.height / 2], 0.1);
+
+  grid = new HexagonGrid(context, camera);
+
+  Controls(camera);
+
+  window.addEventListener('resize', onWindowResize, false);
+  onWindowResize();
+}
+
+function tick() {
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  camera.tick();
   grid.tick();
 
-  controls.tick();
-
-  renderer.render(scene, camera);
-
-  stats.update();
+  requestAnimationFrame(tick);
 }
 
 init();
-animate();
+tick();

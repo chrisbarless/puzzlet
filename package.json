@@ -15,6 +15,6 @@
     "build": "parcel build src/index.html"
   },
   "dependencies": {
-    "three": "^0.115.0"
+    "dom-2d-camera": "^1.0.2"
   }
 }
