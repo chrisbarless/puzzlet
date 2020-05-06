@@ -38,13 +38,13 @@
 }
 
 .logo {
-  width: 20%;
-  height: 100%;
+  width: 15rem;
+  height: 15rem;
   position: fixed;
   z-index: 1;
-  top: 9rem;
+  bottom: 0.5rem;
   left: 0.5rem;
-  background-image: url(https://bitforbit.notquite.se/files/bitforbit-Logo.eps);
+  background-image: url(https://bitforbit.notquite.se/wp-content/uploads/2020/04/Logo-text-768x1057.png);
   background-size: 100% auto;
   background-repeat: no-repeat;
 }
