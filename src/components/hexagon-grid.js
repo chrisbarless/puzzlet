@@ -16,12 +16,11 @@ function HexagonGrid(context, camera) {
   ];
 
   const hexCount = 5765;
-  const rowLimit = 95;
+  const rowLimit = 61;
+  const columnLimit = 95;
   let soldIds = [];
 
   const hexagons = new Map();
-  const columns = hexCount >= rowLimit ? rowLimit : hexCount;
-  const rows = Math.ceil(hexCount / rowLimit);
 
   const server = 'https://bitforbit.notquite.se';
   const endpoint = `${server}/wp-admin/admin-ajax.php?action=get_sold_hexes`;
@@ -47,17 +46,17 @@ function HexagonGrid(context, camera) {
   let x;
   let y;
 
-  for (y = 1; y < rows; y += 1) {
-    for (x = 1; x < columns; x += 1) {
+  for (y = 1; y <= rowLimit; y += 1) {
+    for (x = 1; x <= columnLimit; x += 1) {
       const isEvenRow = y % 2 === 0;
 
-      if (x === columns - 1 && isEvenRow) {
-        continue;
+      if (x === columnLimit && isEvenRow) {
+        // continue;
       }
 
       hexagons.set(hexIndex, { position: [x, y] });
 
-      hexIndex++;
+      hexIndex += 1;
     }
   }
 
@@ -74,16 +73,18 @@ function HexagonGrid(context, camera) {
   this.tick = () => {
     const { scaling } = camera;
     const hexagonWidth = 2 * Math.tan((30 * Math.PI) / 180) * scaling;
+    const hexagonHeight = Math.cos(Math.PI / 6) * scaling;
     const a = hexagonWidth / 4;
     const b = Math.sqrt(3) * a;
     const offset = {
-      // x: camera.translation[0],
-      // y: camera.translation[1],
       x: context.canvas.width / 2 - (x / 2) * scaling + camera.translation[0],
       y: context.canvas.height / 2 - (y / 2) * scaling + camera.translation[1],
     };
 
-    context.drawImage(img, offset.x, offset.y, x * scaling, y * scaling);
+    const imageX = scaling * x;
+    const imageY = y * hexagonHeight;
+
+    context.drawImage(img, offset.x, offset.y, imageX, imageY);
 
     hexagons.forEach(({ position }, index) => {
       if (soldIds.includes(index)) {
@@ -93,8 +94,9 @@ function HexagonGrid(context, camera) {
       if (y % 2 !== 0) {
         x -= 0.5;
       }
+      // y -= 0.3;
       x *= scaling;
-      y *= scaling;
+      y *= hexagonHeight;
       x += offset.x;
       y += offset.y;
       context.beginPath();
@@ -107,8 +109,10 @@ function HexagonGrid(context, camera) {
       context.lineTo(x + 0, y + -2 * a);
       context.closePath();
       context.fillStyle = '#ffac8c';
+      context.strokeStyle = '#ffffff';
       // context.fillStyle = '#ff0000';
       context.fill();
+      context.stroke();
     });
   };
 
