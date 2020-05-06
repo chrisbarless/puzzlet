@@ -1,36 +1,21 @@
 import createDom2dCamera from 'dom-2d-camera';
 
+const increment = 1;
 let camera;
 
-function cameraLog() {
-  console.clear();
-  for (const key in camera) {
-    if (
-      [
-        'translation',
-        'target',
-        'scaling',
-        'distance',
-        'view',
-        'viewCenter',
-      ].includes(key)
-    ) {
-      console.log(key);
-      console.log(camera[key]);
-    }
-  }
-}
-const increment = 1;
-
 function Camera(canvas) {
+  const cameraLog = CameraDebugger();
+
   camera = createDom2dCamera(canvas, {
+    // target: [5, 1],
+    // target: [-96 / 2, -61 / 2],
+    // target: [canvas.width / 2, canvas.height / 2],
     scaleBounds: [10, 100],
-    // distance: 0.1,
+    isNdc: false,
     isRotate: false,
     onWheel: cameraLog,
     onMouseUp: cameraLog,
   });
-  camera.noRotate = true;
   camera.refresh();
   // camera.lookAt([canvas.width / 2, canvas.height / 2], 0.1);
 
@@ -68,6 +53,29 @@ function Camera(canvas) {
     });
 
   return camera;
+}
+
+function CameraDebugger() {
+  if (process.env.NODE_ENV === 'production') return null;
+
+  return () => {
+    console.clear();
+    for (const key in camera) {
+      if (
+        [
+          'translation',
+          'target',
+          'scaling',
+          'distance',
+          'view',
+          'viewCenter',
+        ].includes(key)
+      ) {
+        console.log(key);
+        console.log(camera[key]);
+      }
+    }
+  };
 }
 
 export default Camera;

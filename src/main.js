@@ -17,15 +17,16 @@ function init() {
   context = canvas.getContext('2d');
   document.body.appendChild(canvas);
 
+  onWindowResize();
+
   camera = new Camera(canvas);
   grid = new HexagonGrid(context, camera);
-
-  window.addEventListener('resize', onWindowResize, false);
-  onWindowResize();
 
   if (process.env.NODE_ENV !== 'production') {
     document.getElementById('logo').removeAttribute('href');
   }
+
+  window.addEventListener('resize', onWindowResize, false);
 }
 
 function tick() {

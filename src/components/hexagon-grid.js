@@ -1,9 +1,22 @@
 import { mat4, vec4 } from 'gl-matrix';
 
 function HexagonGrid(context, camera) {
+  const mousePosition = [0, 0];
+
+  // Get a copy of the current mouse position
+  const getMousePos = () => mousePosition.slice();
+
+  const getNdcX = (x) => -1 + (x / context.canvas.width) * 2;
+  const getNdcY = (y) => 1 + (y / context.canvas.height) * -2;
+
+  // Get relative WebGL position
+  const getMouseGlPos = () => [
+    getNdcX(mousePosition[0]),
+    getNdcY(mousePosition[1]),
+  ];
+
   const hexCount = 5765;
   const rowLimit = 95;
-  const mouse = [];
   let soldIds = [];
 
   const hexagons = new Map();
@@ -31,52 +44,61 @@ function HexagonGrid(context, camera) {
   }
 
   let hexIndex = 1;
-  let column;
-  let row;
+  let x;
+  let y;
 
-  for (row = 1; row < rows; row += 1) {
-    for (column = 1; column < columns; column += 1) {
-      const isEvenRow = row % 2 === 0;
+  for (y = 1; y < rows; y += 1) {
+    for (x = 1; x < columns; x += 1) {
+      const isEvenRow = y % 2 === 0;
 
-      if (column === columns - 1 && isEvenRow) {
+      if (x === columns - 1 && isEvenRow) {
         continue;
       }
 
-      hexagons.set(hexIndex, { column, row });
+      hexagons.set(hexIndex, { position: [x, y] });
 
       hexIndex++;
     }
   }
 
+  // camera.scale(10);
+  // camera.scale(5);
+  // console.log(x, y);
+  // camera.lookAt([(x * 10) / 2, y / 2], 0.1);
+  // camera.setViewCenter([200000000, 200]);
+  // camera.setViewCenter([context.canvas.width / 2, context.canvas.height / 2]);
+  // camera.refresh();
+  // camera.setTarget([context.canvas.width / 2, context.canvas.height / 2]);
+  // debugger;
+
   this.tick = () => {
     const { scaling } = camera;
     const hexagonWidth = 1 * scaling;
-    const a = Math.ceil(hexagonWidth / 4);
-    const b = Math.ceil(Math.sqrt(3) * a);
+    const a = hexagonWidth / 4;
+    const b = Math.sqrt(3) * a;
     const offset = {
-      x: camera.translation[0] * scaling,
-      y: camera.translation[1] * scaling,
+      // x: camera.translation[0],
+      // y: camera.translation[1],
+      x: context.canvas.width / 2 - (x / 2) * scaling + camera.translation[0],
+      y: context.canvas.height / 2 - (y / 2) * scaling + camera.translation[1],
     };
+    const gridWidth = hexagonWidth * columns;
+    const gridHeight = hexagonWidth * rows;
 
-    context.drawImage(
-      img,
-      offset.x,
-      offset.y,
-      columns * scaling,
-      rows * scaling,
-    );
+    context.drawImage(img, offset.x, offset.y, gridWidth, gridHeight);
 
-    hexagons.forEach(({ column, row }, index) => {
+    hexagons.forEach(({ position }, index) => {
       if (soldIds.includes(index)) {
         return;
       }
-      let x = Math.ceil(
-        column * hexagonWidth + camera.translation[0] * scaling,
-      );
-      const y = Math.ceil(row * hexagonWidth + camera.translation[1] * scaling);
-      if (row % 2 !== 0) {
-        x -= hexagonWidth / 2;
+      let [x, y] = position.slice();
+      if (y % 2 !== 0) {
+        x -= 0.5;
       }
+      x *= scaling;
+      y *= scaling;
+      x += offset.x;
+      y += offset.y;
       context.beginPath();
       context.moveTo(x + 0, y + -2 * a);
       context.lineTo(x + b, y + -a);
@@ -86,7 +108,8 @@ function HexagonGrid(context, camera) {
       context.lineTo(x + -b, y + -a);
       context.lineTo(x + 0, y + -2 * a);
       context.closePath();
-      context.fillStyle = '#ffac8c';
+      // context.fillStyle = '#ffac8c';
+      context.fillStyle = '#ff0000';
       context.fill();
     });
   };
@@ -97,8 +120,8 @@ function HexagonGrid(context, camera) {
     // eslint-disable-next-line no-restricted-syntax
     for (const [hexIndex, hexagon] of hexagons) {
       const dist = Math.hypot(
-        hexagon.column * camera.scaling - x,
-        hexagon.row * camera.scaling - y,
+        hexagon.x * camera.scaling - x,
+        hexagon.y * camera.scaling - y,
       );
       if (dist < minDist) {
         nearest = hexIndex;
@@ -107,17 +130,26 @@ function HexagonGrid(context, camera) {
     }
     return nearest;
   }
+  const getRelativeMousePosition = (event) => {
+    const rect = canvas.getBoundingClientRect();
+
+    mousePosition[0] = event.clientX - rect.left;
+    mousePosition[1] = event.clientY - rect.top;
+
+    return [...mousePosition];
+  };
   function onMouseMove(event) {
     event.preventDefault();
-
-    // mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    // mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    getRelativeMousePosition(event);
+    const [mouseX, mouseY] = getMouseGlPos();
+    // console.log(mouseX, mouseY, ...mousePosition);
   }
 
   function onClick(event) {
     event.preventDefault();
     const closest = getClosestHexagon(event.clientX, event.clientY);
-    window.location.href = `${server}/product/pusselbit/?attribute_pa_hex=${closest}`;
+    // window.location.href = `${server}/product/pusselbit/?attribute_pa_hex=${closest}`;
+    // alert(`${server}/product/pusselbit/?attribute_pa_hex=${closest}`);
   }
   context.canvas.addEventListener('click', onClick);
   context.canvas.addEventListener('mousemove', onMouseMove);
