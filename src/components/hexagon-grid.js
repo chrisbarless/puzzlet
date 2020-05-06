@@ -73,7 +73,7 @@ function HexagonGrid(context, camera) {
 
   this.tick = () => {
     const { scaling } = camera;
-    const hexagonWidth = 1 * scaling;
+    const hexagonWidth = 2 * Math.tan((30 * Math.PI) / 180) * scaling;
     const a = hexagonWidth / 4;
     const b = Math.sqrt(3) * a;
     const offset = {
@@ -82,10 +82,8 @@ function HexagonGrid(context, camera) {
       x: context.canvas.width / 2 - (x / 2) * scaling + camera.translation[0],
       y: context.canvas.height / 2 - (y / 2) * scaling + camera.translation[1],
     };
-    const gridWidth = hexagonWidth * columns;
-    const gridHeight = hexagonWidth * rows;
 
-    context.drawImage(img, offset.x, offset.y, gridWidth, gridHeight);
+    context.drawImage(img, offset.x, offset.y, x * scaling, y * scaling);
 
     hexagons.forEach(({ position }, index) => {
       if (soldIds.includes(index)) {
@@ -108,8 +106,8 @@ function HexagonGrid(context, camera) {
       context.lineTo(x + -b, y + -a);
       context.lineTo(x + 0, y + -2 * a);
       context.closePath();
-      // context.fillStyle = '#ffac8c';
-      context.fillStyle = '#ff0000';
+      context.fillStyle = '#ffac8c';
+      // context.fillStyle = '#ff0000';
       context.fill();
     });
   };
