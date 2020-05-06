@@ -53,6 +53,10 @@ function init() {
 
   window.addEventListener('resize', onWindowResize, false);
   onWindowResize();
+
+  if (process.env.NODE_ENV !== 'production') {
+    document.getElementById('logo').removeAttribute('href');
+  }
 }
 
 function tick() {
