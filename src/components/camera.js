@@ -20,33 +20,47 @@ function Camera(canvas) {
   // camera.lookAt([canvas.width / 2, canvas.height / 2], 0.1);
 
   // Move Left
-  document.getElementById('button-arrow-left').addEventListener('click', () => {
-    camera.pan([-increment, 0]);
-  });
+  document
+    .getElementById('button-arrow-left')
+    .addEventListener('click', (event) => {
+      event.preventDefault();
+      camera.pan([-increment, 0]);
+    });
   // Move Right
   document
     .getElementById('button-arrow-right')
-    .addEventListener('click', () => {
+    .addEventListener('click', (event) => {
+      event.preventDefault();
       camera.pan([increment, 0]);
     });
   // Move Up
-  document.getElementById('button-arrow-up').addEventListener('click', () => {
-    camera.pan([0, increment]);
-  });
+  document
+    .getElementById('button-arrow-up')
+    .addEventListener('click', (event) => {
+      event.preventDefault();
+      camera.pan([0, increment]);
+    });
   // Move Down
-  document.getElementById('button-arrow-down').addEventListener('click', () => {
-    camera.pan([0, -increment]);
-  });
+  document
+    .getElementById('button-arrow-down')
+    .addEventListener('click', (event) => {
+      event.preventDefault();
+      camera.pan([0, -increment]);
+    });
   // Zoom in
-  document.getElementById('button-arrow-plus').addEventListener('click', () => {
-    camera.zoom(2);
-    // const zoomedVal = camera.position.z - increment;
-    // zoomedVal > minZoom && camera.position.setZ(zoomedVal);
-  });
+  document
+    .getElementById('button-arrow-plus')
+    .addEventListener('click', (event) => {
+      event.preventDefault();
+      camera.zoom(2);
+      // const zoomedVal = camera.position.z - increment;
+      // zoomedVal > minZoom && camera.position.setZ(zoomedVal);
+    });
   // Zoom out
   document
     .getElementById('button-arrow-minus')
-    .addEventListener('click', () => {
+    .addEventListener('click', (event) => {
+      event.preventDefault();
       camera.zoom(-2);
       // const zoomedVal = camera.position.z + increment;
       // zoomedVal < maxZoom && camera.position.setZ(zoomedVal);
