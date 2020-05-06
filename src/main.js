@@ -1,30 +1,10 @@
-import createDom2dCamera from 'dom-2d-camera';
 import HexagonGrid from './components/hexagon-grid';
-import Controls from './components/controls';
+import Camera from './components/camera';
 
 let canvas;
 let context;
 let grid;
 let camera;
-
-function cameraLog() {
-  console.clear();
-  for (const key in camera) {
-    if (
-      [
-        'translation',
-        'target',
-        'scaling',
-        'distance',
-        'view',
-        'viewCenter',
-      ].includes(key)
-    ) {
-      console.log(key);
-      console.log(camera[key]);
-    }
-  }
-}
 
 function onWindowResize() {
   canvas.width = window.innerWidth;
@@ -37,19 +17,8 @@ function init() {
   context = canvas.getContext('2d');
   document.body.appendChild(canvas);
 
-  camera = createDom2dCamera(canvas, {
-    // scaleBounds: [10, 100],
-    distance: 0.1,
-    isRotate: false,
-    onWheel: cameraLog,
-    onMouseUp: cameraLog,
-  });
-  camera.noRotate = true;
-  // camera.lookAt([canvas.width / 2, canvas.height / 2], 0.1);
-
+  camera = new Camera(canvas);
   grid = new HexagonGrid(context, camera);
-
-  Controls(camera);
 
   window.addEventListener('resize', onWindowResize, false);
   onWindowResize();
