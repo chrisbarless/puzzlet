@@ -1,6 +1,8 @@
 import createDom2dCamera from 'dom-2d-camera';
+import { mat4, vec4 } from 'gl-matrix';
 
-const increment = 1;
+// const scratch = new Float32Array(16);
+const increment = 10;
 let camera;
 
 function Camera(canvas) {
@@ -11,12 +13,14 @@ function Camera(canvas) {
     // target: [-96 / 2, -61 / 2],
     // target: [canvas.width / 2, canvas.height / 2],
     scaleBounds: [10, 100],
+    panSpeed: 10,
     isNdc: false,
     isRotate: false,
     onWheel: cameraLog,
     onMouseUp: cameraLog,
   });
   camera.refresh();
+  cameraLog();
   // camera.lookAt([canvas.width / 2, canvas.height / 2], 0.1);
 
   // Move Left
@@ -24,28 +28,28 @@ function Camera(canvas) {
     .getElementById('button-arrow-left')
     .addEventListener('click', (event) => {
       event.preventDefault();
-      camera.pan([-increment, 0]);
+      camera.translate([increment * camera.scaling, 0]);
     });
   // Move Right
   document
     .getElementById('button-arrow-right')
     .addEventListener('click', (event) => {
       event.preventDefault();
-      camera.pan([increment, 0]);
+      camera.translate([-increment * camera.scaling, 0]);
     });
   // Move Up
   document
     .getElementById('button-arrow-up')
     .addEventListener('click', (event) => {
       event.preventDefault();
-      camera.pan([0, increment]);
+      camera.translate([0, -increment * camera.scaling]);
     });
   // Move Down
   document
     .getElementById('button-arrow-down')
     .addEventListener('click', (event) => {
       event.preventDefault();
-      camera.pan([0, -increment]);
+      camera.translate([0, increment * camera.scaling]);
     });
   // Zoom in
   document
@@ -74,6 +78,7 @@ function CameraDebugger() {
 
   return () => {
     console.clear();
+    const { view } = camera;
     for (const key in camera) {
       if (
         [
@@ -81,7 +86,7 @@ function CameraDebugger() {
           'target',
           'scaling',
           'distance',
-          'view',
+          // 'view',
           'viewCenter',
         ].includes(key)
       ) {
@@ -89,6 +94,11 @@ function CameraDebugger() {
         console.log(camera[key]);
       }
     }
+    // console.dir(view);
+    console.log(view[0], view[1], view[2], view[3]);
+    console.log(view[4], view[5], view[6], view[7]);
+    console.log(view[8], view[9], view[10], view[11]);
+    console.log(view[12], view[13], view[14], view[15]);
   };
 }
 

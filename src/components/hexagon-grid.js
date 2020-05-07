@@ -58,8 +58,8 @@ function HexagonGrid(context, camera) {
   // camera.scale(5);
   // console.log(x, y);
   // camera.lookAt([(x * 10) / 2, y / 2], 0.1);
-  // camera.setViewCenter([200000000, 200]);
-  // camera.setViewCenter([context.canvas.width / 2, context.canvas.height / 2]);
+  // camera.setViewCenter([columnLimit / 2, rowLimit / 2]);
+  camera.setViewCenter([context.canvas.width / 2, -context.canvas.height / 2]);
   // camera.refresh();
   // camera.setTarget([context.canvas.width / 2, context.canvas.height / 2]);
 
@@ -73,16 +73,14 @@ function HexagonGrid(context, camera) {
     const a = (hexagonRealWidth / 4) * scaling;
     const b = Math.sqrt(3) * a;
     const offset = {
-      // x: 0,
-      // y: 0,
       x:
         context.canvas.width / 2
         - (columnLimit / 2) * scaling
-        + camera.translation[0],
+        + camera.translation[0] / scaling,
       y:
         context.canvas.height / 2
         - (rowLimit / 2) * scaling
-        + camera.translation[1],
+        + camera.translation[1] / scaling,
     };
 
     const imageX = x * scaling;
@@ -167,7 +165,7 @@ function HexagonGrid(context, camera) {
     event.preventDefault();
     const closest = getClosestHexagon(event.clientX, event.clientY);
     // window.location.href = `${server}/product/pusselbit/?attribute_pa_hex=${closest}`;
-    // alert(`${server}/product/pusselbit/?attribute_pa_hex=${closest}`);
+    // alert(`${closest}`);
   }
   context.canvas.addEventListener('click', onClick);
   context.canvas.addEventListener('mousemove', onMouseMove);
