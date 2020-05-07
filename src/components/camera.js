@@ -20,7 +20,6 @@ function Camera(canvas) {
     onMouseUp: cameraLog,
   });
   camera.refresh();
-  cameraLog();
   // camera.lookAt([canvas.width / 2, canvas.height / 2], 0.1);
 
   // Move Left
