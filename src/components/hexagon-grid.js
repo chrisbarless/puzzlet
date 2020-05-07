@@ -46,16 +46,10 @@ function HexagonGrid(context, camera) {
   let x;
   let y;
 
-  for (y = 1; y <= rowLimit; y += 1) {
-    for (x = 1; x <= columnLimit; x += 1) {
-      const isEvenRow = y % 2 === 0;
-
-      if (x === columnLimit && isEvenRow) {
-        // continue;
-      }
-
+  for (y = 0; y < rowLimit; y += 1) {
+    const isEvenRow = y % 2 === 0;
+    for (x = 0; x < (isEvenRow ? columnLimit : columnLimit - 1); x += 1) {
       hexagons.set(hexIndex, { position: [x, y] });
-
       hexIndex += 1;
     }
   }
@@ -68,21 +62,22 @@ function HexagonGrid(context, camera) {
   // camera.setViewCenter([context.canvas.width / 2, context.canvas.height / 2]);
   // camera.refresh();
   // camera.setTarget([context.canvas.width / 2, context.canvas.height / 2]);
-  // debugger;
 
   this.tick = () => {
     const { scaling } = camera;
-    const hexagonWidth = 2 * Math.tan((30 * Math.PI) / 180) * scaling;
-    const hexagonHeight = Math.cos(Math.PI / 6) * scaling;
-    const a = hexagonWidth / 4;
+    const hexagonRealWidth = 2 * Math.tan((30 * Math.PI) / 180);
+    const hexagonHeight = Math.cos(0.5);
+    const a = (hexagonRealWidth / 4) * scaling;
     const b = Math.sqrt(3) * a;
     const offset = {
-      x: context.canvas.width / 2 - (x / 2) * scaling + camera.translation[0],
-      y: context.canvas.height / 2 - (y / 2) * scaling + camera.translation[1],
+      x: 0,
+      y: 0,
+      // x: context.canvas.width / 2 - (x / 2) * scaling + camera.translation[0],
+      // y: context.canvas.height / 2 - (y / 2) * scaling + camera.translation[1],
     };
 
-    const imageX = scaling * x;
-    const imageY = y * hexagonHeight;
+    const imageX = x * scaling;
+    const imageY = y * hexagonHeight * scaling;
 
     context.drawImage(img, offset.x, offset.y, imageX, imageY);
 
@@ -91,13 +86,17 @@ function HexagonGrid(context, camera) {
         return;
       }
       let [x, y] = position.slice();
-      if (y % 2 !== 0) {
-        x -= 0.5;
+      if (y % 2 === 0) {
+        x += 0.5;
+      } else {
+        x += 1;
       }
-      // y -= 0.3;
+      // y += hexagonHeight / 2;
+      y += Math.tan(0.5);
       x *= scaling;
-      y *= hexagonHeight;
       x += offset.x;
+      // y *= 1 - (hexagonRealWidth - hexagonHeight);
+      y *= scaling * hexagonHeight;
       y += offset.y;
       context.beginPath();
       context.moveTo(x + 0, y + -2 * a);
@@ -109,10 +108,15 @@ function HexagonGrid(context, camera) {
       context.lineTo(x + 0, y + -2 * a);
       context.closePath();
       context.fillStyle = '#ffac8c';
-      context.strokeStyle = '#ffffff';
-      // context.fillStyle = '#ff0000';
       context.fill();
+      context.strokeStyle = '#ffffff';
       context.stroke();
+      // context.fillStyle = '#ff0000';
+      // context.fillRect(x, y, 1, 1);
+      // context.fillText(`${x},${y}`, x, y);
+      if (index === columnLimit) {
+        // debugger;
+      }
     });
   };
 
