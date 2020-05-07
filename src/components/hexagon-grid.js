@@ -63,6 +63,9 @@ function HexagonGrid(context, camera) {
   // camera.refresh();
   // camera.setTarget([context.canvas.width / 2, context.canvas.height / 2]);
 
+  context.fillStyle = '#ffac8c';
+  context.strokeStyle = '#ffffff';
+
   this.tick = () => {
     const { scaling } = camera;
     const hexagonRealWidth = 2 * Math.tan((30 * Math.PI) / 180);
@@ -70,20 +73,29 @@ function HexagonGrid(context, camera) {
     const a = (hexagonRealWidth / 4) * scaling;
     const b = Math.sqrt(3) * a;
     const offset = {
-      x: 0,
-      y: 0,
-      // x: context.canvas.width / 2 - (x / 2) * scaling + camera.translation[0],
-      // y: context.canvas.height / 2 - (y / 2) * scaling + camera.translation[1],
+      // x: 0,
+      // y: 0,
+      x:
+        context.canvas.width / 2
+        - (columnLimit / 2) * scaling
+        + camera.translation[0],
+      y:
+        context.canvas.height / 2
+        - (rowLimit / 2) * scaling
+        + camera.translation[1],
     };
 
     const imageX = x * scaling;
     const imageY = y * hexagonHeight * scaling;
 
-    context.drawImage(img, offset.x, offset.y, imageX, imageY);
+    const soldPieces = new Path2D();
+    const unsoldPieces = new Path2D();
 
+    // context.beginPath();
     hexagons.forEach(({ position }, index) => {
+      let targetPath = unsoldPieces;
       if (soldIds.includes(index)) {
-        return;
+        targetPath = soldPieces;
       }
       let [x, y] = position.slice();
       if (y % 2 === 0) {
@@ -98,26 +110,26 @@ function HexagonGrid(context, camera) {
       // y *= 1 - (hexagonRealWidth - hexagonHeight);
       y *= scaling * hexagonHeight;
       y += offset.y;
-      context.beginPath();
-      context.moveTo(x + 0, y + -2 * a);
-      context.lineTo(x + b, y + -a);
-      context.lineTo(x + b, y + a);
-      context.lineTo(x + 0, y + 2 * a);
-      context.lineTo(x + -b, y + a);
-      context.lineTo(x + -b, y + -a);
-      context.lineTo(x + 0, y + -2 * a);
-      context.closePath();
-      context.fillStyle = '#ffac8c';
-      context.fill();
-      context.strokeStyle = '#ffffff';
-      context.stroke();
-      // context.fillStyle = '#ff0000';
-      // context.fillRect(x, y, 1, 1);
-      // context.fillText(`${x},${y}`, x, y);
-      if (index === columnLimit) {
-        // debugger;
-      }
+      targetPath.moveTo(x + 0, y + -2 * a);
+      targetPath.lineTo(x + b, y + -a);
+      targetPath.lineTo(x + b, y + a);
+      targetPath.lineTo(x + 0, y + 2 * a);
+      targetPath.lineTo(x + -b, y + a);
+      targetPath.lineTo(x + -b, y + -a);
+      targetPath.lineTo(x + 0, y + -2 * a);
+      // if (index === columnLimit) {
+      // debugger;
+      // }
     });
+    // context.closePath();
+    // context.clip();
+    context.fill(soldPieces);
+    context.stroke(soldPieces);
+    context.globalCompositeOperation = 'source-atop'; // picture clipped inside oval
+    context.drawImage(img, offset.x, offset.y, imageX, imageY);
+    context.globalCompositeOperation = 'source-over'; // the default
+    context.fill(unsoldPieces);
+    context.stroke(unsoldPieces);
   };
 
   function getClosestHexagon(x, y) {
