@@ -41,14 +41,14 @@ function Camera(canvas) {
     .getElementById('button-arrow-up')
     .addEventListener('click', (event) => {
       event.preventDefault();
-      camera.translate([0, -increment * camera.scaling]);
+      camera.translate([0, increment * camera.scaling]);
     });
   // Move Down
   document
     .getElementById('button-arrow-down')
     .addEventListener('click', (event) => {
       event.preventDefault();
-      camera.translate([0, increment * camera.scaling]);
+      camera.translate([0, -increment * camera.scaling]);
     });
   // Zoom in
   document
@@ -64,7 +64,7 @@ function Camera(canvas) {
     .getElementById('button-arrow-minus')
     .addEventListener('click', (event) => {
       event.preventDefault();
-      camera.zoom(-2);
+      camera.zoom(0.5);
       // const zoomedVal = camera.position.z + increment;
       // zoomedVal < maxZoom && camera.position.setZ(zoomedVal);
     });
