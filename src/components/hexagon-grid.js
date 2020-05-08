@@ -161,7 +161,7 @@ function HexagonGrid(context, camera) {
   function onClick(event) {
     event.preventDefault();
     const closest = getClosestHexagon(getGridMousePos());
-    window.location.href = `${server}/product/pusselbit/?bitnummer=${closest.bitNumber}`;
+    if (closest) window.location.href = `${server}/product/pusselbit/?bitnummer=${closest.bitNumber}`;
   }
   canvas.addEventListener('click', onClick);
   canvas.addEventListener('mousemove', onMouseMove);
