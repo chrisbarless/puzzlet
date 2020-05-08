@@ -9,9 +9,7 @@ function HexagonGrid(context, camera) {
   const columnLimit = 95;
   let soldIds = [];
 
-  const index = 1;
-  let x;
-  let y;
+  const hexagons = new Set();
 
   const server = 'https://bitforbit.notquite.se';
   const endpoint = `${server}/wp-admin/admin-ajax.php?action=get_sold_hexes`;
@@ -33,6 +31,16 @@ function HexagonGrid(context, camera) {
     soldIds = [2223];
   }
 
+  let index = 1;
+
+  for (let y = 0; y < rowLimit; y += 1) {
+    const isEvenRow = y % 2 === 0;
+    for (let x = 0; x < (isEvenRow ? columnLimit : columnLimit - 1); x += 1) {
+      hexagons.add({ bitNumber: index, position: [x, y], opacity: 1 });
+      index += 1;
+    }
+  }
+
   context.fillStyle = '#ffac8c';
   context.strokeStyle = '#ffffff';
 
@@ -45,8 +53,8 @@ function HexagonGrid(context, camera) {
         + (columnLimit / 2) * scaling
         - camera.translation[0] / scaling,
       mousePosition[1]
-        + canvas.height / 2
-        - (rowLimit / 2) * scaling
+        - canvas.height / 2
+        + (rowLimit / 2) * scaling
         - camera.translation[1] / scaling,
     ];
   };
@@ -68,50 +76,42 @@ function HexagonGrid(context, camera) {
         + camera.translation[1] / scaling,
     };
 
-    const imageX = x * scaling;
-    const imageY = y * hexagonHeight * scaling;
+    const imageX = columnLimit * scaling;
+    const imageY = rowLimit * hexagonHeight * scaling;
 
     const soldPieces = new Path2D();
     const unsoldPieces = new Path2D();
 
     // context.beginPath();
-    for (let row = 0; row < rowLimit; row += 1) {
-      const isEvenRow = y % 2 === 0;
-      for (
-        let column = 0;
-        column < (isEvenRow ? columnLimit : columnLimit - 1);
-        column += 1
-      ) {
-        let targetPath = unsoldPieces;
-        let x = column;
-        let y = row;
-        if (soldIds.includes(index)) {
-          targetPath = soldPieces;
-        }
-        if (y % 2 === 0) {
-          x += 0.5;
-        } else {
-          x += 1;
-        }
-        // y += hexagonHeight / 2;
-        y += Math.tan(0.5);
-        x *= scaling;
-        x += offset.x;
-        // y *= 1 - (hexagonRealWidth - hexagonHeight);
-        y *= scaling * hexagonHeight;
-        y += offset.y;
-        targetPath.moveTo(x + 0, y + -2 * a);
-        targetPath.lineTo(x + b, y + -a);
-        targetPath.lineTo(x + b, y + a);
-        targetPath.lineTo(x + 0, y + 2 * a);
-        targetPath.lineTo(x + -b, y + a);
-        targetPath.lineTo(x + -b, y + -a);
-        targetPath.lineTo(x + 0, y + -2 * a);
-        // if (index === columnLimit) {
-        // debugger;
-        // }
+    hexagons.forEach(({ position, bitNumber }) => {
+      let targetPath = unsoldPieces;
+      if (soldIds.includes(bitNumber)) {
+        targetPath = soldPieces;
       }
-    }
+      let [x, y] = position.slice();
+      if (y % 2 === 0) {
+        x += 0.5;
+      } else {
+        x += 1;
+      }
+      // y += hexagonHeight / 2;
+      y += Math.tan(0.5);
+      x *= scaling;
+      x += offset.x;
+      // y *= 1 - (hexagonRealWidth - hexagonHeight);
+      y *= scaling * hexagonHeight;
+      y += offset.y;
+      targetPath.moveTo(x + 0, y + -2 * a);
+      targetPath.lineTo(x + b, y + -a);
+      targetPath.lineTo(x + b, y + a);
+      targetPath.lineTo(x + 0, y + 2 * a);
+      targetPath.lineTo(x + -b, y + a);
+      targetPath.lineTo(x + -b, y + -a);
+      targetPath.lineTo(x + 0, y + -2 * a);
+      // if (index === columnLimit) {
+      // debugger;
+      // }
+    });
     // context.closePath();
     // context.clip();
     context.fill(soldPieces);
@@ -123,20 +123,23 @@ function HexagonGrid(context, camera) {
     context.stroke(unsoldPieces);
   };
 
-  function getClosestHexagon(x, y) {
+  function getClosestHexagon(position) {
     const { scaling } = camera;
-    let minDist = Infinity;
+    const minDist = Infinity;
     let nearest;
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [hexIndex, hexagon] of hexagons) {
-      const dist = Math.hypot(hexagon.x * scaling - x, hexagon.y * scaling - y);
-      debugger;
-      if (dist < minDist) {
-        nearest = hexIndex;
-        minDist = dist;
-      }
-    }
-    return nearest;
+
+    const closest = [
+      Math.floor(position[0] / scaling),
+      Math.floor(position[1] / scaling),
+    ];
+
+    const target = [...hexagons].find(({ position: targetPosition }) => {
+      const t = targetPosition[0] === closest[0] && targetPosition[1] === closest[1];
+      return t;
+    });
+
+    // console.log(position);
+    return target;
   }
 
   const getRelativeMousePosition = (event) => {
@@ -151,16 +154,14 @@ function HexagonGrid(context, camera) {
   function onMouseMove(event) {
     event.preventDefault();
     getRelativeMousePosition(event);
-    const [mouseX, mouseY] = getGridMousePos();
-    console.log(mouseX, mouseY);
+    const closest = getClosestHexagon(getGridMousePos());
+    canvas.style.cursor = closest ? 'pointer' : 'default';
   }
 
   function onClick(event) {
     event.preventDefault();
-    const closest = getClosestHexagon(...mousePosition);
-    console.log(closest);
-    // window.location.href = `${server}/product/pusselbit/?attribute_pa_hex=${closest}`;
-    // alert(`${closest}`);
+    const closest = getClosestHexagon(getGridMousePos());
+    window.location.href = `${server}/product/pusselbit/?bitnummer=${closest.bitNumber}`;
   }
   canvas.addEventListener('click', onClick);
   canvas.addEventListener('mousemove', onMouseMove);
