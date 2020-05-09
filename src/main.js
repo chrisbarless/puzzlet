@@ -19,12 +19,12 @@ function init() {
   }
 
   function onWindowResize() {
-    if (canvas) {
+    if (wordpressHeaderElement) {
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+    } else {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-    } else if (wordpressHeaderElement) {
-      canvas.width = parentElement.offsetWidth;
-      canvas.height = parentElement.offsetHeight;
     }
     if (camera?.refresh) {
       camera.refresh();
