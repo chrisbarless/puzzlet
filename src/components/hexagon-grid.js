@@ -10,6 +10,7 @@ function HexagonGrid(context, camera) {
   const columnLimit = 95;
   let hovered;
   let soldIds = [];
+  let drag = false;
 
   const hexagons = new Set();
 
@@ -170,7 +171,9 @@ function HexagonGrid(context, camera) {
   }
 
   if (!camera.isFake) {
-    canvas.addEventListener('click', onClick);
+    document.addEventListener('mousedown', () => (drag = false));
+    document.addEventListener('mousemove', () => (drag = true));
+    document.addEventListener('mouseup', (event) => !drag && onClick(event));
     canvas.addEventListener('mousemove', onMouseMove);
   }
 }
