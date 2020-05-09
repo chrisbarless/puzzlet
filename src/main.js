@@ -17,10 +17,16 @@ function onWindowResize() {
 }
 
 function init() {
+  const wordpressHeaderElement = document.getElementById('wp-custom-header');
   canvas = document.createElement('canvas');
   canvas.id = 'canvas';
   context = canvas.getContext('2d');
-  document.body.appendChild(canvas);
+  if (wordpressHeaderElement) {
+    wordpressHeaderElement.innerHTML = '';
+    wordpressHeaderElement.appendChild(canvas);
+  } else {
+    document.body.appendChild(canvas);
+  }
 
   onWindowResize();
 

@@ -16,6 +16,17 @@ function Camera(canvas) {
     onMouseUp: cameraLog,
   });
 
+  const controls = document.getElementById('puzzle-controls');
+
+  if (!controls) {
+    return {
+      isFake: true,
+      scaling: 1,
+      translation: [0, 0],
+      tick: () => null,
+    };
+  }
+
   // Move Left
   document
     .getElementById('button-arrow-left')

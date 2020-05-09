@@ -168,8 +168,11 @@ function HexagonGrid(context, camera) {
     event.preventDefault();
     if (hovered) window.location.href = `${server}/product/pusselbit/?bitnummer=${hovered.bitNumber}`;
   }
-  canvas.addEventListener('click', onClick);
-  canvas.addEventListener('mousemove', onMouseMove);
+
+  if (!camera.isFake) {
+    canvas.addEventListener('click', onClick);
+    canvas.addEventListener('mousemove', onMouseMove);
+  }
 }
 
 export default HexagonGrid;
