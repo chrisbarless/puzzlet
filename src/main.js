@@ -26,7 +26,7 @@ function init() {
       canvas.width = parentElement.offsetWidth;
       canvas.height = parentElement.offsetHeight;
     }
-    if (camera.refresh) {
+    if (camera?.refresh) {
       camera.refresh();
     }
   }
