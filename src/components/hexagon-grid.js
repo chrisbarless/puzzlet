@@ -162,12 +162,15 @@ function HexagonGrid(context, camera) {
     event.preventDefault();
     getRelativeMousePosition(event);
     hovered = getClosestHexagon(getGridMousePos());
-    canvas.style.cursor = hovered ? 'pointer' : 'default';
+    canvas.style.cursor = hovered && !soldIds.includes(hovered.bitNumber) ? 'pointer' : 'default';
   }
 
   function onClick(event) {
     event.preventDefault();
-    if (hovered) window.location.href = `${server}/product/pusselbit/?bitnummer=${hovered.bitNumber}`;
+
+    if (hovered && !soldIds.includes(hovered.bitNumber)) {
+      window.location.href = `${server}/product/pusselbit/?bitnummer=${hovered.bitNumber}`;
+    }
   }
 
   if (!camera.isFake) {
