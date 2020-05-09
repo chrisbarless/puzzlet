@@ -26,7 +26,7 @@ function init() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
-    if (camera?.refresh) {
+    if (camera && camera.refresh) {
       camera.refresh();
     }
   }
