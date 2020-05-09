@@ -1,7 +1,7 @@
 import createDom2dCamera from 'dom-2d-camera';
 import { mat4, vec4 } from 'gl-matrix';
 
-const increment = 10;
+const increment = 100;
 let camera;
 
 function Camera(canvas) {
@@ -15,7 +15,6 @@ function Camera(canvas) {
     onWheel: cameraLog,
     onMouseUp: cameraLog,
   });
-  camera.refresh();
 
   // Move Left
   document

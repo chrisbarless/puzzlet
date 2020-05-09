@@ -4,6 +4,7 @@ function HexagonGrid(context, camera) {
   const mousePosition = [0, 0];
   const { canvas } = context;
 
+  const baseUnit = canvas.width / 150;
   const hexCount = 5765;
   const rowLimit = 61;
   const columnLimit = 95;
@@ -37,7 +38,12 @@ function HexagonGrid(context, camera) {
   for (let y = 0; y < rowLimit; y += 1) {
     const isEvenRow = y % 2 === 0;
     for (let x = 0; x < (isEvenRow ? columnLimit : columnLimit - 1); x += 1) {
-      hexagons.add({ bitNumber: index, position: [x, y], opacity: 1 });
+      hexagons.add({
+        bitNumber: index,
+        position: [x, y],
+        opacity: 1,
+        isEvenRow,
+      });
       index += 1;
     }
   }
@@ -49,7 +55,7 @@ function HexagonGrid(context, camera) {
   const hexagonHeightFactor = Math.cos(0.5);
 
   const getGridMousePos = () => {
-    const { scaling } = camera;
+    const scaling = baseUnit * camera.scaling;
     return [
       mousePosition[0]
         - canvas.width / 2
@@ -64,7 +70,7 @@ function HexagonGrid(context, camera) {
   };
 
   this.tick = () => {
-    const { scaling } = camera;
+    const scaling = baseUnit * camera.scaling;
     const a = (hexagonWidthFactor / 4) * scaling;
     const b = Math.sqrt(3) * a;
     const offset = {
@@ -127,9 +133,7 @@ function HexagonGrid(context, camera) {
   };
 
   function getClosestHexagon(position) {
-    const { scaling } = camera;
-    const minDist = Infinity;
-    let nearest;
+    const scaling = baseUnit * camera.scaling;
 
     const closest = [
       Math.floor(position[0] / scaling),
@@ -141,7 +145,6 @@ function HexagonGrid(context, camera) {
       return t;
     });
 
-    // console.log(position);
     return target;
   }
 
@@ -158,7 +161,6 @@ function HexagonGrid(context, camera) {
     event.preventDefault();
     getRelativeMousePosition(event);
     hovered = getClosestHexagon(getGridMousePos());
-    console.log(hovered);
     canvas.style.cursor = hovered ? 'pointer' : 'default';
   }
 
