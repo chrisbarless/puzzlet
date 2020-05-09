@@ -38,5 +38,7 @@ function tick() {
   requestAnimationFrame(tick);
 }
 
-init();
-tick();
+window.addEventListener('load', () => {
+  init();
+  tick();
+});
