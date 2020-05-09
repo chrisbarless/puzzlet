@@ -6,16 +6,6 @@ let context;
 let grid;
 let camera;
 
-function onWindowResize() {
-  if (canvas) {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  if (camera) {
-    camera.refresh();
-  }
-}
-
 function init() {
   const wordpressHeaderElement = document.getElementById('wp-custom-header');
   canvas = document.createElement('canvas');
@@ -26,6 +16,19 @@ function init() {
     wordpressHeaderElement.appendChild(canvas);
   } else {
     document.body.appendChild(canvas);
+  }
+
+  function onWindowResize() {
+    if (canvas) {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    } else if (wordpressHeaderElement) {
+      canvas.width = parentElement.offsetWidth;
+      canvas.height = parentElement.offsetHeight;
+    }
+    if (camera.refresh) {
+      camera.refresh();
+    }
   }
 
   onWindowResize();
