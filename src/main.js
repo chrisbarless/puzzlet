@@ -7,8 +7,13 @@ let grid;
 let camera;
 
 function onWindowResize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  if (canvas) {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  if (camera) {
+    camera.refresh();
+  }
 }
 
 function init() {
