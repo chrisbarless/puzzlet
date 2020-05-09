@@ -7,6 +7,7 @@ function HexagonGrid(context, camera) {
   const hexCount = 5765;
   const rowLimit = 61;
   const columnLimit = 95;
+  let hovered;
   let soldIds = [];
 
   const hexagons = new Set();
@@ -44,7 +45,9 @@ function HexagonGrid(context, camera) {
   context.fillStyle = '#ffac8c';
   context.strokeStyle = '#ffffff';
 
-  // Get hexagon relative mouse position
+  const hexagonWidthFactor = 2 * Math.tan((30 * Math.PI) / 180);
+  const hexagonHeightFactor = Math.cos(0.5);
+
   const getGridMousePos = () => {
     const { scaling } = camera;
     return [
@@ -52,18 +55,17 @@ function HexagonGrid(context, camera) {
         - canvas.width / 2
         + (columnLimit / 2) * scaling
         - camera.translation[0] / scaling,
-      mousePosition[1]
+      (mousePosition[1]
         - canvas.height / 2
         + (rowLimit / 2) * scaling
-        - camera.translation[1] / scaling,
+        - camera.translation[1] / scaling)
+        * (1 / hexagonHeightFactor),
     ];
   };
 
   this.tick = () => {
     const { scaling } = camera;
-    const hexagonRealWidth = 2 * Math.tan((30 * Math.PI) / 180);
-    const hexagonHeight = Math.cos(0.5);
-    const a = (hexagonRealWidth / 4) * scaling;
+    const a = (hexagonWidthFactor / 4) * scaling;
     const b = Math.sqrt(3) * a;
     const offset = {
       x:
@@ -77,15 +79,16 @@ function HexagonGrid(context, camera) {
     };
 
     const imageX = columnLimit * scaling;
-    const imageY = rowLimit * hexagonHeight * scaling;
+    const imageY = rowLimit * hexagonHeightFactor * scaling;
 
     const soldPieces = new Path2D();
     const unsoldPieces = new Path2D();
 
     // context.beginPath();
-    hexagons.forEach(({ position, bitNumber }) => {
+    hexagons.forEach((hexagon) => {
+      const { position, bitNumber } = hexagon;
       let targetPath = unsoldPieces;
-      if (soldIds.includes(bitNumber)) {
+      if (soldIds.includes(bitNumber) || hovered === hexagon) {
         targetPath = soldPieces;
       }
       let [x, y] = position.slice();
@@ -94,12 +97,12 @@ function HexagonGrid(context, camera) {
       } else {
         x += 1;
       }
-      // y += hexagonHeight / 2;
-      y += Math.tan(0.5);
       x *= scaling;
       x += offset.x;
-      // y *= 1 - (hexagonRealWidth - hexagonHeight);
-      y *= scaling * hexagonHeight;
+      // y *= 1 - (hexagonWidthFactor - hexagonHeightFactor);
+      y += hexagonHeightFactor / 2;
+      // y += 0.5;
+      y *= scaling * hexagonHeightFactor;
       y += offset.y;
       targetPath.moveTo(x + 0, y + -2 * a);
       targetPath.lineTo(x + b, y + -a);
@@ -154,14 +157,14 @@ function HexagonGrid(context, camera) {
   function onMouseMove(event) {
     event.preventDefault();
     getRelativeMousePosition(event);
-    const closest = getClosestHexagon(getGridMousePos());
-    canvas.style.cursor = closest ? 'pointer' : 'default';
+    hovered = getClosestHexagon(getGridMousePos());
+    console.log(hovered);
+    canvas.style.cursor = hovered ? 'pointer' : 'default';
   }
 
   function onClick(event) {
     event.preventDefault();
-    const closest = getClosestHexagon(getGridMousePos());
-    if (closest) window.location.href = `${server}/product/pusselbit/?bitnummer=${closest.bitNumber}`;
+    if (hovered) window.location.href = `${server}/product/pusselbit/?bitnummer=${hovered.bitNumber}`;
   }
   canvas.addEventListener('click', onClick);
   canvas.addEventListener('mousemove', onMouseMove);
