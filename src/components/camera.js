@@ -1,7 +1,6 @@
 import createDom2dCamera from 'dom-2d-camera';
 import { mat4, vec4 } from 'gl-matrix';
 
-// const scratch = new Float32Array(16);
 const increment = 10;
 let camera;
 
@@ -9,18 +8,14 @@ function Camera(canvas) {
   const cameraLog = CameraDebugger();
 
   camera = createDom2dCamera(canvas, {
-    // target: [5, 1],
-    // target: [-96 / 2, -61 / 2],
-    // target: [canvas.width / 2, canvas.height / 2],
-    scaleBounds: [10, 100],
-    panSpeed: 10,
+    scaleBounds: [1, 10],
+    // panSpeed: 10,
     isNdc: false,
     isRotate: false,
     onWheel: cameraLog,
     onMouseUp: cameraLog,
   });
   camera.refresh();
-  // camera.lookAt([canvas.width / 2, canvas.height / 2], 0.1);
 
   // Move Left
   document
@@ -56,8 +51,6 @@ function Camera(canvas) {
     .addEventListener('click', (event) => {
       event.preventDefault();
       camera.zoom(2);
-      // const zoomedVal = camera.position.z - increment;
-      // zoomedVal > minZoom && camera.position.setZ(zoomedVal);
     });
   // Zoom out
   document
@@ -65,17 +58,14 @@ function Camera(canvas) {
     .addEventListener('click', (event) => {
       event.preventDefault();
       camera.zoom(0.5);
-      // const zoomedVal = camera.position.z + increment;
-      // zoomedVal < maxZoom && camera.position.setZ(zoomedVal);
     });
 
   return camera;
 }
 
 function CameraDebugger() {
-  if (process.env.NODE_ENV === 'production') return null;
-
   return () => {
+    if (process.env.NODE_ENV === 'production') return null;
     console.clear();
     const { view } = camera;
     for (const key in camera) {
