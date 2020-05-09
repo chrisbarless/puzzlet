@@ -9,7 +9,7 @@ function Camera(canvas) {
 
   camera = createDom2dCamera(canvas, {
     scaleBounds: [1, 10],
-    // panSpeed: 10,
+    panSpeed: 5,
     isNdc: false,
     isRotate: false,
     onWheel: cameraLog,
