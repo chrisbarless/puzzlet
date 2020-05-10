@@ -1,5 +1,6 @@
-const grid = require('./hexagon-grid.js');
+const { buildGrid } = require('./hexagon-grid.js');
 
 test('buildGrid', () => {
-  expect(sum(1, 2)).toBe(3);
+  const hexagons = buildGrid();
+  expect(hexagons.size).toBe(5765);
 });

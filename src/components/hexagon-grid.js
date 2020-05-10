@@ -1,18 +1,34 @@
-import { mat4, vec4 } from 'gl-matrix';
+const { mat4, vec4 } = require('gl-matrix');
+
+const rowLimit = 61;
+const columnLimit = 95;
+
+export function buildGrid() {
+  const hexagons = new Set();
+  let index = 1;
+  for (let y = 0; y < rowLimit; y += 1) {
+    const isEvenRow = y % 2 === 0;
+    for (let x = 0; x < (isEvenRow ? columnLimit : columnLimit - 1); x += 1) {
+      hexagons.add({
+        bitNumber: index,
+        position: [x, y],
+        opacity: 1,
+        isEvenRow,
+      });
+      index += 1;
+    }
+  }
+  return hexagons;
+}
 
 function HexagonGrid(context, camera) {
   const mousePosition = [0, 0];
   const { canvas } = context;
 
   const baseUnit = canvas.width / 150;
-  const hexCount = 5765;
-  const rowLimit = 61;
-  const columnLimit = 95;
   let hovered;
   let soldIds = [];
   let drag = false;
-
-  const hexagons = new Set();
 
   const server = 'https://bitforbit.notquite.se';
   const endpoint = `${server}/wp-admin/admin-ajax.php?action=get_sold_hexes`;
@@ -32,21 +48,6 @@ function HexagonGrid(context, camera) {
     request.send();
   } else {
     soldIds = [2223];
-  }
-
-  let index = 1;
-
-  for (let y = 0; y < rowLimit; y += 1) {
-    const isEvenRow = y % 2 === 0;
-    for (let x = 0; x < (isEvenRow ? columnLimit : columnLimit - 1); x += 1) {
-      hexagons.add({
-        bitNumber: index,
-        position: [x, y],
-        opacity: 1,
-        isEvenRow,
-      });
-      index += 1;
-    }
   }
 
   context.fillStyle = '#ffac8c';
