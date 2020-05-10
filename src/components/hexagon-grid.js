@@ -20,7 +20,7 @@ function Grid() {
     }
   }
 
-  this.getHexByPosition = function ([x, y]) {
+  this.getHexByPosition = function getHexByPosition([x, y]) {
     const target = [...hexagons].find(({ position }) => {
       const t = position[0] === x && position[1] === y;
       return t;
@@ -30,9 +30,9 @@ function Grid() {
 }
 
 function HexagonGrid(context, camera) {
+  const { canvas } = context;
   const baseUnit = canvas ? canvas.width / 150 : 10;
   const mousePosition = [0, 0];
-  // const { canvas } = context;
 
   let hovered;
   let soldIds = [];

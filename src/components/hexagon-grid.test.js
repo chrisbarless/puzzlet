@@ -1,4 +1,4 @@
-import Hexagons, { Grid } from './hexagon-grid';
+import { Grid } from './hexagon-grid';
 
 describe('Hexagon Grid', () => {
   it('Builds a grid of hexagons', () => {
