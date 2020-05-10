@@ -1,6 +1,12 @@
-const { buildGrid } = require('./hexagon-grid.js');
+import Hexagons, { Grid } from './hexagon-grid';
 
-test('buildGrid', () => {
-  const hexagons = buildGrid();
-  expect(hexagons.size).toBe(5765);
+describe('Hexagon Grid', () => {
+  it('Builds a grid of hexagons', () => {
+    // expect([...hexagons.length]).toBe(5765);
+  });
+
+  it('Gets a hex by x,y', () => {
+    const grid = new Grid();
+    expect(grid.getHexByPosition([0, 0]).bitNumber).toEqual(1);
+  });
 });

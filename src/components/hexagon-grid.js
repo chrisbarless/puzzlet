@@ -3,9 +3,10 @@ const { mat4, vec4 } = require('gl-matrix');
 const rowLimit = 61;
 const columnLimit = 95;
 
-export function buildGrid() {
+function Grid() {
   const hexagons = new Set();
   let index = 1;
+
   for (let y = 0; y < rowLimit; y += 1) {
     const isEvenRow = y % 2 === 0;
     for (let x = 0; x < (isEvenRow ? columnLimit : columnLimit - 1); x += 1) {
@@ -18,14 +19,21 @@ export function buildGrid() {
       index += 1;
     }
   }
-  return hexagons;
+
+  this.getHexByPosition = function ([x, y]) {
+    const target = [...hexagons].find(({ position }) => {
+      const t = position[0] === x && position[1] === y;
+      return t;
+    });
+    return target;
+  };
 }
 
 function HexagonGrid(context, camera) {
+  const baseUnit = canvas ? canvas.width / 150 : 10;
   const mousePosition = [0, 0];
-  const { canvas } = context;
+  // const { canvas } = context;
 
-  const baseUnit = canvas.width / 150;
   let hovered;
   let soldIds = [];
   let drag = false;
@@ -92,7 +100,6 @@ function HexagonGrid(context, camera) {
     const soldPieces = new Path2D();
     const unsoldPieces = new Path2D();
 
-    // context.beginPath();
     hexagons.forEach((hexagon) => {
       const { position, bitNumber } = hexagon;
       let targetPath = unsoldPieces;
@@ -107,9 +114,7 @@ function HexagonGrid(context, camera) {
       }
       x *= scaling;
       x += offset.x;
-      // y *= 1 - (hexagonWidthFactor - hexagonHeightFactor);
       y += hexagonHeightFactor / 2;
-      // y += 0.5;
       y *= scaling * hexagonHeightFactor;
       y += offset.y;
       targetPath.moveTo(x + 0, y + -2 * a);
@@ -119,9 +124,6 @@ function HexagonGrid(context, camera) {
       targetPath.lineTo(x + -b, y + a);
       targetPath.lineTo(x + -b, y + -a);
       targetPath.lineTo(x + 0, y + -2 * a);
-      // if (index === columnLimit) {
-      // debugger;
-      // }
     });
     // context.closePath();
     // context.clip();
@@ -133,22 +135,6 @@ function HexagonGrid(context, camera) {
     context.fill(unsoldPieces);
     context.stroke(unsoldPieces);
   };
-
-  function getClosestHexagon(position) {
-    const scaling = baseUnit * camera.scaling;
-
-    const closest = [
-      Math.floor(position[0] / scaling),
-      Math.floor(position[1] / scaling),
-    ];
-
-    const target = [...hexagons].find(({ position: targetPosition }) => {
-      const t = targetPosition[0] === closest[0] && targetPosition[1] === closest[1];
-      return t;
-    });
-
-    return target;
-  }
 
   const getRelativeMousePosition = (event) => {
     const rect = canvas.getBoundingClientRect();
@@ -182,4 +168,5 @@ function HexagonGrid(context, camera) {
   }
 }
 
+export { Grid };
 export default HexagonGrid;
