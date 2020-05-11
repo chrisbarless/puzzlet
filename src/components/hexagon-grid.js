@@ -100,6 +100,7 @@ function HexagonGrid(context, camera) {
     context.strokeStyle = '#ffffff';
 
     // context.beginPath();
+
     hexagons.forEach((hexagon, bitNumber) => {
       const { position } = hexagon;
       let targetPath = unsoldPieces;
