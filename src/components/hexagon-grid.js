@@ -57,8 +57,7 @@ function HexagonGrid(context, camera) {
     for (let x = 0; x < (isEvenRow ? columnLimit : columnLimit - 1); x += 1) {
       hexagons.set(index, {
         bitNumber: index,
-        position: [x, y],
-        vector: vec3.fromValues(
+        position: vec3.fromValues(
           x,
           y,
           1, // Opacity
@@ -146,7 +145,7 @@ function HexagonGrid(context, camera) {
     let closest;
 
     hexagons.forEach((hexagon) => {
-      const thisDist = vec2.dist(hexagon.vector, position);
+      const thisDist = vec2.dist(hexagon.position, position);
 
       if (thisDist < minDist) {
         minDist = thisDist;
