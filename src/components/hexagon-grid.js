@@ -1,13 +1,10 @@
-import {
-  mat4, vec2, vec3, vec4,
-} from 'gl-matrix';
+import { mat4, vec2, vec3 } from 'gl-matrix';
 
 const scratch0 = new Float32Array(16);
 const scratch1 = new Float32Array(16);
-const scratch2 = new Float32Array(16);
 
-const scratchV0 = vec3.create();
-const scratchV1 = vec3.create();
+const scratchVec0 = vec3.create();
+const scratchVec1 = vec3.create();
 
 const offset = mat4.create();
 
@@ -80,12 +77,12 @@ function HexagonGrid(context, camera) {
 
   vec3.scale(canvasCenter, canvasSize, 0.5);
   vec3.scale(gridCenter, gridSize, 0.5);
-  vec3.negate(scratchV0, gridCenter);
+  vec3.negate(scratchVec0, gridCenter);
 
   mat4.fromTranslation(scratch0, canvasCenter);
-  mat4.fromTranslation(scratch2, scratchV1);
+  mat4.fromTranslation(scratch1, scratchVec1);
 
-  mat4.multiply(offset, scratch0, scratch2);
+  mat4.multiply(offset, scratch0, scratch1);
 
   camera.setView(offset);
 
@@ -170,9 +167,9 @@ function HexagonGrid(context, camera) {
 
     drag = true;
     mat4.invert(scratch0, camera.view);
-    vec2.transformMat4(scratchV0, mousePosition, scratch0);
+    vec2.transformMat4(scratchVec0, mousePosition, scratch0);
 
-    hovered = getClosestHexagon(scratchV0);
+    hovered = getClosestHexagon(scratchVec0);
 
     canvas.style.cursor = hovered && !soldIds.includes(hovered.bitNumber) ? 'pointer' : 'default';
   }
