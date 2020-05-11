@@ -4,8 +4,11 @@ const rowLimit = 61;
 const columnLimit = 95;
 
 function Grid() {
-  const hexagons = new Set();
+  const hexagonWidthFactor = 2 * Math.tan((30 * Math.PI) / 180);
+  const hexagonHeightFactor = Math.cos(0.5);
   let index = 1;
+
+  this.hexagons = new Set();
 
   for (let y = 0; y < rowLimit; y += 1) {
     const isEvenRow = y % 2 === 0;
@@ -60,9 +63,6 @@ function HexagonGrid(context, camera) {
 
   context.fillStyle = '#ffac8c';
   context.strokeStyle = '#ffffff';
-
-  const hexagonWidthFactor = 2 * Math.tan((30 * Math.PI) / 180);
-  const hexagonHeightFactor = Math.cos(0.5);
 
   const getGridMousePos = () => {
     const scaling = baseUnit * camera.scaling;

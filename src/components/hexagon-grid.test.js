@@ -2,7 +2,7 @@ import { Grid } from './hexagon-grid';
 
 describe('Hexagon Grid', () => {
   it('Builds a grid of hexagons', () => {
-    // expect([...hexagons.length]).toBe(5765);
+    expect([...hexagons.length]).toBe(5765);
   });
 
   it('Gets a hex by x,y', () => {
@@ -12,4 +12,10 @@ describe('Hexagon Grid', () => {
     expect(grid.getHexByPosition([0, 1]).bitNumber).toEqual(96);
     expect(grid.getHexByPosition([94, 60]).bitNumber).toEqual(5765);
   });
+
+  it.todo('gets a hex by eventX, eventY');
+
+  it.todo('draws with correctly scaling width factors');
+
+  it.todo('hWF + hHF  = 1,1 ');
 });
