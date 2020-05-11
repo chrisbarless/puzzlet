@@ -16,8 +16,9 @@ const canvasCenter = vec3.create();
 const gridSize = vec3.create();
 const gridCenter = vec3.create();
 
+const mousePosition = [0, 0];
+
 function HexagonGrid(context, camera) {
-  const mousePosition = [0, 0];
   const { canvas } = context;
 
   const baseUnit = canvas.width / 150;
@@ -76,15 +77,12 @@ function HexagonGrid(context, camera) {
   const hexagonWidthFactor = 2 * Math.tan((30 * Math.PI) / 180);
   const hexagonHeightFactor = Math.cos(0.5);
 
-  const getGridMousePos = () => {
-    const scaling = baseUnit * camera.scaling;
-    return [
-      mousePosition[0],
-      -camera.translation[0],
-      mousePosition[1],
-      -camera.translation[1],
-    ];
-  };
+  const getGridMousePos = () => [
+    mousePosition[0],
+    -camera.translation[0],
+    mousePosition[1],
+    -camera.translation[1],
+  ];
 
   vec3.set(canvasSize, canvas.width, canvas.height, 0);
   vec3.set(gridSize, columnLimit - 1, rowLimit - 1, 0);
@@ -184,14 +182,20 @@ function HexagonGrid(context, camera) {
     mousePosition[0] = event.clientX - rect.left;
     mousePosition[1] = event.clientY - rect.top;
 
-    return [...mousePosition];
+    // return mousePosition.set();
   };
 
   function onMouseMove(event) {
     drag = true;
     event.preventDefault();
     getRelativeMousePosition(event);
-    hovered = getClosestHexagon(getGridMousePos());
+    const gridMousePos = getGridMousePos();
+    hovered = getClosestHexagon(gridMousePos);
+
+    mat4.invert(scratch0, camera.view);
+    vec2.transformMat4(scratchV0, mousePosition, scratch0);
+
+    // console.table({ mousePosition, gridMousePos, scratchV0 });
     canvas.style.cursor = hovered && !soldIds.includes(hovered.bitNumber) ? 'pointer' : 'default';
   }
 
