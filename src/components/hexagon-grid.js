@@ -49,9 +49,6 @@ function HexagonGrid(context, camera) {
     }
   }
 
-  context.fillStyle = '#ffac8c';
-  context.strokeStyle = '#ffffff';
-
   const hexagonWidthFactor = 2 * Math.tan((30 * Math.PI) / 180);
   const hexagonHeightFactor = Math.cos(0.5);
 
@@ -90,6 +87,9 @@ function HexagonGrid(context, camera) {
 
     const soldPieces = new Path2D();
     const unsoldPieces = new Path2D();
+
+    context.fillStyle = '#ffac8c';
+    context.strokeStyle = '#ffffff';
 
     // context.beginPath();
     hexagons.forEach((hexagon) => {
