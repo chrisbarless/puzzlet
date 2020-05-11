@@ -1,7 +1,8 @@
 import createDom2dCamera from 'dom-2d-camera';
-import { mat4, vec4 } from 'gl-matrix';
+import { mat4, vec3 } from 'gl-matrix';
 
 const increment = 100;
+
 let camera;
 
 function Camera(canvas) {
@@ -9,7 +10,7 @@ function Camera(canvas) {
 
   camera = createDom2dCamera(canvas, {
     scaleBounds: [1, 10],
-    panSpeed: 5,
+    viewCenter: [canvas.width / 2, canvas.height / 2],
     isNdc: false,
     isRotate: false,
     onWheel: cameraLog,

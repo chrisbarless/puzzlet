@@ -1,4 +1,20 @@
-import { mat4, vec4 } from 'gl-matrix';
+import {
+  mat4, vec2, vec3, vec4,
+} from 'gl-matrix';
+
+const scratch0 = new Float32Array(16);
+const scratch1 = new Float32Array(16);
+const scratch2 = new Float32Array(16);
+
+const scratchV0 = vec3.create();
+const scratchV1 = vec3.create();
+
+const offset = mat4.create();
+
+const canvasSize = vec3.create();
+const canvasCenter = vec3.create();
+const gridSize = vec3.create();
+const gridCenter = vec3.create();
 
 function HexagonGrid(context, camera) {
   const mousePosition = [0, 0];
@@ -46,7 +62,11 @@ function HexagonGrid(context, camera) {
       hexagons.add({
         bitNumber: index,
         position: [x, y],
-        opacity: 1,
+        vector: vec3.fromValues(
+          x,
+          y,
+          1, // Opacity
+        ),
         isEvenRow,
       });
       index += 1;
@@ -59,31 +79,36 @@ function HexagonGrid(context, camera) {
   const getGridMousePos = () => {
     const scaling = baseUnit * camera.scaling;
     return [
-      mousePosition[0]
-        - canvas.width / 2
-        + (columnLimit / 2) * scaling
-        - camera.translation[0] / scaling,
-      (mousePosition[1]
-        - canvas.height / 2
-        + (rowLimit / 2) * scaling
-        - camera.translation[1] / scaling)
-        * (1 / hexagonHeightFactor),
+      mousePosition[0],
+      -camera.translation[0],
+      mousePosition[1],
+      -camera.translation[1],
     ];
   };
+
+  vec3.set(canvasSize, canvas.width, canvas.height, 0);
+  vec3.set(gridSize, columnLimit - 1, rowLimit - 1, 0);
+
+  vec3.scale(canvasCenter, canvasSize, 0.5);
+
+  vec3.scale(gridCenter, gridSize, 0.5);
+  vec3.negate(scratchV0, gridCenter);
+  vec3.scale(scratchV1, scratchV0, baseUnit);
+
+  mat4.fromTranslation(scratch0, canvasCenter);
+  mat4.fromTranslation(scratch2, scratchV1);
+
+  mat4.multiply(offset, scratch0, scratch2);
+
+  camera.setView(offset);
 
   this.tick = () => {
     const scaling = baseUnit * camera.scaling;
     const a = (hexagonWidthFactor / 4) * scaling;
     const b = Math.sqrt(3) * a;
     const offset = {
-      x:
-        canvas.width / 2
-        - (columnLimit / 2) * scaling
-        + camera.translation[0] / scaling,
-      y:
-        canvas.height / 2
-        - (rowLimit / 2) * scaling
-        + camera.translation[1] / scaling,
+      x: camera.translation[0],
+      y: camera.translation[1],
     };
 
     const imageX = columnLimit * scaling;
