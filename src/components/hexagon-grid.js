@@ -118,9 +118,7 @@ function HexagonGrid(context, camera) {
       }
       x *= scaling;
       x += camera.translation[0];
-      // y *= 1 - (hexagonWidthFactor - hexagonHeightFactor);
       y += hexagonHeightFactor / 2;
-      // y += 0.5;
       y *= scaling * hexagonHeightFactor;
       y += camera.translation[1];
       targetPath.moveTo(x + 0, y + -2 * a);
@@ -130,15 +128,10 @@ function HexagonGrid(context, camera) {
       targetPath.lineTo(x + -b, y + a);
       targetPath.lineTo(x + -b, y + -a);
       targetPath.lineTo(x + 0, y + -2 * a);
-      // if (index === columnLimit) {
-      // debugger;
-      // }
     });
-    // context.closePath();
-    // context.clip();
     context.fill(soldPieces);
     context.stroke(soldPieces);
-    context.globalCompositeOperation = 'source-atop'; // picture clipped inside oval
+    context.globalCompositeOperation = 'source-atop';
     context.drawImage(
       img,
       camera.translation[0],
@@ -146,7 +139,7 @@ function HexagonGrid(context, camera) {
       imageX,
       imageY,
     );
-    context.globalCompositeOperation = 'source-over'; // the default
+    context.globalCompositeOperation = 'source-over';
     context.fill(unsoldPieces);
     context.stroke(unsoldPieces);
   };
