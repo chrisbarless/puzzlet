@@ -4,7 +4,6 @@ const scratch0 = new Float32Array(16);
 const scratch1 = new Float32Array(16);
 
 const scratchVec0 = vec3.create();
-const scratchVec1 = vec3.create();
 
 const offset = mat4.create();
 
@@ -12,6 +11,23 @@ const canvasSize = vec3.create();
 const canvasCenter = vec3.create();
 const gridSize = vec3.create();
 const gridCenter = vec3.create();
+
+const hexVecs = [
+  vec3.fromValues(0, -0.5, 0),
+  vec3.fromValues(0.5, -0.25, 0),
+  vec3.fromValues(0.5, 0.25, 0),
+  vec3.fromValues(0, 0.5, 0),
+  vec3.fromValues(-0.5, 0.25, 0),
+  vec3.fromValues(-0.5, -0.25, 0),
+];
+const hexScratch = [
+  vec3.create(),
+  vec3.create(),
+  vec3.create(),
+  vec3.create(),
+  vec3.create(),
+  vec3.create(),
+];
 
 const mousePosition = [0, 0];
 
@@ -68,9 +84,6 @@ function HexagonGrid(context, camera) {
     }
   }
 
-  const hexagonWidthFactor = 2 * Math.tan((30 * Math.PI) / 180);
-  const hexagonHeightFactor = Math.cos(0.5);
-
   vec3.set(canvasSize, canvas.width, canvas.height, 0);
   vec3.set(gridSize, columnLimit - 1, rowLimit - 1, 0);
 
@@ -79,53 +92,51 @@ function HexagonGrid(context, camera) {
   vec3.negate(scratchVec0, gridCenter);
 
   mat4.fromTranslation(scratch0, canvasCenter);
-  mat4.fromTranslation(scratch1, scratchVec1);
+  mat4.fromTranslation(scratch1, scratchVec0);
 
   mat4.multiply(offset, scratch0, scratch1);
 
+  // camera.setScaleBounds([canvas.width / 150, canvas.width * 15]);
   camera.setView(offset);
 
   this.tick = () => {
-    const { scaling } = camera;
-    const a = (hexagonWidthFactor / 4) * scaling;
-    const b = Math.sqrt(3) * a;
+    context.fillStyle = '#ffac8c';
+    context.strokeStyle = '#ffffff';
 
-    const imageX = columnLimit * scaling;
-    const imageY = rowLimit * hexagonHeightFactor * scaling;
+    const { scaling, view } = camera;
 
     const soldPieces = new Path2D();
     const unsoldPieces = new Path2D();
 
-    context.fillStyle = '#ffac8c';
-    context.strokeStyle = '#ffffff';
-
-    // context.beginPath();
-
     hexagons.forEach((hexagon, bitNumber) => {
-      const { position } = hexagon;
+      const { position, isEvenRow } = hexagon;
       let targetPath = unsoldPieces;
       if (soldIds.includes(bitNumber) || hovered === hexagon) {
         targetPath = soldPieces;
       }
-      let [x, y] = position.slice();
-      if (y % 2 === 0) {
-        x += 0.5;
-      } else {
-        x += 1;
-      }
-      x *= scaling;
-      x += camera.translation[0];
-      y += hexagonHeightFactor / 2;
-      y *= scaling * hexagonHeightFactor;
-      y += camera.translation[1];
-      targetPath.moveTo(x + 0, y + -2 * a);
-      targetPath.lineTo(x + b, y + -a);
-      targetPath.lineTo(x + b, y + a);
-      targetPath.lineTo(x + 0, y + 2 * a);
-      targetPath.lineTo(x + -b, y + a);
-      targetPath.lineTo(x + -b, y + -a);
-      targetPath.lineTo(x + 0, y + -2 * a);
+
+      [0, 1, 2, 3, 4, 5].forEach((i) => {
+        vec3.copy(hexScratch[i], position);
+        vec3.multiply(hexScratch[i], hexScratch[i], [1, 0.75, 1]);
+        vec3.add(hexScratch[i], hexScratch[i], [0.5, 0.5, 0]);
+        vec3.add(hexScratch[i], hexScratch[i], hexVecs[i]);
+        if (isEvenRow) {
+          vec3.subtract(hexScratch[i], hexScratch[i], [0.5, 0, 0]);
+        }
+        vec3.scale(hexScratch[i], hexScratch[i], 10);
+        vec3.transformMat4(hexScratch[i], hexScratch[i], view);
+        // vec3.transformMat4(hexScratch[i], hexScratch[i], offset);
+      });
+
+      targetPath.moveTo(...hexScratch[0]);
+      targetPath.lineTo(...hexScratch[1]);
+      targetPath.lineTo(...hexScratch[2]);
+      targetPath.lineTo(...hexScratch[3]);
+      targetPath.lineTo(...hexScratch[4]);
+      targetPath.lineTo(...hexScratch[5]);
+      targetPath.lineTo(...hexScratch[0]);
     });
+
     context.fill(soldPieces);
     context.stroke(soldPieces);
     context.globalCompositeOperation = 'source-atop';
@@ -133,8 +144,8 @@ function HexagonGrid(context, camera) {
       img,
       camera.translation[0],
       camera.translation[1],
-      imageX,
-      imageY,
+      columnLimit * scaling * 10,
+      rowLimit * scaling * 10,
     );
     context.globalCompositeOperation = 'source-over';
     context.fill(unsoldPieces);
