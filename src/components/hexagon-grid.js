@@ -1,36 +1,53 @@
 import { mat4, vec2, vec3 } from 'gl-matrix';
 
+const a = 1 / 4;
+const b = Math.sqrt(3) * a;
+const rad = Math.PI / 3;
+
 const scratch0 = new Float32Array(16);
 const scratch1 = new Float32Array(16);
 
-const scratchVec0 = vec3.create();
+const scratchVec0 = new Float32Array(3);
+const scratchVec1 = new Float32Array(3);
 
 const offset = mat4.create();
 
-const canvasSize = vec3.create();
-const canvasCenter = vec3.create();
-const gridSize = vec3.create();
-const gridCenter = vec3.create();
+const canvasSize = new Float32Array(3);
+const canvasCenter = new Float32Array(3);
+const gridSize = new Float32Array(3);
+const gridCenter = new Float32Array(3);
 
-const a = 1 / 4;
-const b = Math.sqrt(3) * a;
+const scaleMatrix = new Float32Array(16);
+const vertexRotationMatrix = new Float32Array(16);
+const vertexTranslationMatrix = new Float32Array(16);
 
-const hexVecs = [
-  vec3.fromValues(b, -a, 1),
-  vec3.fromValues(b, a, 1),
-  vec3.fromValues(0, 2 * a, 1),
-  vec3.fromValues(-b, a, 1),
-  vec3.fromValues(-b, -a, 1),
-  vec3.fromValues(0, -2 * a, 1),
-];
+mat4.fromZRotation(vertexRotationMatrix, Math.PI / 3);
+mat4.fromTranslation(vertexTranslationMatrix, [0, -1, 0]);
+const horizontalScale = Math.cos(1);
+const verticalScale = Math.tanh(1);
+mat4.fromScaling(scaleMatrix, [horizontalScale, verticalScale, 1]);
+
+console.log(vertexRotationMatrix);
+console.log(vertexTranslationMatrix);
+
+// const hexVecs = [
+//   vec3.fromValues(b, -a, 1),
+//   vec3.fromValues(b, a, 1),
+//   vec3.fromValues(0, 2 * a, 1),
+//   vec3.fromValues(-b, a, 1),
+//   vec3.fromValues(-b, -a, 1),
+//   vec3.fromValues(0, -2 * a, 1),
+// ];
+
+// const hexMatrices = [];
 
 const hexScratch = [
-  vec3.create(),
-  vec3.create(),
-  vec3.create(),
-  vec3.create(),
-  vec3.create(),
-  vec3.create(),
+  new Float32Array(3),
+  new Float32Array(3),
+  new Float32Array(3),
+  new Float32Array(3),
+  new Float32Array(3),
+  new Float32Array(3),
 ];
 
 const mousePosition = [0, 0];
@@ -119,19 +136,25 @@ function HexagonGrid(context, camera) {
         targetPath = soldPieces;
       }
 
-      hexVecs.forEach((vec, i) => {
-        vec3.copy(hexScratch[i], position);
-        // vec3.multiply(hexScratch[i], hexScratch[i], [1, 0.75, 1]);
-        vec3.add(hexScratch[i], hexScratch[i], [0.5, 0.5, 0]);
-        vec3.add(hexScratch[i], hexScratch[i], vec);
+      for (let i = 0; i <= 5; i++) {
+        vec3.rotateZ(
+          hexScratch[i],
+          position,
+          [position[0], position[1] - 0.5, position[2]],
+          rad * i,
+        );
         if (isEvenRow) {
           vec3.subtract(hexScratch[i], hexScratch[i], [0.5, 0, 0]);
         }
-        vec3.scale(hexScratch[i], hexScratch[i], 10);
+        vec3.transformMat4(hexScratch[i], hexScratch[i], scaleMatrix);
         vec3.transformMat4(hexScratch[i], hexScratch[i], view);
-        // vec3.ceil(hexScratch[i], hexScratch[i]);
-        // vec3.transformMat4(hexScratch[i], hexScratch[i], offset);
-      });
+        vec3.ceil(hexScratch[i], hexScratch[i]);
+      }
+
+      if (bitNumber > 5000 && bitNumber < 5006) {
+        // console.table(hexScratch);
+        // debugger;
+      }
 
       targetPath.moveTo(...hexScratch[0]);
       targetPath.lineTo(...hexScratch[1]);
