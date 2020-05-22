@@ -1,32 +1,36 @@
-import { mat4, vec2, vec3 } from 'gl-matrix';
+import { mat3, vec2 } from 'gl-matrix';
 
 const scratch0 = new Float32Array(16);
 const scratch1 = new Float32Array(16);
 
-const scratchVec0 = vec3.create();
+const scratchVec0 = vec2.create();
 
-const offset = mat4.create();
+const offset = mat3.create();
 
-const canvasSize = vec3.create();
-const canvasCenter = vec3.create();
-const gridSize = vec3.create();
-const gridCenter = vec3.create();
+const canvasSize = vec2.create();
+const canvasCenter = vec2.create();
+const gridSize = vec2.create();
+const gridCenter = vec2.create();
+
+const a = 1 / 4;
+const b = Math.sqrt(3) * a;
 
 const hexVecs = [
-  vec3.fromValues(0, -0.5, 0),
-  vec3.fromValues(0.5, -0.25, 0),
-  vec3.fromValues(0.5, 0.25, 0),
-  vec3.fromValues(0, 0.5, 0),
-  vec3.fromValues(-0.5, 0.25, 0),
-  vec3.fromValues(-0.5, -0.25, 0),
+  vec2.fromValues(b, -a),
+  vec2.fromValues(b, a),
+  vec2.fromValues(0, 2 * a),
+  vec2.fromValues(-b, a),
+  vec2.fromValues(-b, -a),
+  vec2.fromValues(0, -2 * a),
 ];
+
 const hexScratch = [
-  vec3.create(),
-  vec3.create(),
-  vec3.create(),
-  vec3.create(),
-  vec3.create(),
-  vec3.create(),
+  vec2.create(),
+  vec2.create(),
+  vec2.create(),
+  vec2.create(),
+  vec2.create(),
+  vec2.create(),
 ];
 
 const mousePosition = [0, 0];
@@ -73,7 +77,7 @@ function HexagonGrid(context, camera) {
     for (let x = 0; x < (isEvenRow ? columnLimit : columnLimit - 1); x += 1) {
       hexagons.set(index, {
         bitNumber: index,
-        position: vec3.fromValues(
+        position: vec2.fromValues(
           x,
           y,
           1, // Opacity
@@ -84,17 +88,17 @@ function HexagonGrid(context, camera) {
     }
   }
 
-  vec3.set(canvasSize, canvas.width, canvas.height, 0);
-  vec3.set(gridSize, columnLimit - 1, rowLimit - 1, 0);
+  vec2.set(canvasSize, canvas.width, canvas.height, 0);
+  vec2.set(gridSize, columnLimit - 1, rowLimit - 1, 0);
 
-  vec3.scale(canvasCenter, canvasSize, 0.5);
-  vec3.scale(gridCenter, gridSize, 0.5);
-  vec3.negate(scratchVec0, gridCenter);
+  vec2.scale(canvasCenter, canvasSize, 0.5);
+  vec2.scale(gridCenter, gridSize, 0.5);
+  vec2.negate(scratchVec0, gridCenter);
 
-  mat4.fromTranslation(scratch0, canvasCenter);
-  mat4.fromTranslation(scratch1, scratchVec0);
+  mat3.fromTranslation(scratch0, canvasCenter);
+  mat3.fromTranslation(scratch1, scratchVec0);
 
-  mat4.multiply(offset, scratch0, scratch1);
+  mat3.multiply(offset, scratch0, scratch1);
 
   // camera.setScaleBounds([canvas.width / 150, canvas.width * 15]);
   camera.setView(offset);
@@ -115,17 +119,17 @@ function HexagonGrid(context, camera) {
         targetPath = soldPieces;
       }
 
-      [0, 1, 2, 3, 4, 5].forEach((i) => {
-        vec3.copy(hexScratch[i], position);
-        vec3.multiply(hexScratch[i], hexScratch[i], [1, 0.75, 1]);
-        vec3.add(hexScratch[i], hexScratch[i], [0.5, 0.5, 0]);
-        vec3.add(hexScratch[i], hexScratch[i], hexVecs[i]);
+      hexVecs.forEach((vec, i) => {
+        vec2.copy(hexScratch[i], position);
+        vec2.multiply(hexScratch[i], hexScratch[i], [1, 0.75, 1]);
+        vec2.add(hexScratch[i], hexScratch[i], [0.5, 0.5, 0]);
+        vec2.add(hexScratch[i], hexScratch[i], vec);
         if (isEvenRow) {
-          vec3.subtract(hexScratch[i], hexScratch[i], [0.5, 0, 0]);
+          vec2.subtract(hexScratch[i], hexScratch[i], [0.5, 0, 0]);
         }
-        vec3.scale(hexScratch[i], hexScratch[i], 10);
-        vec3.transformMat4(hexScratch[i], hexScratch[i], view);
-        // vec3.transformMat4(hexScratch[i], hexScratch[i], offset);
+        vec2.scale(hexScratch[i], hexScratch[i], 10);
+        vec2.transformMat4(hexScratch[i], hexScratch[i], view);
+        // vec2.transformMat4(hexScratch[i], hexScratch[i], offset);
       });
 
       targetPath.moveTo(...hexScratch[0]);
