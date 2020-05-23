@@ -163,6 +163,7 @@ function HexagonGrid(context, camera) {
   };
 
   function onMouseMove(event) {
+    drag = true;
     event.preventDefault();
     getRelativeMousePosition(event);
     hovered = getClosestHexagon(getGridMousePos());
@@ -178,9 +179,8 @@ function HexagonGrid(context, camera) {
   }
 
   if (!camera.isFake) {
-    document.addEventListener('mousedown', () => (drag = false));
-    document.addEventListener('mousemove', () => (drag = true));
-    document.addEventListener('mouseup', (event) => !drag && onClick(event));
+    canvas.addEventListener('mousedown', () => (drag = false));
+    canvas.addEventListener('mouseup', (event) => !drag && onClick(event));
     canvas.addEventListener('mousemove', onMouseMove);
   }
 }
