@@ -17,8 +17,14 @@ function Camera(canvas) {
   });
 
   const controls = document.getElementById('puzzle-controls');
+  const container = document.getElementById('puzzle-container');
+  const hideControls = window.location.hash === '#hidecontrols';
 
-  if (!controls) {
+  if (container && hideControls) {
+    container.className = `${container.className} hideControls`;
+  }
+
+  if (!controls || hideControls) {
     return {
       isFake: true,
       scaling: 1,
