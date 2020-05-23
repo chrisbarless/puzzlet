@@ -28,8 +28,12 @@ function HexagonGrid(context, camera) {
       }
     };
 
-    request.open('GET', endpoint);
-    request.send();
+    const refreshHexes = () => {
+      request.open('GET', endpoint);
+      request.send();
+      setTimeout(refreshHexes, 60 * 1000);
+    };
+    refreshHexes();
   } else {
     soldIds = [2223];
   }
