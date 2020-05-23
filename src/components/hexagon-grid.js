@@ -55,6 +55,7 @@ const mousePosition = [0, 0];
 function HexagonGrid(context, camera) {
   const { canvas } = context;
 
+  const baseUnit = canvas.width / 150;
   const rowLimit = 61;
   const columnLimit = 95;
   let hovered;
@@ -110,10 +111,11 @@ function HexagonGrid(context, camera) {
 
   vec3.scale(canvasCenter, canvasSize, 0.5);
   vec3.scale(gridCenter, gridSize, 0.5);
-  vec3.negate(scratchVec0, gridCenter);
+  vec3.scale(gridCenter, gridCenter, baseUnit);
+  vec3.negate(gridCenter, gridCenter);
 
   mat4.fromTranslation(scratch0, canvasCenter);
-  mat4.fromTranslation(scratch1, scratchVec0);
+  mat4.fromTranslation(scratch1, gridCenter);
 
   mat4.multiply(offset, scratch0, scratch1);
 
@@ -146,7 +148,8 @@ function HexagonGrid(context, camera) {
         if (isEvenRow) {
           vec3.subtract(hexScratch[i], hexScratch[i], [0.5, 0, 0]);
         }
-        vec3.transformMat4(hexScratch[i], hexScratch[i], scaleMatrix);
+        vec3.scale(hexScratch[i], hexScratch[i], baseUnit);
+        // vec3.transformMat4(hexScratch[i], hexScratch[i], scaleMatrix);
         vec3.transformMat4(hexScratch[i], hexScratch[i], view);
         vec3.ceil(hexScratch[i], hexScratch[i]);
       }
