@@ -9,7 +9,8 @@ function Camera(canvas) {
   const cameraLog = CameraDebugger();
 
   camera = createDom2dCamera(canvas, {
-    // scaleBounds: [1, 10],
+    // scaleBounds: [1, 100],
+    // scaling: 10,
     viewCenter: [canvas.width / 2, canvas.height / 2],
     isNdc: false,
     isRotate: false,

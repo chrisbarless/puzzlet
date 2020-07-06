@@ -40,7 +40,7 @@ const mousePosition = [0, 0];
 function HexagonGrid(context, camera) {
   const { canvas } = context;
 
-  // const baseUnit = canvas.width / 150;
+  const baseUnit = canvas.width / 150;
   const rowLimit = 61;
   const columnLimit = 95;
   let hovered;
@@ -96,7 +96,6 @@ function HexagonGrid(context, camera) {
 
   vec3.scale(canvasCenter, canvasSize, 0.5);
   vec3.scale(gridCenter, gridSize, 0.5);
-  // vec3.scale(gridCenter, gridCenter, baseUnit);
   vec3.negate(gridCenter, gridCenter);
 
   mat4.fromTranslation(scratch0, canvasCenter);
@@ -106,6 +105,7 @@ function HexagonGrid(context, camera) {
 
   // camera.setScaleBounds([canvas.width / 150, canvas.width * 15]);
   camera.setView(offset);
+  camera.scale(baseUnit);
 
   this.tick = () => {
     context.fillStyle = '#ffac8c';
@@ -129,6 +129,7 @@ function HexagonGrid(context, camera) {
           vec3.subtract(vec, vec, [0.5, 0, 0]);
         }
         vec3.multiply(vec, vec, [1, verticalScale, 1]);
+        // vec3.scale(vec, vec, baseUnit);
         vec3.add(vec, vec, vertexVector);
         vec3.transformMat4(vec, vec, view);
         // vec3.round(vec, vec);
@@ -157,8 +158,8 @@ function HexagonGrid(context, camera) {
       img,
       camera.translation[0],
       camera.translation[1],
-      columnLimit * scaling * 10,
-      rowLimit * scaling * 10,
+      columnLimit * scaling * baseUnit,
+      rowLimit * scaling * baseUnit,
     );
     context.globalCompositeOperation = 'source-over';
     context.fill(unsoldPieces);
