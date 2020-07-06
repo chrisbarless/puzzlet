@@ -158,8 +158,8 @@ function HexagonGrid(context, camera) {
       img,
       camera.translation[0],
       camera.translation[1],
-      columnLimit * scaling * baseUnit,
-      rowLimit * scaling * baseUnit,
+      columnLimit * baseUnit,
+      rowLimit * baseUnit,
     );
     context.globalCompositeOperation = 'source-over';
     context.fill(unsoldPieces);
