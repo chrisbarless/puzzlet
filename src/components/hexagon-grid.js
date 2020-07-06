@@ -27,8 +27,10 @@ mat4.fromScaling(scaleMatrix, [horizontalScale, verticalScale, 1]);
 const hexVecs = [0, 1, 2, 3, 4, 5].map((i) => {
   const vec = new Float32Array(3);
   const origin = new Float32Array(3);
-  vec[1] = -1;
-  vec3.rotateZ(vec, vec, origin, i * 60 * (Math.PI / 180));
+  const triangleDegs = 60 * (Math.PI / 180);
+  vec[1] = Math.tan(triangleDegs / 2);
+  vec3.rotateZ(vec, vec, origin, i * triangleDegs);
+
   return vec;
 });
 
@@ -143,15 +145,18 @@ function HexagonGrid(context, camera) {
       }
 
       hexVecs.forEach((vertexVector, i) => {
-        hexScratch[i] = vec3.clone(position);
+        const vec = vec3.clone(position);
         if (isEvenRow) {
-          // vec3.subtract(hexScratch[i], hexScratch[i], [0.5, 0, 0]);
+          vec3.subtract(vec, vec, [0.5, 0, 0]);
         }
-        vec3.add(hexScratch[i], hexScratch[i], vertexVector);
-        vec3.scale(hexScratch[i], hexScratch[i], baseUnit);
-        // vec3.transformMat4(hexScratch[i], hexScratch[i], scaleMatrix);
-        vec3.transformMat4(hexScratch[i], hexScratch[i], view);
-        vec3.ceil(hexScratch[i], hexScratch[i]);
+        vec3.add(vec, vec, vertexVector);
+        vec3.scale(vec, vec, baseUnit);
+        // vec3.transformMat4(vec, vec, scaleMatrix);
+        vec3.transformMat4(vec, vec, view);
+        vec3.ceil(vec, vec);
+        //
+        hexScratch[i] = vec;
+        // debugger;
       });
 
       if (bitNumber > 5000 && bitNumber < 5006) {
