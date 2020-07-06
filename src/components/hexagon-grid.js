@@ -18,17 +18,19 @@ const gridSize = new Float32Array(3);
 const gridCenter = new Float32Array(3);
 
 const scaleMatrix = new Float32Array(16);
-const vertexRotationMatrix = new Float32Array(16);
-const vertexTranslationMatrix = new Float32Array(16);
-
-mat4.fromZRotation(vertexRotationMatrix, Math.PI / 3);
-mat4.fromTranslation(vertexTranslationMatrix, [0, -1, 0]);
 const horizontalScale = Math.cos(1);
 const verticalScale = Math.tanh(1);
 mat4.fromScaling(scaleMatrix, [horizontalScale, verticalScale, 1]);
 
-console.log(vertexRotationMatrix);
-console.log(vertexTranslationMatrix);
+// const hexVec = [0, 1, 2, 3, 4, 5].map((i) => mat4.fromZRotation(new Float32Array(16), i * 60 * (Math.PI / 180)));
+
+const hexVecs = [0, 1, 2, 3, 4, 5].map((i) => {
+  const vec = new Float32Array(3);
+  const origin = new Float32Array(3);
+  vec[1] = -1;
+  vec3.rotateZ(vec, vec, origin, i * 60 * (Math.PI / 180));
+  return vec;
+});
 
 // const hexVecs = [
 //   vec3.fromValues(b, -a, 1),
@@ -40,6 +42,8 @@ console.log(vertexTranslationMatrix);
 // ];
 
 // const hexMatrices = [];
+
+const positionScratch = new Float32Array(3);
 
 const hexScratch = [
   new Float32Array(3),
@@ -138,21 +142,17 @@ function HexagonGrid(context, camera) {
         targetPath = soldPieces;
       }
 
-      for (let i = 0; i <= 5; i++) {
-        vec3.rotateZ(
-          hexScratch[i],
-          position,
-          [position[0], position[1] - 0.5, position[2]],
-          rad * i,
-        );
+      hexVecs.forEach((vertexVector, i) => {
+        hexScratch[i] = vec3.clone(position);
         if (isEvenRow) {
-          vec3.subtract(hexScratch[i], hexScratch[i], [0.5, 0, 0]);
+          // vec3.subtract(hexScratch[i], hexScratch[i], [0.5, 0, 0]);
         }
+        vec3.add(hexScratch[i], hexScratch[i], vertexVector);
         vec3.scale(hexScratch[i], hexScratch[i], baseUnit);
         // vec3.transformMat4(hexScratch[i], hexScratch[i], scaleMatrix);
         vec3.transformMat4(hexScratch[i], hexScratch[i], view);
         vec3.ceil(hexScratch[i], hexScratch[i]);
-      }
+      });
 
       if (bitNumber > 5000 && bitNumber < 5006) {
         // console.table(hexScratch);
