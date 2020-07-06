@@ -1,9 +1,5 @@
 import { mat4, vec2, vec3 } from 'gl-matrix';
 
-const a = 1 / 4;
-const b = Math.sqrt(3) * a;
-const rad = Math.PI / 3;
-
 const scratch0 = new Float32Array(16);
 const scratch1 = new Float32Array(16);
 
@@ -17,35 +13,18 @@ const canvasCenter = new Float32Array(3);
 const gridSize = new Float32Array(3);
 const gridCenter = new Float32Array(3);
 
-const scaleMatrix = new Float32Array(16);
-const horizontalScale = Math.cos(1);
-const verticalScale = Math.tanh(1);
-mat4.fromScaling(scaleMatrix, [horizontalScale, verticalScale, 1]);
-
-// const hexVec = [0, 1, 2, 3, 4, 5].map((i) => mat4.fromZRotation(new Float32Array(16), i * 60 * (Math.PI / 180)));
+const triangleDegs = 60 * (Math.PI / 180);
+const scaleFactor = Math.tan(triangleDegs / 2);
+const verticalScale = Math.cos(30 * (Math.PI / 180));
 
 const hexVecs = [0, 1, 2, 3, 4, 5].map((i) => {
   const vec = new Float32Array(3);
   const origin = new Float32Array(3);
-  const triangleDegs = 60 * (Math.PI / 180);
-  vec[1] = Math.tan(triangleDegs / 2);
+  vec[1] = scaleFactor;
   vec3.rotateZ(vec, vec, origin, i * triangleDegs);
 
   return vec;
 });
-
-// const hexVecs = [
-//   vec3.fromValues(b, -a, 1),
-//   vec3.fromValues(b, a, 1),
-//   vec3.fromValues(0, 2 * a, 1),
-//   vec3.fromValues(-b, a, 1),
-//   vec3.fromValues(-b, -a, 1),
-//   vec3.fromValues(0, -2 * a, 1),
-// ];
-
-// const hexMatrices = [];
-
-const positionScratch = new Float32Array(3);
 
 const hexScratch = [
   new Float32Array(3),
@@ -61,7 +40,7 @@ const mousePosition = [0, 0];
 function HexagonGrid(context, camera) {
   const { canvas } = context;
 
-  const baseUnit = canvas.width / 150;
+  // const baseUnit = canvas.width / 150;
   const rowLimit = 61;
   const columnLimit = 95;
   let hovered;
@@ -117,7 +96,7 @@ function HexagonGrid(context, camera) {
 
   vec3.scale(canvasCenter, canvasSize, 0.5);
   vec3.scale(gridCenter, gridSize, 0.5);
-  vec3.scale(gridCenter, gridCenter, baseUnit);
+  // vec3.scale(gridCenter, gridCenter, baseUnit);
   vec3.negate(gridCenter, gridCenter);
 
   mat4.fromTranslation(scratch0, canvasCenter);
@@ -149,13 +128,11 @@ function HexagonGrid(context, camera) {
         if (isEvenRow) {
           vec3.subtract(vec, vec, [0.5, 0, 0]);
         }
+        vec3.multiply(vec, vec, [1, verticalScale, 1]);
         vec3.add(vec, vec, vertexVector);
-        vec3.scale(vec, vec, baseUnit);
-        // vec3.transformMat4(vec, vec, scaleMatrix);
         vec3.transformMat4(vec, vec, view);
-        vec3.ceil(vec, vec);
-        //
-        hexScratch[i] = vec;
+        // vec3.round(vec, vec);
+        vec3.set(hexScratch[i], ...vec);
         // debugger;
       });
 
