@@ -5,7 +5,6 @@ const scratch1 = new Float32Array(16);
 
 const scratchVec0 = new Float32Array(3);
 const scratchVec1 = new Float32Array(3);
-const scratchVec2 = new Float32Array(3);
 
 const offset = mat4.create();
 
@@ -146,8 +145,8 @@ function HexagonGrid(context, camera) {
       img,
       camera.translation[0],
       camera.translation[1],
-      columnLimit * baseUnit,
-      rowLimit * baseUnit,
+      columnLimit * camera.scaling,
+      rowLimit * camera.scaling,
     );
     context.globalCompositeOperation = 'source-over';
     context.fill(unsoldPieces);
@@ -162,7 +161,7 @@ function HexagonGrid(context, camera) {
 
     vec3.multiply(scratchVec1, scratchVec1, [1, 1 / verticalCorrection, 1]);
 
-    hexagons.forEach((hexagon, i) => {
+    hexagons.forEach((hexagon) => {
       const thisDist = vec2.dist(scratchVec1, hexagon.position);
 
       if (thisDist < minDist) {
