@@ -76,8 +76,10 @@ function HexagonGrid(context, camera) {
       );
       const vectors = hexVecs.map((vertexVector) => {
         const vec = vec3.clone(position);
-        if (isEvenRow) {
-          vec3.subtract(vec, vec, [0.5, 0, 0]);
+        if (!isEvenRow) {
+          vec3.add(vec, vec, [1, verticalCorrection, 0]);
+        } else {
+          vec3.add(vec, vec, [0.5, verticalCorrection, 0]);
         }
         vec3.multiply(vec, vec, [1, verticalCorrection, 1]);
         vec3.add(vec, vec, vertexVector);
@@ -153,16 +155,17 @@ function HexagonGrid(context, camera) {
     context.stroke(unsoldPieces);
   };
 
-  function getClosestHexagon(position) {
+  function getClosestHexagon() {
     let minDist = Infinity;
     let closest;
 
-    vec3.copy(scratchVec1, position);
-
-    vec3.multiply(scratchVec1, scratchVec1, [1, 1 / verticalCorrection, 1]);
+    mat4.invert(scratch0, camera.view);
+    vec2.subtract(scratchVec0, scratchVec0, [1, verticalCorrection]);
+    vec2.transformMat4(scratchVec0, mousePosition, scratch0);
+    vec3.multiply(scratchVec0, scratchVec0, [1, 1 / verticalCorrection, 1]);
 
     hexagons.forEach((hexagon) => {
-      const thisDist = vec2.dist(scratchVec1, hexagon.position);
+      const thisDist = vec2.dist(scratchVec0, hexagon.position);
 
       if (thisDist < minDist) {
         minDist = thisDist;
@@ -185,7 +188,7 @@ function HexagonGrid(context, camera) {
     mat4.invert(scratch0, camera.view);
     vec2.transformMat4(scratchVec0, mousePosition, scratch0);
 
-    hovered = getClosestHexagon(scratchVec0);
+    hovered = getClosestHexagon();
 
     canvas.style.cursor = hovered && !soldIds.includes(hovered.bitNumber) ? 'pointer' : 'default';
   }
