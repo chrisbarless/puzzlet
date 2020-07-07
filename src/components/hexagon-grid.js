@@ -2,12 +2,10 @@ import { mat4, vec2, vec3 } from 'gl-matrix';
 
 const scratch0 = new Float32Array(16);
 const scratch1 = new Float32Array(16);
-const scratch2 = new Float32Array(16);
 
 const scratchVec0 = new Float32Array(3);
 const scratchVec1 = new Float32Array(3);
 const scratchVec2 = new Float32Array(3);
-const scratchVec3 = new Float32Array(3);
 
 const offset = mat4.create();
 
@@ -28,15 +26,6 @@ const hexVecs = [0, 1, 2, 3, 4, 5].map((i) => {
 
   return vec;
 });
-
-const hexScratch = [
-  new Float32Array(3),
-  new Float32Array(3),
-  new Float32Array(3),
-  new Float32Array(3),
-  new Float32Array(3),
-  new Float32Array(3),
-];
 
 const mousePosition = [0, 0];
 
@@ -86,7 +75,7 @@ function HexagonGrid(context, camera) {
         y,
         1, // Opacity
       );
-      const vectors = hexVecs.map((vertexVector, i) => {
+      const vectors = hexVecs.map((vertexVector) => {
         const vec = vec3.clone(position);
         if (isEvenRow) {
           vec3.subtract(vec, vec, [0.5, 0, 0]);
@@ -173,7 +162,7 @@ function HexagonGrid(context, camera) {
     vec3.transformMat4(scratchVec1, position, scratch0);
     vec3.multiply(scratchVec1, scratchVec1, [1, 1 / verticalCorrection, 1]);
 
-    hexagons.forEach((hexagon, i) => {
+    hexagons.forEach((hexagon) => {
       vec3.transformMat4(scratchVec2, hexagon.position, camera.view);
 
       const thisDist = vec2.dist(scratchVec1, scratchVec2);
