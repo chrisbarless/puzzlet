@@ -2,6 +2,7 @@ import { mat4, vec2, vec3 } from 'gl-matrix';
 
 const scratch0 = new Float32Array(16);
 const scratch1 = new Float32Array(16);
+const scratch2 = new Float32Array(16);
 
 const scratchVec0 = new Float32Array(3);
 const scratchVec1 = new Float32Array(3);
@@ -78,13 +79,24 @@ function HexagonGrid(context, camera) {
   for (let y = 0; y < rowLimit; y += 1) {
     const isEvenRow = y % 2 === 0;
     for (let x = 0; x < (isEvenRow ? columnLimit : columnLimit - 1); x += 1) {
+      const position = vec3.fromValues(
+        x,
+        y,
+        1, // Opacity
+      );
+      const vectors = hexVecs.map((vertexVector, i) => {
+        const vec = vec3.clone(position);
+        if (isEvenRow) {
+          vec3.subtract(vec, vec, [0.5, 0, 0]);
+        }
+        vec3.multiply(vec, vec, [1, verticalScale, 1]);
+        vec3.add(vec, vec, vertexVector);
+        return vec;
+      });
       hexagons.set(index, {
         bitNumber: index,
-        position: vec3.fromValues(
-          x,
-          y,
-          1, // Opacity
-        ),
+        position,
+        vectors,
         isEvenRow,
       });
       index += 1;
@@ -117,38 +129,29 @@ function HexagonGrid(context, camera) {
     const unsoldPieces = new Path2D();
 
     hexagons.forEach((hexagon, bitNumber) => {
-      const { position, isEvenRow } = hexagon;
       let targetPath = unsoldPieces;
       if (soldIds.includes(bitNumber) || hovered === hexagon) {
         targetPath = soldPieces;
       }
 
-      hexVecs.forEach((vertexVector, i) => {
-        const vec = vec3.clone(position);
-        if (isEvenRow) {
-          vec3.subtract(vec, vec, [0.5, 0, 0]);
+      // Top position
+      vec3.transformMat4(scratchVec0, hexagon.vectors[0], view);
+
+      hexagon.vectors.forEach((vec, i) => {
+        if (i === 0) {
+          targetPath.moveTo(...scratchVec0);
+        } else {
+          vec3.transformMat4(scratchVec1, vec, view);
+          targetPath.lineTo(...scratchVec1);
         }
-        vec3.multiply(vec, vec, [1, verticalScale, 1]);
-        // vec3.scale(vec, vec, baseUnit);
-        vec3.add(vec, vec, vertexVector);
-        vec3.transformMat4(vec, vec, view);
-        // vec3.round(vec, vec);
-        vec3.set(hexScratch[i], ...vec);
-        // debugger;
       });
+      // Back to top
+      targetPath.lineTo(...scratchVec0);
 
       if (bitNumber > 5000 && bitNumber < 5006) {
         // console.table(hexScratch);
         // debugger;
       }
-
-      targetPath.moveTo(...hexScratch[0]);
-      targetPath.lineTo(...hexScratch[1]);
-      targetPath.lineTo(...hexScratch[2]);
-      targetPath.lineTo(...hexScratch[3]);
-      targetPath.lineTo(...hexScratch[4]);
-      targetPath.lineTo(...hexScratch[5]);
-      targetPath.lineTo(...hexScratch[0]);
     });
 
     context.fill(soldPieces);
