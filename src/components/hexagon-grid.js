@@ -158,14 +158,12 @@ function HexagonGrid(context, camera) {
     let minDist = Infinity;
     let closest;
 
-    mat4.invert(scratch0, camera.view);
-    vec3.transformMat4(scratchVec1, position, scratch0);
+    vec3.copy(scratchVec1, position);
+
     vec3.multiply(scratchVec1, scratchVec1, [1, 1 / verticalCorrection, 1]);
 
-    hexagons.forEach((hexagon) => {
-      vec3.transformMat4(scratchVec2, hexagon.position, camera.view);
-
-      const thisDist = vec2.dist(scratchVec1, scratchVec2);
+    hexagons.forEach((hexagon, i) => {
+      const thisDist = vec2.dist(scratchVec1, hexagon.position);
 
       if (thisDist < minDist) {
         minDist = thisDist;
@@ -186,7 +184,7 @@ function HexagonGrid(context, camera) {
 
     drag = true;
     mat4.invert(scratch0, camera.view);
-    vec2.transformMat4(scratchVec0, mousePosition, camera.view);
+    vec2.transformMat4(scratchVec0, mousePosition, scratch0);
 
     hovered = getClosestHexagon(scratchVec0);
 
