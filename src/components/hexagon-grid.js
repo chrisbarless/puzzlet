@@ -111,7 +111,7 @@ function HexagonGrid(context, camera) {
     context.fillStyle = '#ffac8c';
     context.strokeStyle = '#ffffff';
 
-    const { scaling, view } = camera;
+    const { view } = camera;
 
     const soldPieces = new Path2D();
     const unsoldPieces = new Path2D();
