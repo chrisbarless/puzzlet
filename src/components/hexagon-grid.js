@@ -65,7 +65,7 @@ function HexagonGrid(context, camera) {
         y,
         1, // Opacity
       );
-      const vectors = [0, 1, 2, 3, 4, 5].map((i) => {
+      const vectors = [0, 1, 2, 3, 4, 5, 0].map((i) => {
         const vec = vec3.clone(position);
         const vertexVector = new Float32Array(3);
         const origin = new Float32Array(3);
@@ -122,18 +122,14 @@ function HexagonGrid(context, camera) {
         targetPath = soldPieces;
       }
 
-      // Top position
-      vec3.transformMat4(scratchVec0, hexagon.vectors[0], view);
       hexagon.vectors.forEach((vec, i) => {
+        vec3.transformMat4(scratchVec0, vec, view);
         if (i === 0) {
           targetPath.moveTo(...scratchVec0);
         } else {
-          vec3.transformMat4(scratchVec1, vec, view);
-          targetPath.lineTo(...scratchVec1);
+          targetPath.lineTo(...scratchVec0);
         }
       });
-      // Back to top
-      targetPath.lineTo(...scratchVec0);
     });
 
     context.fill(soldPieces);
