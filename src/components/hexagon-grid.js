@@ -165,7 +165,12 @@ function HexagonGrid(context, camera) {
     vec3.multiply(scratchVec0, scratchVec0, [1, 1 / verticalCorrection, 1]);
 
     hexagons.forEach((hexagon) => {
-      const thisDist = vec2.dist(scratchVec0, hexagon.position);
+      vec3.add(scratchVec1, hexagon.position, [
+        hexagon.isEvenRow ? 0.5 : 1,
+        1,
+        0,
+      ]);
+      const thisDist = vec2.dist(scratchVec0, scratchVec1);
 
       if (thisDist < minDist) {
         minDist = thisDist;
