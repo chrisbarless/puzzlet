@@ -17,15 +17,6 @@ const triangleDegs = 60 * (Math.PI / 180);
 const scaleFactor = Math.tan(triangleDegs / 2);
 const verticalCorrection = Math.cos(30 * (Math.PI / 180));
 
-const hexVecs = [0, 1, 2, 3, 4, 5].map((i) => {
-  const vec = new Float32Array(3);
-  const origin = new Float32Array(3);
-  vec[1] = scaleFactor;
-  vec3.rotateZ(vec, vec, origin, i * triangleDegs);
-
-  return vec;
-});
-
 const mousePosition = [0, 0];
 
 function HexagonGrid(context, camera) {
@@ -74,8 +65,13 @@ function HexagonGrid(context, camera) {
         y,
         1, // Opacity
       );
-      const vectors = hexVecs.map((vertexVector) => {
+      const vectors = [0, 1, 2, 3, 4, 5].map((i) => {
         const vec = vec3.clone(position);
+        const vertexVector = new Float32Array(3);
+        const origin = new Float32Array(3);
+        vertexVector[1] = scaleFactor;
+        vec3.rotateZ(vertexVector, vertexVector, origin, i * triangleDegs);
+
         if (!isEvenRow) {
           vec3.add(vec, vec, [1, verticalCorrection, 0]);
         } else {
