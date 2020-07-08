@@ -12,6 +12,7 @@ function Camera(canvas) {
     // scaleBounds: [1, 100],
     // scaling: 10,
     viewCenter: [canvas.width / 2, canvas.height / 2],
+    // initTarget: kj
     isNdc: false,
     isRotate: false,
     onWheel: cameraLog,

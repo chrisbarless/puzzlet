@@ -202,6 +202,16 @@ function HexagonGrid(context, camera) {
     canvas.addEventListener('mousedown', () => (drag = false));
     canvas.addEventListener('mouseup', (event) => !drag && onClick(event));
     canvas.addEventListener('mousemove', onMouseMove);
+    document
+      .getElementById('goto-hex-form')
+      .addEventListener('submit', (event) => {
+        event.preventDefault();
+        // event.target[0];
+        const targetHex = hexagons.get(parseInt(event.target[0].value, 10));
+        vec3.scale(scratchVec0, targetHex.position, 1 / baseUnit);
+
+        camera.lookAt(scratchVec0, 1 / baseUnit);
+      });
   }
 }
 
