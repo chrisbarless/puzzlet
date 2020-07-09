@@ -10,7 +10,7 @@ function Camera(canvas) {
 
   camera = createDom2dCamera(canvas, {
     scaleBounds: [10, 100],
-    // scaling: 1,
+    distance: 0.1,
     // viewCenter: [canvas.width / 2, canvas.height / 2],
     // viewCenter: [500, 500],
     // initTarget: kj

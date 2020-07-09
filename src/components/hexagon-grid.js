@@ -12,9 +12,9 @@ const scratchVec3 = new Float32Array(3);
 
 const canvasSize = new Float32Array(3);
 const canvasCenter = new Float32Array(3);
-const canvasCenterMatrix = new Float32Array(16);
 const gridSize = new Float32Array(3);
 const gridCenter = new Float32Array(3);
+const canvasCenterMatrix = new Float32Array(16);
 const gridCenterMatrix = new Float32Array(16);
 const offset = mat4.create();
 
@@ -212,11 +212,18 @@ function HexagonGrid(context, camera) {
       .getElementById('goto-hex-form')
       .addEventListener('submit', (event) => {
         event.preventDefault();
-        const targetHex = hexagons.get(parseInt(event.target[0].value, 10));
-        vec3.copy(scratchVec0, targetHex.position);
-        // vec3.scale(scratchVec0, targetHex.position, 1 / baseUnit);
 
-        camera.lookAt(scratchVec0, 10);
+        const targetHex = hexagons.get(parseInt(event.target[0].value, 10));
+        const targetMatrix = mat4.create();
+        const targetZoom = 50;
+        mat4.fromTranslation(targetMatrix, targetHex.position);
+        mat4.scale(targetMatrix, targetMatrix, [
+          targetZoom,
+          targetZoom,
+          targetZoom,
+        ]);
+
+        camera.setView(targetMatrix);
       });
   }
 }
