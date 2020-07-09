@@ -55,58 +55,6 @@ function HexagonGrid(context, camera) {
     soldIds = [2223];
   }
 
-  let index = 1;
-
-  for (let y = 0; y < rowLimit; y += 1) {
-    const isEvenRow = y % 2 === 0;
-    for (let x = 0; x < (isEvenRow ? columnLimit : columnLimit - 1); x += 1) {
-      const position = vec3.fromValues(
-        x,
-        y,
-        1, // Opacity
-      );
-      const vectors = [0, 1, 2, 3, 4, 5, 0].map((i) => {
-        const vec = vec3.clone(position);
-        const vertexVector = new Float32Array(3);
-        const origin = new Float32Array(3);
-        vertexVector[1] = scaleFactor;
-        vec3.rotateZ(vertexVector, vertexVector, origin, i * triangleDegs);
-
-        if (!isEvenRow) {
-          vec3.add(vec, vec, [1, verticalCorrection, 0]);
-        } else {
-          vec3.add(vec, vec, [0.5, verticalCorrection, 0]);
-        }
-        vec3.multiply(vec, vec, [1, verticalCorrection, 1]);
-        vec3.add(vec, vec, vertexVector);
-        return vec;
-      });
-      hexagons.set(index, {
-        bitNumber: index,
-        position,
-        vectors,
-        isEvenRow,
-      });
-      index += 1;
-    }
-  }
-
-  vec3.set(canvasSize, canvas.width, canvas.height, 0);
-  vec3.set(gridSize, columnLimit - 1, rowLimit - 1, 0);
-
-  vec3.scale(canvasCenter, canvasSize, 0.5);
-  vec3.scale(gridCenter, gridSize, 0.5);
-  vec3.negate(gridCenter, gridCenter);
-
-  mat4.fromTranslation(scratch0, canvasCenter);
-  mat4.fromTranslation(scratch1, gridCenter);
-
-  mat4.multiply(offset, scratch0, scratch1);
-
-  // camera.setScaleBounds([canvas.width / 150, canvas.width * 15]);
-  camera.setView(offset);
-  camera.scale(baseUnit);
-
   this.tick = () => {
     context.fillStyle = '#ffac8c';
     context.strokeStyle = '#ffffff';
@@ -197,6 +145,54 @@ function HexagonGrid(context, camera) {
       window.location.href = `${server}/product/pusselbit/?bitnummer=${hovered.bitNumber}`;
     }
   }
+
+  let index = 1;
+
+  for (let y = 0; y < rowLimit; y += 1) {
+    const isEvenRow = y % 2 === 0;
+    for (let x = 0; x < (isEvenRow ? columnLimit : columnLimit - 1); x += 1) {
+      const position = vec3.fromValues(x, y, 1);
+      const vectors = [0, 1, 2, 3, 4, 5, 0].map((i) => {
+        const vec = vec3.clone(position);
+        const vertexVector = new Float32Array(3);
+        const origin = new Float32Array(3);
+        vertexVector[1] = scaleFactor;
+        vec3.rotateZ(vertexVector, vertexVector, origin, i * triangleDegs);
+
+        if (!isEvenRow) {
+          vec3.add(vec, vec, [1, verticalCorrection, 0]);
+        } else {
+          vec3.add(vec, vec, [0.5, verticalCorrection, 0]);
+        }
+        vec3.multiply(vec, vec, [1, verticalCorrection, 1]);
+        vec3.add(vec, vec, vertexVector);
+        return vec;
+      });
+      hexagons.set(index, {
+        bitNumber: index,
+        position,
+        vectors,
+        isEvenRow,
+      });
+      index += 1;
+    }
+  }
+
+  vec3.set(canvasSize, canvas.width, canvas.height, 0);
+  vec3.set(gridSize, columnLimit - 1, rowLimit - 1, 0);
+
+  vec3.scale(canvasCenter, canvasSize, 0.5);
+  vec3.scale(gridCenter, gridSize, 0.5);
+  vec3.negate(gridCenter, gridCenter);
+
+  mat4.fromTranslation(scratch0, canvasCenter);
+  mat4.fromTranslation(scratch1, gridCenter);
+
+  mat4.multiply(offset, scratch0, scratch1);
+
+  // camera.setScaleBounds([canvas.width / 150, canvas.width * 15]);
+  camera.setView(offset);
+  camera.scale(baseUnit);
 
   if (!camera.isFake) {
     canvas.addEventListener('mousedown', () => {
