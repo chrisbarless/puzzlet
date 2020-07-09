@@ -7,19 +7,14 @@ let camera;
 
 function Camera(canvas) {
   const cameraLog = CameraDebugger();
-
-  camera = createDom2dCamera(canvas, {
+  let config = {
     scaleBounds: [10, 100],
     distance: 0.1,
-    // viewCenter: [canvas.width / 2, canvas.height / 2],
-    // viewCenter: [500, 500],
-    // initTarget: kj
     isNdc: false,
     isRotate: false,
-    // panSpeed: 10,
     onWheel: cameraLog,
     onMouseUp: cameraLog,
-  });
+  };
 
   const controls = document.getElementById('puzzle-controls');
   const container = document.getElementById('puzzle-container');
@@ -30,13 +25,15 @@ function Camera(canvas) {
   }
 
   if (!controls || hideControls) {
-    return {
-      isFake: true,
-      scaling: 1,
-      translation: [0, 0],
-      tick: () => null,
+    config = {
+      ...config,
+      isPan: false,
+      isZoom: false,
+      distance: 1 / (canvas.width / 94),
     };
   }
+
+  camera = createDom2dCamera(canvas, config);
 
   // Move Left
   document
