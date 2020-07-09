@@ -199,7 +199,9 @@ function HexagonGrid(context, camera) {
   }
 
   if (!camera.isFake) {
-    canvas.addEventListener('mousedown', () => (drag = false));
+    canvas.addEventListener('mousedown', () => {
+      drag = false;
+    });
     canvas.addEventListener('mouseup', (event) => !drag && onClick(event));
     canvas.addEventListener('mousemove', onMouseMove);
     document
