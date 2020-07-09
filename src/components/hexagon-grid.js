@@ -2,16 +2,21 @@ import { mat4, vec2, vec3 } from 'gl-matrix';
 
 const scratch0 = new Float32Array(16);
 const scratch1 = new Float32Array(16);
+const scratch2 = new Float32Array(16);
+const correctedView = new Float32Array(16);
 
 const scratchVec0 = new Float32Array(3);
 const scratchVec1 = new Float32Array(3);
-
-const offset = mat4.create();
+const scratchVec2 = new Float32Array(3);
+const scratchVec3 = new Float32Array(3);
 
 const canvasSize = new Float32Array(3);
 const canvasCenter = new Float32Array(3);
+const canvasCenterMatrix = new Float32Array(16);
 const gridSize = new Float32Array(3);
 const gridCenter = new Float32Array(3);
+const gridCenterMatrix = new Float32Array(16);
+const offset = mat4.create();
 
 const triangleDegs = 60 * (Math.PI / 180);
 const scaleFactor = Math.tan(triangleDegs / 2);
@@ -22,7 +27,7 @@ const mousePosition = [0, 0];
 function HexagonGrid(context, camera) {
   const { canvas } = context;
 
-  const baseUnit = canvas.width / 150;
+  // const baseUnit = canvas.width / 150;
   const rowLimit = 61;
   const columnLimit = 95;
   let hovered;
@@ -55,53 +60,15 @@ function HexagonGrid(context, camera) {
     soldIds = [2223];
   }
 
-  this.tick = () => {
-    context.fillStyle = '#ffac8c';
-    context.strokeStyle = '#ffffff';
-
-    const { view } = camera;
-
-    const soldPieces = new Path2D();
-    const unsoldPieces = new Path2D();
-
-    hexagons.forEach((hexagon, bitNumber) => {
-      let targetPath = unsoldPieces;
-      if (soldIds.includes(bitNumber) || hovered === hexagon) {
-        targetPath = soldPieces;
-      }
-
-      hexagon.vectors.forEach((vec, i) => {
-        vec3.transformMat4(scratchVec0, vec, view);
-        if (i === 0) {
-          targetPath.moveTo(...scratchVec0);
-        } else {
-          targetPath.lineTo(...scratchVec0);
-        }
-      });
-    });
-
-    context.fill(soldPieces);
-    context.stroke(soldPieces);
-    context.globalCompositeOperation = 'source-atop';
-    context.drawImage(
-      img,
-      camera.translation[0],
-      camera.translation[1],
-      columnLimit * camera.scaling,
-      rowLimit * camera.scaling,
-    );
-    context.globalCompositeOperation = 'source-over';
-    context.fill(unsoldPieces);
-    context.stroke(unsoldPieces);
-  };
-
   function getClosestHexagon() {
     let minDist = Infinity;
     let closest;
 
-    mat4.invert(scratch0, camera.view);
-    vec2.subtract(scratchVec0, scratchVec0, [1, verticalCorrection]);
-    vec2.transformMat4(scratchVec0, mousePosition, scratch0);
+    vec2.transformMat4(
+      scratchVec0,
+      mousePosition,
+      mat4.invert(correctedView, correctedView),
+    );
     vec3.multiply(scratchVec0, scratchVec0, [1, 1 / verticalCorrection, 1]);
 
     hexagons.forEach((hexagon) => {
@@ -130,8 +97,6 @@ function HexagonGrid(context, camera) {
     mousePosition[1] = event.clientY - rect.top;
 
     drag = true;
-    mat4.invert(scratch0, camera.view);
-    vec2.transformMat4(scratchVec0, mousePosition, scratch0);
 
     hovered = getClosestHexagon();
 
@@ -146,8 +111,52 @@ function HexagonGrid(context, camera) {
     }
   }
 
-  let index = 1;
+  this.tick = () => {
+    context.fillStyle = '#ffac8c';
+    context.strokeStyle = '#ffffff';
 
+    mat4.multiply(correctedView, offset, camera.view);
+
+    const soldPieces = new Path2D();
+    const unsoldPieces = new Path2D();
+
+    hexagons.forEach((hexagon, bitNumber) => {
+      let targetPath = unsoldPieces;
+      if (soldIds.includes(bitNumber) || hovered === hexagon) {
+        targetPath = soldPieces;
+      }
+
+      hexagon.vectors.forEach((vec, i) => {
+        vec3.transformMat4(scratchVec0, vec, correctedView);
+        if (i === 0) {
+          targetPath.moveTo(...scratchVec0);
+        } else {
+          targetPath.lineTo(...scratchVec0);
+        }
+      });
+    });
+
+    context.fill(soldPieces);
+    context.stroke(soldPieces);
+
+    context.globalCompositeOperation = 'source-atop';
+
+    mat4.getTranslation(scratchVec2, correctedView);
+    mat4.getScaling(scratchVec3, correctedView);
+
+    context.drawImage(
+      img,
+      scratchVec2[0],
+      scratchVec2[1],
+      columnLimit * scratchVec3[0],
+      rowLimit * scratchVec3[1],
+    );
+    context.globalCompositeOperation = 'source-over';
+    context.fill(unsoldPieces);
+    context.stroke(unsoldPieces);
+  };
+
+  let index = 1; // Linear counter
   for (let y = 0; y < rowLimit; y += 1) {
     const isEvenRow = y % 2 === 0;
     for (let x = 0; x < (isEvenRow ? columnLimit : columnLimit - 1); x += 1) {
@@ -181,18 +190,17 @@ function HexagonGrid(context, camera) {
   vec3.set(canvasSize, canvas.width, canvas.height, 0);
   vec3.set(gridSize, columnLimit - 1, rowLimit - 1, 0);
 
+  // Find center points
   vec3.scale(canvasCenter, canvasSize, 0.5);
-  vec3.scale(gridCenter, gridSize, 0.5);
-  vec3.negate(gridCenter, gridCenter);
+  vec3.scale(gridCenter, gridSize, 0.5 * camera.scaling);
 
-  mat4.fromTranslation(scratch0, canvasCenter);
-  mat4.fromTranslation(scratch1, gridCenter);
+  mat4.multiply(
+    offset,
+    mat4.fromTranslation(canvasCenterMatrix, canvasCenter),
+    mat4.fromTranslation(gridCenterMatrix, vec3.negate(gridCenter, gridCenter)),
+  );
 
-  mat4.multiply(offset, scratch0, scratch1);
-
-  // camera.setScaleBounds([canvas.width / 150, canvas.width * 15]);
-  camera.setView(offset);
-  camera.scale(baseUnit);
+  camera.setViewCenter(canvasCenter);
 
   if (!camera.isFake) {
     canvas.addEventListener('mousedown', () => {
@@ -204,11 +212,11 @@ function HexagonGrid(context, camera) {
       .getElementById('goto-hex-form')
       .addEventListener('submit', (event) => {
         event.preventDefault();
-        // event.target[0];
         const targetHex = hexagons.get(parseInt(event.target[0].value, 10));
-        vec3.scale(scratchVec0, targetHex.position, 1 / baseUnit);
+        vec3.copy(scratchVec0, targetHex.position);
+        // vec3.scale(scratchVec0, targetHex.position, 1 / baseUnit);
 
-        camera.lookAt(scratchVec0, 1 / baseUnit);
+        camera.lookAt(scratchVec0, 10);
       });
   }
 }
