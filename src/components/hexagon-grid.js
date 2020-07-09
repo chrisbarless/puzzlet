@@ -1,8 +1,5 @@
 import { mat4, vec2, vec3 } from 'gl-matrix';
 
-const scratch0 = new Float32Array(16);
-const scratch1 = new Float32Array(16);
-const scratch2 = new Float32Array(16);
 const correctedView = new Float32Array(16);
 
 const scratchVec0 = new Float32Array(3);
