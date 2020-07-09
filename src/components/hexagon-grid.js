@@ -221,22 +221,25 @@ function HexagonGrid(context, camera) {
         event.preventDefault();
         if (inputValue < 1) return;
         const targetHex = hexagons.get(inputValue);
-        const targetMatrix = mat4.create();
-        const targetZoom = 50;
+        const targetMatrix = new Float32Array(16);
+        const targetZoom = 10;
         const vec = vec3.create();
         vec3.copy(vec, targetHex.position);
         // vec3.scale(vec, vec, 10);
-        vec3.negate(vec, vec);
+        // vec3.negate(vec, vec);
         mat4.fromTranslation(targetMatrix, vec);
-        // mat4.scale(targetMatrix, targetMatrix, [
-        //   targetZoom,
-        //   targetZoom,
-        //   targetZoom,
-        // ]);
+        mat4.multiply(targetMatrix, offset, targetMatrix);
+        console.log(camera);
+        mat4.scale(targetMatrix, targetMatrix, [
+          targetZoom,
+          targetZoom,
+          targetZoom,
+        ]);
 
-        debugger;
-
+        console.log(targetMatrix);
         camera.setView(targetMatrix);
+        // camera.scale(50);
+        console.log(camera.view);
       });
   }
 }
