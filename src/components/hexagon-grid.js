@@ -187,7 +187,11 @@ function HexagonGrid(context, camera) {
   for (let y = 0; y < rowLimit; y += 1) {
     const isEvenRow = y % 2 === 0;
     for (let x = 0; x < (isEvenRow ? columnLimit : columnLimit - 1); x += 1) {
-      const matrix = mat4.fromTranslation(mat4.create(), [x, y, 1]);
+      const matrix = mat4.fromTranslation(mat4.create(), [
+        x,
+        y * verticalCorrection,
+        1,
+      ]);
       mat4.multiply(
         matrix,
         matrix,
