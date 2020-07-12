@@ -222,12 +222,8 @@ function HexagonGrid(context, camera) {
     mat4.fromTranslation(gridCenterMatrix, vec3.negate(gridCenter, gridCenter));
     mat4.multiply(
       viewTransformationMatrix,
-      verticalCorrectionMatrix,
-      mat4.multiply(
-        viewTransformationMatrix,
-        canvasCenterMatrix,
-        gridCenterMatrix,
-      ),
+      canvasCenterMatrix,
+      gridCenterMatrix,
     );
 
     camera.setViewCenter(canvasCenter);
@@ -248,25 +244,9 @@ function HexagonGrid(context, camera) {
           event.preventDefault();
           if (inputValue < 1) return;
           const targetHex = hexagons.get(inputValue);
-          const targetMatrix = mat4.create();
-          const targetZoom = 10;
-          const vec = vec3.create();
-          // vec3.copy(vec, targetHex.position);
-          // // vec3.scale(vec, vec, 10);
-          // // vec3.negate(vec, vec);
-          // mat4.fromTranslation(targetMatrix, vec);
-          // // mat4.multiply(targetMatrix,transformedView, targetMatrix);
-          // console.log(camera);
-          // mat4.scale(targetMatrix, targetMatrix, [
-          //   targetZoom,
-          //   targetZoom,
-          //   targetZoom,
-          // ]);
-
-          // console.log(targetMatrix);
-          // camera.setView(targetMatrix);
-          // // camera.scale(50);
-          // console.log(camera.view);
+          const b = mat4.getTranslation(vec3.create(), targetHex.matrix);
+          camera.lookAt(b, 0.1);
+          debugger;
         });
     }
   }
