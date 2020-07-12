@@ -16,6 +16,7 @@ const gridCenter = vec3.create();
 
 // Matrices
 const scratch0 = mat4.create();
+const scratch1 = mat4.create();
 const canvasCenterMatrix = mat4.create();
 const gridCenterMatrix = mat4.create();
 const oddRowCorrectionMatrix = mat4.create();
@@ -208,7 +209,6 @@ function HexagonGrid(context, camera) {
   function init() {
     // Cache canvas size
     vec3.set(canvasSize, canvas.width, canvas.height, 0);
-    vec3.scale(canvasSize, canvasSize, 1 / camera.scaling);
 
     // Cache grid size
     vec3.set(gridSize, columnLimit - 1, rowLimit - 1, 0);
@@ -218,12 +218,18 @@ function HexagonGrid(context, camera) {
     vec3.scale(gridCenter, gridSize, 0.5);
 
     // Create transform matrices based on program state
-    mat4.fromTranslation(canvasCenterMatrix, canvasCenter);
-    mat4.fromTranslation(gridCenterMatrix, vec3.negate(gridCenter, gridCenter));
+    mat4.fromTranslation(
+      canvasCenterMatrix,
+      vec3.scale(vec3.create(), canvasCenter, 1 / camera.scaling),
+    );
+    mat4.fromTranslation(
+      gridCenterMatrix,
+      vec3.negate(vec3.create(), gridCenter),
+    );
     mat4.multiply(
       viewTransformationMatrix,
-      canvasCenterMatrix,
       gridCenterMatrix,
+      canvasCenterMatrix,
     );
 
     camera.setViewCenter(canvasCenter);
