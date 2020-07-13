@@ -163,8 +163,10 @@ function HexagonGrid(context, camera) {
 
     vec3.zero(scratchVec1);
     vec3.copy(scratchVec3, gridSize);
+
+    // Should be a matrix
     vec3.subtract(scratchVec1, scratchVec1, [
-      0,
+      baseUnit / 2,
       verticalCorrection * baseUnit,
       0,
     ]);
