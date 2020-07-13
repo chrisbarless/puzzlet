@@ -25,20 +25,21 @@ function HexagonGrid(context, camera) {
   const gridCenterMatrix = mat4.create();
   const oddRowCorrectionMatrix = mat4.create();
   const evenRowCorrectionMatrix = mat4.create();
-  const transformedView = mat4.create();
   const viewTransformationMatrix = mat4.create();
 
   const hexidinput = document.getElementById('hexid');
   const mousePosition = [0, 0];
   let inputValue = -1;
-  const baseUnit = canvas.width / 150;
   const rowLimit = 61;
   const columnLimit = 95;
   let hovered;
   let soldIds = [];
   let drag = false;
-
+  const hideControls = camera.puzzHideControls;
   const hexagons = new Map();
+  const baseUnit = !hideControls
+    ? canvas.width / 150 // Arbitrary
+    : canvas.width / columnLimit;
 
   const server = 'https://bitforbit.notquite.se';
   const endpoint = `${server}/wp-admin/admin-ajax.php?action=get_sold_hexes`;
@@ -126,7 +127,7 @@ function HexagonGrid(context, camera) {
     const selectedPieces = new Path2D();
     const unsoldPieces = new Path2D();
 
-    inputValue = parseInt(hexidinput.value, 10);
+    inputValue = !hideControls ? parseInt(hexidinput.value, 10) : -1;
 
     mat4.identity(scratch0);
     mat4.multiply(scratch0, camera.view, viewTransformationMatrix);
@@ -221,8 +222,8 @@ function HexagonGrid(context, camera) {
     vec3.scale(gridCenter, gridSize, 0.5);
 
     // Create transform matrices based on program state
-    mat4.fromTranslation(oddRowCorrectionMatrix, [1 * baseUnit, 0, 0]);
-    mat4.fromTranslation(evenRowCorrectionMatrix, [0.5 * baseUnit, 0, 0]);
+    mat4.fromTranslation(oddRowCorrectionMatrix, [0.5 * baseUnit, 0, 0]);
+    mat4.fromTranslation(evenRowCorrectionMatrix, [0 * baseUnit, 0, 0]);
     mat4.fromTranslation(
       canvasCenterMatrix,
       canvasCenter,
@@ -242,7 +243,7 @@ function HexagonGrid(context, camera) {
 
     buildHexagonGrid();
 
-    if (!camera.isFake) {
+    if (!hideControls) {
       canvas.addEventListener('mousedown', () => {
         drag = false;
       });

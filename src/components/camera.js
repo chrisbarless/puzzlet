@@ -10,7 +10,6 @@ function Camera(canvas) {
   let config = {
     initTarget: [95 / 2, 61 / 2],
     scaleBounds: [1, 10],
-    // distance: 0.1,
     isNdc: false,
     isRotate: false,
     onWheel: cameraLog,
@@ -30,11 +29,11 @@ function Camera(canvas) {
       ...config,
       isPan: false,
       isZoom: false,
-      distance: canvas.width / 94,
     };
   }
 
   camera = createDom2dCamera(canvas, config);
+  camera.puzzHideControls = hideControls;
 
   // Move Left
   document
