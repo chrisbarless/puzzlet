@@ -81,11 +81,11 @@ function HexagonGrid(context, camera) {
     let minDist = Infinity;
     let closest;
 
-    // vec2.transformMat4(
-    //   mousePosition,
-    //   mousePosition,
-    //   mat4.invert(scratch0, transformedView),
-    // );
+    vec2.transformMat4(
+      mousePosition,
+      mousePosition,
+      mat4.invert(scratch0, camera.view),
+    );
 
     hexagons.forEach((hexagon) => {
       const thisDist = vec2.dist(
