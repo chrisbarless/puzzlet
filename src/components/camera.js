@@ -18,18 +18,18 @@ function Camera(canvas) {
 
   const controls = document.getElementById('puzzle-controls');
   const container = document.getElementById('puzzle-container');
-  const hideControls = window.location.hash === '#hidecontrols';
+  const hasHash = window.location.hash === '#hidecontrols';
+  const hideControls = !controls || hasHash;
 
-  if (container && hideControls) {
-    container.className = `${container.className} hideControls`;
-  }
-
-  if (!controls || hideControls) {
+  if (hideControls) {
     config = {
       ...config,
       isPan: false,
       isZoom: false,
     };
+    if (container) {
+      container.className = `${container.className} hideControls`;
+    }
   }
 
   camera = createDom2dCamera(canvas, config);
