@@ -188,7 +188,6 @@ function HexagonGrid(context, camera) {
 
     context.strokeStyle = '#ffffff';
     context.stroke(emptyPieces);
-    context.stroke(imagePieces);
 
     context.strokeStyle = '#ff0000';
     context.stroke(selectedPieces);
