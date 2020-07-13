@@ -30,7 +30,7 @@ function Camera(canvas) {
       ...config,
       isPan: false,
       isZoom: false,
-      distance: 1 / (canvas.width / 94),
+      distance: canvas.width / 94,
     };
   }
 
