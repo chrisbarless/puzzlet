@@ -1,38 +1,37 @@
 import { mat4, vec2, vec3 } from 'gl-matrix';
 
-const triangleDegs = 60 * (Math.PI / 180);
-const scaleFactor = Math.tan(triangleDegs / 2);
-const verticalCorrection = Math.cos(30 * (Math.PI / 180));
-
-// Vectors
-const scratchVec0 = vec3.create();
-const scratchVec1 = vec3.create();
-const scratchVec2 = vec3.create();
-const scratchVec3 = vec3.create();
-const canvasSize = vec3.create();
-const canvasCenter = vec3.create();
-const gridSize = vec3.create();
-const gridCenter = vec3.create();
-
-// Matrices
-const scratch0 = mat4.create();
-const scratch1 = mat4.create();
-const scratch2 = mat4.create();
-const canvasCenterMatrix = mat4.create();
-const gridCenterMatrix = mat4.create();
-const oddRowCorrectionMatrix = mat4.create();
-const evenRowCorrectionMatrix = mat4.create();
-const transformedView = mat4.create();
-const viewTransformationMatrix = mat4.create();
-const verticalCorrectionMatrix = mat4.create();
-
-const hexidinput = document.getElementById('hexid');
-const mousePosition = [0, 0];
-let inputValue = -1;
-
 function HexagonGrid(context, camera) {
   const { canvas } = context;
 
+  const triangleDegs = 60 * (Math.PI / 180);
+  const scaleFactor = Math.tan(triangleDegs / 2);
+  const verticalCorrection = Math.cos(30 * (Math.PI / 180));
+
+  // Vectors
+  const scratchVec0 = vec3.create();
+  const scratchVec1 = vec3.create();
+  const scratchVec2 = vec3.create();
+  const scratchVec3 = vec3.create();
+  const canvasSize = vec3.create();
+  const canvasCenter = vec3.create();
+  const gridSize = vec3.create();
+  const gridCenter = vec3.create();
+
+  // Matrices
+  const scratch0 = mat4.create();
+  const scratch1 = mat4.create();
+  const scratch2 = mat4.create();
+  const canvasCenterMatrix = mat4.create();
+  const gridCenterMatrix = mat4.create();
+  const oddRowCorrectionMatrix = mat4.create();
+  const evenRowCorrectionMatrix = mat4.create();
+  const transformedView = mat4.create();
+  const viewTransformationMatrix = mat4.create();
+  const verticalCorrectionMatrix = mat4.create();
+
+  const hexidinput = document.getElementById('hexid');
+  const mousePosition = [0, 0];
+  let inputValue = -1;
   const baseUnit = canvas.width / 150;
   const rowLimit = 61;
   const columnLimit = 95;
