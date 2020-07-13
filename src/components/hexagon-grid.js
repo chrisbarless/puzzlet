@@ -6,12 +6,12 @@ const verticalCorrection = Math.cos(30 * (Math.PI / 180));
 
 // Vectors
 const scratchVec0 = vec3.create();
+const scratchVec1 = vec3.create();
 const scratchVec2 = vec3.create();
 const scratchVec3 = vec3.create();
 const canvasSize = vec3.create();
 const canvasCenter = vec3.create();
 const gridSize = vec3.create();
-const scaledGridSize = vec3.create();
 const gridCenter = vec3.create();
 
 // Matrices
@@ -76,22 +76,29 @@ function HexagonGrid(context, camera) {
     );
   });
 
-  function getClosestHexagon() {
+  function onMouseMove(event) {
+    event.preventDefault();
+
+    const rect = canvas.getBoundingClientRect();
     let minDist = Infinity;
     let closest;
-
-    mat4.multiply(scratch2, camera.view, viewTransformationMatrix);
+    drag = true;
+    mousePosition[0] = event.clientX - rect.left;
+    mousePosition[1] = event.clientY - rect.top;
 
     vec2.transformMat4(
       scratchVec2,
       mousePosition,
-      mat4.invert(scratch2, scratch2),
+      mat4.invert(
+        scratch1,
+        mat4.multiply(scratch1, camera.view, viewTransformationMatrix),
+      ),
     );
 
     hexagons.forEach((hexagon) => {
       const thisDist = vec2.dist(
         scratchVec2,
-        mat4.getTranslation(scratchVec2, hexagon.matrix),
+        mat4.getTranslation(scratchVec0, hexagon.matrix, hexagon.matrix),
       );
 
       if (thisDist < minDist) {
@@ -100,20 +107,7 @@ function HexagonGrid(context, camera) {
       }
     });
 
-    return closest;
-  }
-
-  function onMouseMove(event) {
-    event.preventDefault();
-
-    const rect = canvas.getBoundingClientRect();
-
-    mousePosition[0] = event.clientX - rect.left;
-    mousePosition[1] = event.clientY - rect.top;
-
-    drag = true;
-
-    hovered = getClosestHexagon();
+    hovered = closest;
 
     canvas.style.cursor = hovered && !soldIds.includes(hovered.bitNumber) ? 'pointer' : 'default';
   }
@@ -238,7 +232,6 @@ function HexagonGrid(context, camera) {
       gridCenterMatrix,
       canvasCenterMatrix,
     );
-    console.log(gridCenter, canvasCenter);
 
     camera.setViewCenter(canvasCenter);
 
@@ -256,38 +249,11 @@ function HexagonGrid(context, camera) {
           event.preventDefault();
           if (inputValue < 1) return;
           const hexagon = hexagons.get(inputValue);
-
-          mat4.identity(scratch1);
-
-          camera.reset();
-
-          console.log('viewTransformationMatrix');
-          console.log(...viewTransformationMatrix);
-          console.log('...scratch1');
-          console.log(...scratch1);
-          console.log('...transformedView');
-          console.log(...transformedView);
-          console.log('...hexagon.matrix');
-          console.log(...hexagon.matrix);
-          console.log('...camera.view');
-          console.log(...camera.view);
-          // mat4.multiply(transformedView, viewTransformationMatrix, camera.view);
           mat4.multiply(
             camera.view,
             mat4.invert(scratch1, hexagon.matrix),
-            viewTransformationMatrix,
-            // mat4.multiply(scratch1, viewTransformationMatrix, camera.view),
+            mat4.fromTranslation(mat4.create(), gridCenter),
           );
-          camera.scale(3);
-          console.log('MULTIPLY');
-          console.log('...scratch1');
-          console.log(...scratch1);
-          console.log('...transformedView');
-          console.log(...transformedView);
-          console.log('...hexagon.matrix');
-          console.log(...hexagon.matrix);
-          console.log('...camera.view');
-          console.log(...camera.view);
         });
     }
   }
