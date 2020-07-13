@@ -8,8 +8,9 @@ let camera;
 function Camera(canvas) {
   const cameraLog = CameraDebugger();
   let config = {
-    scaleBounds: [10, 100],
-    distance: 0.1,
+    initTarget: [95 / 2, 61 / 2],
+    scaleBounds: [1, 10],
+    // distance: 0.1,
     isNdc: false,
     isRotate: false,
     onWheel: cameraLog,
@@ -81,7 +82,7 @@ function Camera(canvas) {
   return camera;
 }
 
-function CameraDebugger() {
+export function CameraDebugger() {
   return () => {
     if (process.env.NODE_ENV === 'production') return null;
     console.clear();

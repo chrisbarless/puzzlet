@@ -1,4 +1,7 @@
 import { mat4, vec2, vec3 } from 'gl-matrix';
+import { CameraDebugger } from './camera';
+
+const logger = CameraDebugger();
 
 const triangleDegs = 60 * (Math.PI / 180);
 const scaleFactor = Math.tan(triangleDegs / 2);
@@ -6,7 +9,6 @@ const verticalCorrection = Math.cos(30 * (Math.PI / 180));
 
 // Vectors
 const scratchVec0 = vec3.create();
-const scratchVec1 = vec3.create();
 const scratchVec2 = vec3.create();
 const scratchVec3 = vec3.create();
 const canvasSize = vec3.create();
@@ -24,32 +26,14 @@ const evenRowCorrectionMatrix = mat4.create();
 const transformedView = mat4.create();
 const viewTransformationMatrix = mat4.create();
 const verticalCorrectionMatrix = mat4.create();
-// mat4.fromTranslation(verticalCorrectionMatrix, [0, verticalCorrection, 0]);
-mat4.fromScaling(verticalCorrectionMatrix, [1, verticalCorrection, 1]);
-const verticalCorrectionMatrixInverse = mat4.invert(
-  mat4.create(),
-  verticalCorrectionMatrix,
-);
-mat4.fromTranslation(oddRowCorrectionMatrix, [1, 0, 0]);
-mat4.fromTranslation(evenRowCorrectionMatrix, [0.5, 0, 0]);
 
 const mousePosition = [0, 0];
 let inputValue = -1;
 
-const vertexVectors = [0, 1, 2, 3, 4, 5, 0].map((i) => {
-  const vertexVector = vec3.create();
-  return vec3.rotateZ(
-    vertexVector,
-    vec3.fromValues(0, -scaleFactor, 0),
-    [0, 0, 0],
-    i * triangleDegs,
-  );
-});
-
 function HexagonGrid(context, camera) {
   const { canvas } = context;
 
-  // const baseUnit = canvas.width / 150;
+  const baseUnit = canvas.width / 150;
   const rowLimit = 61;
   const columnLimit = 95;
   let hovered;
@@ -82,18 +66,25 @@ function HexagonGrid(context, camera) {
     soldIds = [2223];
   }
 
+  const vertexVectors = [0, 1, 2, 3, 4, 5, 0].map((i) => {
+    const vertexVector = vec3.create();
+    return vec3.rotateZ(
+      vertexVector,
+      vec3.fromValues(0, -scaleFactor * baseUnit, 0),
+      [0, 0, 0],
+      i * triangleDegs,
+    );
+  });
+
   function getClosestHexagon() {
     let minDist = Infinity;
     let closest;
 
-    vec2.transformMat4(
-      mousePosition,
-      mousePosition,
-      mat4.invert(
-        scratch0,
-        mat4.multiply(scratch0, camera.view, viewTransformationMatrix),
-      ),
-    );
+    // vec2.transformMat4(
+    //   mousePosition,
+    //   mousePosition,
+    //   mat4.invert(scratch0, transformedView),
+    // );
 
     hexagons.forEach((hexagon) => {
       const thisDist = vec2.dist(
@@ -141,7 +132,10 @@ function HexagonGrid(context, camera) {
     const selectedPieces = new Path2D();
     const unsoldPieces = new Path2D();
 
-    mat4.multiply(transformedView, camera.view, viewTransformationMatrix);
+    // the vector is being subtracted every time
+
+    // mat4.multiply(transformedView, camera.view, viewTransformationMatrix);
+    // mat4.copy(transformedView, camera.view);
 
     hexagons.forEach((hexagon, bitNumber) => {
       let targetPath = unsoldPieces;
@@ -150,7 +144,7 @@ function HexagonGrid(context, camera) {
       } else if (soldIds.includes(bitNumber) || hovered === hexagon) {
         targetPath = soldPieces;
       }
-      mat4.multiply(scratch0, transformedView, hexagon.matrix);
+      mat4.multiply(scratch0, camera.view, hexagon.matrix);
       vertexVectors.forEach((vertex, i) => {
         vec3.transformMat4(scratchVec0, vertex, scratch0);
         if (i === 0) {
@@ -166,8 +160,8 @@ function HexagonGrid(context, camera) {
 
     context.globalCompositeOperation = 'source-atop';
 
-    mat4.getTranslation(scratchVec2, transformedView);
-    mat4.getScaling(scratchVec3, transformedView);
+    mat4.getTranslation(scratchVec2, camera.view);
+    mat4.getScaling(scratchVec3, camera.view);
 
     context.drawImage(
       img,
@@ -184,25 +178,27 @@ function HexagonGrid(context, camera) {
     context.stroke(selectedPieces);
   };
 
-  let index = 1; // Linear counter
-  for (let y = 0; y < rowLimit; y += 1) {
-    const isEvenRow = y % 2 === 0;
-    for (let x = 0; x < (isEvenRow ? columnLimit : columnLimit - 1); x += 1) {
-      const matrix = mat4.fromTranslation(mat4.create(), [
-        x,
-        y * verticalCorrection,
-        1,
-      ]);
-      mat4.multiply(
-        matrix,
-        matrix,
-        isEvenRow ? evenRowCorrectionMatrix : oddRowCorrectionMatrix,
-      );
-      hexagons.set(index, {
-        bitNumber: index,
-        matrix,
-      });
-      index += 1;
+  function buildHexagons() {
+    let index = 1; // Linear counter
+    for (let y = 0; y < rowLimit; y += 1) {
+      const isEvenRow = y % 2 === 0;
+      for (let x = 0; x < (isEvenRow ? columnLimit : columnLimit - 1); x += 1) {
+        const matrix = mat4.fromTranslation(mat4.create(), [
+          x * baseUnit,
+          y * verticalCorrection * baseUnit,
+          1,
+        ]);
+        mat4.multiply(
+          matrix,
+          matrix,
+          isEvenRow ? evenRowCorrectionMatrix : oddRowCorrectionMatrix,
+        );
+        hexagons.set(index, {
+          bitNumber: index,
+          matrix,
+        });
+        index += 1;
+      }
     }
   }
 
@@ -218,8 +214,12 @@ function HexagonGrid(context, camera) {
     vec3.scale(gridCenter, gridSize, 0.5);
 
     // Create transform matrices based on program state
+    mat4.fromScaling(verticalCorrectionMatrix, [1, verticalCorrection, 1]);
+    mat4.fromTranslation(oddRowCorrectionMatrix, [1 * baseUnit, 0, 0]);
+    mat4.fromTranslation(evenRowCorrectionMatrix, [0.5 * baseUnit, 0, 0]);
     mat4.fromTranslation(
       canvasCenterMatrix,
+      canvasCenter,
       vec3.scale(vec3.create(), canvasCenter, 1 / camera.scaling),
     );
     mat4.fromTranslation(
@@ -233,6 +233,8 @@ function HexagonGrid(context, camera) {
     );
 
     camera.setViewCenter(canvasCenter);
+
+    buildHexagons();
 
     if (!camera.isFake) {
       canvas.addEventListener('mousedown', () => {
@@ -249,10 +251,41 @@ function HexagonGrid(context, camera) {
         .addEventListener('submit', (event) => {
           event.preventDefault();
           if (inputValue < 1) return;
-          const targetHex = hexagons.get(inputValue);
-          const b = mat4.getTranslation(vec3.create(), targetHex.matrix);
-          camera.lookAt(b, 0.1);
-          debugger;
+          const hexagon = hexagons.get(inputValue);
+
+          mat4.identity(scratch1);
+
+          camera.reset();
+
+          console.log('viewTransformationMatrix');
+          console.log(...viewTransformationMatrix);
+          console.log('...scratch1');
+          console.log(...scratch1);
+          console.log('...transformedView');
+          console.log(...transformedView);
+          console.log('...hexagon.matrix');
+          console.log(...hexagon.matrix);
+          console.log('...camera.view');
+          console.log(...camera.view);
+          // mat4.multiply(transformedView, viewTransformationMatrix, camera.view);
+          mat4.multiply(
+            camera.view,
+            mat4.invert(scratch1, hexagon.matrix),
+            viewTransformationMatrix,
+            // mat4.multiply(scratch1, viewTransformationMatrix, camera.view),
+          );
+          camera.scale(3);
+          console.log('MULTIPLY');
+          console.log('...scratch1');
+          console.log(...scratch1);
+          console.log('...transformedView');
+          console.log(...transformedView);
+          console.log('...hexagon.matrix');
+          console.log(...hexagon.matrix);
+          console.log('...camera.view');
+          console.log(...camera.view);
+          // camera.setView(transformedView);
+          // logger();
         });
     }
   }
