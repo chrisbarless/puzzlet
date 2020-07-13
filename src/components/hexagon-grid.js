@@ -220,6 +220,7 @@ function HexagonGrid(context, camera) {
     // Find centers
     vec3.scale(canvasCenter, canvasSize, 0.5);
     vec3.scale(gridCenter, gridSize, 0.5);
+    vec3.multiply(gridCenter, gridCenter, [1, verticalCorrection, 1]);
 
     // Create transform matrices based on program state
     mat4.fromTranslation(oddRowCorrectionMatrix, [0.5 * baseUnit, 0, 0]);
@@ -260,6 +261,7 @@ function HexagonGrid(context, camera) {
             mat4.invert(scratch1, hexagon.matrix),
             mat4.fromTranslation(mat4.create(), gridCenter),
           );
+          camera.scale(4);
         });
     }
   }
