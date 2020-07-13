@@ -176,7 +176,7 @@ function HexagonGrid(context, camera) {
     context.stroke(selectedPieces);
   };
 
-  function buildHexagons() {
+  function buildHexagonGrid() {
     let index = 1; // Linear counter
     for (let y = 0; y < rowLimit; y += 1) {
       const isEvenRow = y % 2 === 0;
@@ -234,7 +234,7 @@ function HexagonGrid(context, camera) {
 
     camera.setViewCenter(canvasCenter);
 
-    buildHexagons();
+    buildHexagonGrid();
 
     if (!camera.isFake) {
       canvas.addEventListener('mousedown', () => {
