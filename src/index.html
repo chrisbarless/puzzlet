@@ -9,21 +9,18 @@
   <body>
     <div id="puzzle-container" class="container">
       <!--side logo-->
-      <a
-        href="https://bitforbit.notquite.se"
-        id="logo"
-        class="logo"
-        target="_blank"
-      />
+      <a href="https://bitforbit.notquite.se" target="_blank">
+        <figure id="logo" class="logo" />
+      </a>
 
-      <!--hex lookup form-->
-      <!-- <div class="form"> -->
-      <!--   <form action="#"> -->
-      <!--     <label for="hexid">hitta ditt bit:</label> -->
-      <!--     <input type="text" id="hexid" name="hexid" /> -->
-      <!--     <input type="submit" value="GÅ" /> -->
-      <!--   </form> -->
-      <!-- </div> -->
+      <!-- hex lookup form -->
+      <div class="form">
+        <form id="goto-hex-form">
+          <label for="hexid">hitta ditt bit:</label>
+          <input type="number" id="hexid" name="hexid" min="1" max="5765" />
+          <input type="submit" value="GÅ" />
+        </form>
+      </div>
 
       <!--bottom buttons-->
       <div class="buttoninfo">

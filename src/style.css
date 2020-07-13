@@ -73,7 +73,7 @@
   line-height: normal;
 }
 
-input[type='text'] {
+input[type='number'] {
   background-color: #000000;
   color: #ffffff;
   border: solid;
