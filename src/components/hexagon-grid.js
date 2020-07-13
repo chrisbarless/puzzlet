@@ -162,15 +162,14 @@ function HexagonGrid(context, camera) {
     context.globalCompositeOperation = 'source-atop';
 
     vec3.zero(scratchVec1);
-    vec3.copy(scratchVec3, gridSize);
 
     // Should be a matrix
-    vec3.subtract(scratchVec1, scratchVec1, [
-      baseUnit / 2,
-      verticalCorrection * baseUnit,
-      0,
-    ]);
-    vec3.multiply(scratchVec3, scratchVec3, [1, verticalCorrection, 1]);
+    vec3.subtract(scratchVec1, scratchVec1, [0, baseUnit, 0]);
+    vec3.transformMat4(
+      scratchVec1,
+      scratchVec1,
+      mat4.invert(scratch1, oddRowCorrectionMatrix),
+    );
     vec3.transformMat4(scratchVec1, scratchVec1, scratch0);
 
     context.drawImage(
@@ -178,7 +177,10 @@ function HexagonGrid(context, camera) {
       scratchVec1[0],
       scratchVec1[1],
       columnLimit * baseUnit * camera.scaling,
-      rowLimit * baseUnit * camera.scaling,
+      (rowLimit + verticalCorrection)
+        * baseUnit
+        * verticalCorrection
+        * camera.scaling,
     );
 
     // Stop drawing
