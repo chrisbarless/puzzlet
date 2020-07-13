@@ -214,7 +214,7 @@ function HexagonGrid(context, camera) {
     }
   }
 
-  function init() {
+  function resetView() {
     // Cache canvas size
     vec3.set(canvasSize, canvas.width, canvas.height, 0);
 
@@ -247,32 +247,34 @@ function HexagonGrid(context, camera) {
     );
 
     camera.setViewCenter(canvasCenter);
-
-    buildHexagonGrid();
-
-    if (!hideControls) {
-      canvas.addEventListener('mousedown', () => {
-        drag = false;
-      });
-      canvas.addEventListener('mouseup', (event) => !drag && onClick(event));
-      canvas.addEventListener('mousemove', onMouseMove);
-      document
-        .getElementById('goto-hex-form')
-        .addEventListener('submit', (event) => {
-          event.preventDefault();
-          if (inputValue < 1) return;
-          const hexagon = hexagons.get(inputValue);
-          mat4.multiply(
-            camera.view,
-            mat4.invert(scratch1, hexagon.matrix),
-            mat4.fromTranslation(mat4.create(), gridCenter),
-          );
-          camera.scale(4);
-        });
-    }
   }
 
-  init();
+  function setupListeners() {
+    canvas.addEventListener('mousedown', () => {
+      drag = false;
+    });
+    canvas.addEventListener('mouseup', (event) => !drag && onClick(event));
+    canvas.addEventListener('mousemove', onMouseMove);
+    document
+      .getElementById('goto-hex-form')
+      .addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (inputValue < 1) return;
+        const hexagon = hexagons.get(inputValue);
+        mat4.multiply(
+          camera.view,
+          mat4.invert(scratch1, hexagon.matrix),
+          mat4.fromTranslation(mat4.create(), gridCenter),
+        );
+        camera.scale(4);
+      });
+  }
+
+  resetView();
+  buildHexagonGrid();
+  if (!hideControls) {
+    setupListeners();
+  }
 }
 
 export default HexagonGrid;
