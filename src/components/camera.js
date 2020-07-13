@@ -35,48 +35,50 @@ function Camera(canvas) {
   camera = createDom2dCamera(canvas, config);
   camera.puzzHideControls = hideControls;
 
-  // Move Left
-  document
-    .getElementById('button-arrow-left')
-    .addEventListener('click', (event) => {
-      event.preventDefault();
-      camera.translate([increment * camera.scaling, 0]);
-    });
-  // Move Right
-  document
-    .getElementById('button-arrow-right')
-    .addEventListener('click', (event) => {
-      event.preventDefault();
-      camera.translate([-increment * camera.scaling, 0]);
-    });
-  // Move Up
-  document
-    .getElementById('button-arrow-up')
-    .addEventListener('click', (event) => {
-      event.preventDefault();
-      camera.translate([0, increment * camera.scaling]);
-    });
-  // Move Down
-  document
-    .getElementById('button-arrow-down')
-    .addEventListener('click', (event) => {
-      event.preventDefault();
-      camera.translate([0, -increment * camera.scaling]);
-    });
-  // Zoom in
-  document
-    .getElementById('button-arrow-plus')
-    .addEventListener('click', (event) => {
-      event.preventDefault();
-      camera.zoom(2);
-    });
-  // Zoom out
-  document
-    .getElementById('button-arrow-minus')
-    .addEventListener('click', (event) => {
-      event.preventDefault();
-      camera.zoom(0.5);
-    });
+  if (!hideControls) {
+    // Move Left
+    document
+      .getElementById('button-arrow-left')
+      .addEventListener('click', (event) => {
+        event.preventDefault();
+        camera.translate([increment * camera.scaling, 0]);
+      });
+    // Move Right
+    document
+      .getElementById('button-arrow-right')
+      .addEventListener('click', (event) => {
+        event.preventDefault();
+        camera.translate([-increment * camera.scaling, 0]);
+      });
+    // Move Up
+    document
+      .getElementById('button-arrow-up')
+      .addEventListener('click', (event) => {
+        event.preventDefault();
+        camera.translate([0, increment * camera.scaling]);
+      });
+    // Move Down
+    document
+      .getElementById('button-arrow-down')
+      .addEventListener('click', (event) => {
+        event.preventDefault();
+        camera.translate([0, -increment * camera.scaling]);
+      });
+    // Zoom in
+    document
+      .getElementById('button-arrow-plus')
+      .addEventListener('click', (event) => {
+        event.preventDefault();
+        camera.zoom(2);
+      });
+    // Zoom out
+    document
+      .getElementById('button-arrow-minus')
+      .addEventListener('click', (event) => {
+        event.preventDefault();
+        camera.zoom(0.5);
+      });
+  }
 
   return camera;
 }
