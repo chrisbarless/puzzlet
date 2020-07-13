@@ -1,7 +1,4 @@
 import { mat4, vec2, vec3 } from 'gl-matrix';
-import { CameraDebugger } from './camera';
-
-const logger = CameraDebugger();
 
 const triangleDegs = 60 * (Math.PI / 180);
 const scaleFactor = Math.tan(triangleDegs / 2);
@@ -283,8 +280,6 @@ function HexagonGrid(context, camera) {
           console.log(...hexagon.matrix);
           console.log('...camera.view');
           console.log(...camera.view);
-          // camera.setView(transformedView);
-          // logger();
         });
     }
   }
