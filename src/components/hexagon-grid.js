@@ -27,6 +27,7 @@ const transformedView = mat4.create();
 const viewTransformationMatrix = mat4.create();
 const verticalCorrectionMatrix = mat4.create();
 
+const hexidinput = document.getElementById('hexid');
 const mousePosition = [0, 0];
 let inputValue = -1;
 
@@ -131,6 +132,8 @@ function HexagonGrid(context, camera) {
     const soldPieces = new Path2D();
     const selectedPieces = new Path2D();
     const unsoldPieces = new Path2D();
+
+    inputValue = parseInt(hexidinput.value, 10);
 
     // the vector is being subtracted every time
 
@@ -242,10 +245,6 @@ function HexagonGrid(context, camera) {
       });
       canvas.addEventListener('mouseup', (event) => !drag && onClick(event));
       canvas.addEventListener('mousemove', onMouseMove);
-      document.getElementById('hexid').addEventListener('change', (event) => {
-        const hexNumber = parseInt(event.target.value, 10);
-        inputValue = hexNumber;
-      });
       document
         .getElementById('goto-hex-form')
         .addEventListener('submit', (event) => {
