@@ -27,7 +27,6 @@ function HexagonGrid(context, camera) {
   const evenRowCorrectionMatrix = mat4.create();
   const transformedView = mat4.create();
   const viewTransformationMatrix = mat4.create();
-  const verticalCorrectionMatrix = mat4.create();
 
   const hexidinput = document.getElementById('hexid');
   const mousePosition = [0, 0];
@@ -131,7 +130,6 @@ function HexagonGrid(context, camera) {
 
     mat4.identity(scratch0);
     mat4.multiply(scratch0, camera.view, viewTransformationMatrix);
-    // mat4.copy(transformedView, camera.view);
 
     hexagons.forEach((hexagon, bitNumber) => {
       let targetPath = unsoldPieces;
@@ -141,8 +139,6 @@ function HexagonGrid(context, camera) {
         targetPath = soldPieces;
       }
       vertexVectors.forEach((vertex, i) => {
-        // debugger;
-        // mat4.multiply(scratch0, hexagon.matrix, scratch0);
         vec3.transformMat4(scratchVec0, vertex, hexagon.matrix);
         vec3.transformMat4(scratchVec0, scratchVec0, scratch0);
         if (i === 0) {
@@ -156,19 +152,30 @@ function HexagonGrid(context, camera) {
     context.fill(soldPieces);
     context.stroke(soldPieces);
 
+    // Start drawing
     context.globalCompositeOperation = 'source-atop';
 
-    mat4.getTranslation(scratchVec2, camera.view);
-    mat4.getScaling(scratchVec3, camera.view);
+    vec3.zero(scratchVec1);
+    vec3.copy(scratchVec3, gridSize);
+    vec3.subtract(scratchVec1, scratchVec1, [
+      0,
+      verticalCorrection * baseUnit,
+      0,
+    ]);
+    vec3.multiply(scratchVec3, scratchVec3, [1, verticalCorrection, 1]);
+    vec3.transformMat4(scratchVec1, scratchVec1, scratch0);
 
     context.drawImage(
       img,
-      scratchVec2[0],
-      scratchVec2[1],
-      columnLimit * scratchVec3[0],
-      rowLimit * scratchVec3[1],
+      scratchVec1[0],
+      scratchVec1[1],
+      columnLimit * baseUnit * camera.scaling,
+      rowLimit * baseUnit * camera.scaling,
     );
+
+    // Stop drawing
     context.globalCompositeOperation = 'source-over';
+
     context.fill(unsoldPieces);
     context.stroke(unsoldPieces);
 
@@ -214,7 +221,6 @@ function HexagonGrid(context, camera) {
     vec3.scale(gridCenter, gridSize, 0.5);
 
     // Create transform matrices based on program state
-    mat4.fromScaling(verticalCorrectionMatrix, [1, verticalCorrection, 1]);
     mat4.fromTranslation(oddRowCorrectionMatrix, [1 * baseUnit, 0, 0]);
     mat4.fromTranslation(evenRowCorrectionMatrix, [0.5 * baseUnit, 0, 0]);
     mat4.fromTranslation(
