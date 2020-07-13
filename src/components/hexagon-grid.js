@@ -119,13 +119,11 @@ function HexagonGrid(context, camera) {
     }
   }
 
+  context.fillStyle = '#ffac8c';
   this.tick = () => {
-    context.fillStyle = '#ffac8c';
-    context.strokeStyle = '#ffffff';
-
-    const soldPieces = new Path2D();
     const selectedPieces = new Path2D();
-    const unsoldPieces = new Path2D();
+    const imagePieces = new Path2D();
+    const emptyPieces = new Path2D();
 
     inputValue = !hideControls ? parseInt(hexidinput.value, 10) : -1;
 
@@ -133,11 +131,15 @@ function HexagonGrid(context, camera) {
     mat4.multiply(scratch0, camera.view, viewTransformationMatrix);
 
     hexagons.forEach((hexagon, bitNumber) => {
-      let targetPath = unsoldPieces;
+      let targetPath = emptyPieces;
       if (inputValue === bitNumber) {
         targetPath = selectedPieces;
-      } else if (soldIds.includes(bitNumber) || hovered === hexagon) {
-        targetPath = soldPieces;
+      } else if (
+        soldIds.includes(bitNumber)
+        || hovered === hexagon
+        || bitNumber === inputValue
+      ) {
+        targetPath = imagePieces;
       }
       vertexVectors.forEach((vertex, i) => {
         vec3.transformMat4(scratchVec0, vertex, hexagon.matrix);
@@ -150,8 +152,11 @@ function HexagonGrid(context, camera) {
       });
     });
 
-    context.fill(soldPieces);
-    context.stroke(soldPieces);
+    context.strokeStyle = '#ffffff';
+    context.fill(imagePieces);
+    context.fill(selectedPieces);
+
+    context.strokeStyle = '#ff0000';
 
     // Start drawing
     context.globalCompositeOperation = 'source-atop';
@@ -177,8 +182,9 @@ function HexagonGrid(context, camera) {
     // Stop drawing
     context.globalCompositeOperation = 'source-over';
 
-    context.fill(unsoldPieces);
-    context.stroke(unsoldPieces);
+    context.strokeStyle = '#ffffff';
+    context.stroke(emptyPieces);
+    context.stroke(imagePieces);
 
     context.strokeStyle = '#ff0000';
     context.stroke(selectedPieces);
