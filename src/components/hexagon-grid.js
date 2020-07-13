@@ -11,11 +11,13 @@ const scratchVec3 = vec3.create();
 const canvasSize = vec3.create();
 const canvasCenter = vec3.create();
 const gridSize = vec3.create();
+const scaledGridSize = vec3.create();
 const gridCenter = vec3.create();
 
 // Matrices
 const scratch0 = mat4.create();
 const scratch1 = mat4.create();
+const scratch2 = mat4.create();
 const canvasCenterMatrix = mat4.create();
 const gridCenterMatrix = mat4.create();
 const oddRowCorrectionMatrix = mat4.create();
@@ -78,15 +80,17 @@ function HexagonGrid(context, camera) {
     let minDist = Infinity;
     let closest;
 
+    mat4.multiply(scratch2, camera.view, viewTransformationMatrix);
+
     vec2.transformMat4(
+      scratchVec2,
       mousePosition,
-      mousePosition,
-      mat4.invert(scratch0, camera.view),
+      mat4.invert(scratch2, scratch2),
     );
 
     hexagons.forEach((hexagon) => {
       const thisDist = vec2.dist(
-        mousePosition,
+        scratchVec2,
         mat4.getTranslation(scratchVec2, hexagon.matrix),
       );
 
@@ -132,9 +136,8 @@ function HexagonGrid(context, camera) {
 
     inputValue = parseInt(hexidinput.value, 10);
 
-    // the vector is being subtracted every time
-
-    // mat4.multiply(transformedView, camera.view, viewTransformationMatrix);
+    mat4.identity(scratch0);
+    mat4.multiply(scratch0, camera.view, viewTransformationMatrix);
     // mat4.copy(transformedView, camera.view);
 
     hexagons.forEach((hexagon, bitNumber) => {
@@ -144,9 +147,11 @@ function HexagonGrid(context, camera) {
       } else if (soldIds.includes(bitNumber) || hovered === hexagon) {
         targetPath = soldPieces;
       }
-      mat4.multiply(scratch0, camera.view, hexagon.matrix);
       vertexVectors.forEach((vertex, i) => {
-        vec3.transformMat4(scratchVec0, vertex, scratch0);
+        // debugger;
+        // mat4.multiply(scratch0, hexagon.matrix, scratch0);
+        vec3.transformMat4(scratchVec0, vertex, hexagon.matrix);
+        vec3.transformMat4(scratchVec0, scratchVec0, scratch0);
         if (i === 0) {
           targetPath.moveTo(...scratchVec0);
         } else {
@@ -208,6 +213,8 @@ function HexagonGrid(context, camera) {
 
     // Cache grid size
     vec3.set(gridSize, columnLimit - 1, rowLimit - 1, 0);
+    vec3.scale(gridSize, gridSize, baseUnit);
+    vec3.scale(gridCenter, gridSize, 0.5);
 
     // Find centers
     vec3.scale(canvasCenter, canvasSize, 0.5);
@@ -231,6 +238,7 @@ function HexagonGrid(context, camera) {
       gridCenterMatrix,
       canvasCenterMatrix,
     );
+    console.log(gridCenter, canvasCenter);
 
     camera.setViewCenter(canvasCenter);
 
