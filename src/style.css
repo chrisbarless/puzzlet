@@ -88,6 +88,14 @@ input[type='number'] {
   margin: 0 0 0 0.5rem;
   padding: 0 0 0 0.5rem;
   outline: none;
+  /* This hides arrows from the number field */
+  -moz-appearance: textfield; /* Firefox */
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 
 input[value='GÅ'] {
