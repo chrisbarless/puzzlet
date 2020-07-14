@@ -38,6 +38,8 @@
 }
 
 .hideControls .logo,
+.hideControls .form,
+.hideControls .buttoninfo,
 .hideControls #puzzle-controls,
 .hideControls #nav-form {
   display: none;
