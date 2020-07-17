@@ -55,6 +55,14 @@ function HexagonGrid(context, camera) {
   let soldIds = [];
   let drag = false;
 
+  function onClick(event) {
+    event.preventDefault();
+
+    if (hovered && !soldIds.includes(hovered.bitNumber)) {
+      window.location.href = `${server}/product/pusselbit/?bitnummer=${hovered.bitNumber}`;
+    }
+  }
+
   function onMouseMove(event) {
     event.preventDefault();
 
@@ -65,6 +73,7 @@ function HexagonGrid(context, camera) {
     mousePosition[0] = event.clientX - rect.left;
     mousePosition[1] = event.clientY - rect.top;
 
+    // Get mouse position relative to grid
     vec2.transformMat4(
       scratchVec2,
       mousePosition,
@@ -75,6 +84,7 @@ function HexagonGrid(context, camera) {
     );
 
     hexagons.forEach((hexagon) => {
+      // Find closest hex by scaled distance
       const thisDist = vec2.dist(
         scratchVec2,
         mat4.getTranslation(scratchVec0, hexagon.matrix, hexagon.matrix),
@@ -89,14 +99,6 @@ function HexagonGrid(context, camera) {
     hovered = closest;
 
     canvas.style.cursor = hovered && !soldIds.includes(hovered.bitNumber) ? 'pointer' : 'default';
-  }
-
-  function onClick(event) {
-    event.preventDefault();
-
-    if (hovered && !soldIds.includes(hovered.bitNumber)) {
-      window.location.href = `${server}/product/pusselbit/?bitnummer=${hovered.bitNumber}`;
-    }
   }
 
   function buildHexagonGrid() {
@@ -179,6 +181,7 @@ function HexagonGrid(context, camera) {
         const hexagon = hexagons.get(inputValue);
         mat4.multiply(
           camera.view,
+          // Place hexagon in middle of camera view
           mat4.invert(scratch1, hexagon.matrix),
           mat4.fromTranslation(mat4.create(), gridCenter),
         );
@@ -192,6 +195,7 @@ function HexagonGrid(context, camera) {
       return;
     }
 
+    // Request sold hexes
     const request = new XMLHttpRequest();
     request.onreadystatechange = function receive() {
       if (this.readyState === 4 && this.status === 200) {
@@ -199,6 +203,7 @@ function HexagonGrid(context, camera) {
       }
     };
 
+    // Recursively check sold hexes every minute
     const refreshHexes = () => {
       request.open('GET', endpoint);
       request.send();
