@@ -187,23 +187,25 @@ function HexagonGrid(context, camera) {
   }
 
   function startFetching() {
-    if (process.env.NODE_ENV === 'production') {
-      const request = new XMLHttpRequest();
-      request.onreadystatechange = function receive() {
-        if (this.readyState === 4 && this.status === 200) {
-          soldIds = JSON.parse(this.responseText).soldIds;
-        }
-      };
-
-      const refreshHexes = () => {
-        request.open('GET', endpoint);
-        request.send();
-        setTimeout(refreshHexes, 60 * 1000);
-      };
-      refreshHexes();
-    } else {
+    if (process.env.NODE_ENV !== 'production') {
       soldIds = [2223];
+      return;
     }
+
+    const request = new XMLHttpRequest();
+    request.onreadystatechange = function receive() {
+      if (this.readyState === 4 && this.status === 200) {
+        soldIds = JSON.parse(this.responseText).soldIds;
+      }
+    };
+
+    const refreshHexes = () => {
+      request.open('GET', endpoint);
+      request.send();
+      setTimeout(refreshHexes, 60 * 1000);
+    };
+
+    refreshHexes();
   }
 
   this.tick = () => {
