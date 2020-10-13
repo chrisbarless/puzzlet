@@ -98,7 +98,7 @@ input::-webkit-inner-spin-button {
   margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 
-input[value='GÅ'] {
+.form-submit-button {
   background-color: #ffac8c;
   font-family: GTPressura-Bold;
   font-size: 1.4rem;
@@ -116,7 +116,7 @@ input[value='GÅ'] {
   outline: none;
 }
 
-input[value='GÅ']:hover {
+.form-submit-button {
   color: #ffffff;
   border-color: #ffffff;
 }
