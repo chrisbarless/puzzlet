@@ -1,6 +1,6 @@
 # Not Quite Puzzlet
 
-![image](https://user-images.githubusercontent.com/1173045/87808697-2ac4a980-c828-11ea-9860-a74206a74a5a.png)
+![image](https://user-images.githubusercontent.com/1173045/101090471-b4310a00-3584-11eb-9c9b-da371b8bdd9b.png)
 
 Run
 ```
